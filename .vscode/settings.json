@@ -1,0 +1,10 @@
+{
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "files.autoSave": "onFocusChange",
+    "prettier.singleQuote": true,
+    "typescript.referencesCodeLens.enabled": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "always"
+    }
+}
