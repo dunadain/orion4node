@@ -1,33 +1,32 @@
 module.exports = {
     env: {
-        browser: false,
-        es2022: true
+        browser: true,
+        es2022: true,
     },
     extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/strict-type-checked',
         'plugin:@typescript-eslint/stylistic-type-checked',
     ],
-    parser: "@typescript-eslint/parser",
+    parser: '@typescript-eslint/parser',
     parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
+        ecmaVersion: 'latest',
+        sourceType: 'module',
         project: true,
-        tsconfigRootDir: __dirname
+        tsconfigRootDir: __dirname,
     },
-    plugins: [
-        "@typescript-eslint"
-    ],
+    plugins: ['@typescript-eslint'],
     rules: {
-        "@typescript-eslint/require-await": "off",
-        'quotes': ['error', 'single', { 'avoidEscape': true, 'allowTemplateLiterals': true }],
-        'semi': [
+        '@typescript-eslint/require-await': 'off',
+        quotes: [
             'error',
-            'always'
+            'single',
+            { avoidEscape: true, allowTemplateLiterals: true },
         ],
+        semi: ['error', 'always'],
         'no-multi-spaces': ['error'],
         // "camelcase": ['error', { "properties": "always" }],
-        "@typescript-eslint/naming-convention": [
+        '@typescript-eslint/naming-convention': [
             'error',
             {
                 selector: 'default',
@@ -43,7 +42,7 @@ module.exports = {
             },
             {
                 selector: 'enumMember',
-                format: ['PascalCase']
+                format: ['PascalCase'],
             },
             {
                 selector: 'classProperty',
@@ -79,14 +78,14 @@ module.exports = {
                 trailingUnderscore: 'forbid',
             },
             {
-                selector: "interface", // 禁止interface以I开头
-                format: ["PascalCase"],
+                selector: 'interface', // 禁止interface以I开头
+                format: ['PascalCase'],
                 custom: {
-                  regex: "^I[A-Z]",
-                  match: false
-                }
-            }
-        ]
+                    regex: '^I[A-Z]',
+                    match: false,
+                },
+            },
+        ],
     },
-    ignorePatterns: ["*.js", "*.mjs", '/dist/', '/node_modules/'],
-}
+    ignorePatterns: ['*.js', '*.mjs', '/dist/', '/node_modules/'],
+};
