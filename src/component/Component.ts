@@ -4,5 +4,5 @@ export abstract class Component {
 
     constructor(public readonly server: Server) {
     }
-    protected start?(): void;
+    start?<T>(): Promise<T>;
 }
