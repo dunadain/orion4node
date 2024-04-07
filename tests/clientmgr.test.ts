@@ -13,9 +13,9 @@ beforeAll(() => {
     server = new Server('', 0);
     mgr = server.addComponent(ClientManager);
     fakeNativeSocket = {};
-    fakeClient = { socket: fakeNativeSocket, id: 1 } as SocketClient<any>;
+    fakeClient = { socket: fakeNativeSocket } as SocketClient<any>;
     fakeNativeSocket2 = {};
-    fakeClient2 = { socket: fakeNativeSocket2, id: 2 } as SocketClient<any>;
+    fakeClient2 = { socket: fakeNativeSocket2 } as SocketClient<any>;
 });
 
 describe('ClientManager Crud functions', () => {
@@ -23,9 +23,11 @@ describe('ClientManager Crud functions', () => {
         mgr.addClient(fakeClient);
         expect((mgr as any).map.size).toBe(1);
         expect((mgr as any).id2Client.size).toBe(1);
+        expect(fakeClient.id).toBe(1);
         mgr.addClient(fakeClient2);
         expect((mgr as any).map.size).toBe(2);
         expect((mgr as any).id2Client.size).toBe(2);
+        expect(fakeClient2.id).toBe(2);
         expect((mgr as any).bindedClientMap.size).toBe(0);
     });
 
@@ -59,5 +61,6 @@ describe('ClientManager Crud functions', () => {
         expect((mgr as any).bindedClientMap.size).toBe(0);
         expect(mgr.hasClientFor('b')).toBeFalsy();
         expect(mgr.hasClientFor('b')).toBeFalsy();
+        expect((mgr as any).idGenerator).toBe(0);
     });
 });

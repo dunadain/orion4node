@@ -9,8 +9,10 @@ export class ClientManager extends Component {
     private id2Client = new Map<number, SocketClient<unknown>>();
     // user uuid/session id
     private bindedClientMap = new Map<string, number>();
+    private idGenerator = 0;
 
     addClient<T>(client: SocketClient<T>) {
+        client.id = ++this.idGenerator;
         this.map.set(client.socket, client);
         this.id2Client.set(client.id, client);
     }
@@ -27,6 +29,8 @@ export class ClientManager extends Component {
             const client = this.map.get(key);
             if (client) this.clear(client);
         }
+        // if no connection remains, reset id generator
+        if (this.map.size === 0) this.idGenerator = 0;
     }
 
     private clear<T>(client: SocketClient<T>) {
