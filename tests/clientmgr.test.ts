@@ -48,6 +48,11 @@ describe('ClientManager Crud functions', () => {
         expect(mgr.getClientById(2)).not.toBeUndefined();
     });
 
+    test('get session id', () => {
+        expect(mgr.getSessionId('a')).toBeGreaterThan(0);
+        expect(mgr.getSessionId('wekrj')).toBe(0);
+    });
+
     test('remove', () => {
         mgr.removeClient(fakeNativeSocket);
         expect((mgr as any).map.size).toBe(1);
