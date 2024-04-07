@@ -36,12 +36,21 @@ export class ClientManager extends Component {
     }
 
     /**
-     * get client by session id or native socket
-     * @param key number / native socket
+     * get client by native socket
+     * @param key native socket
      * @returns 
      */
     getClient<T>(key: T) {
-        return (typeof key === 'number' ? this.id2Client.get(key) : this.map.get(key)) as SocketClient<T>;
+        return this.map.get(key) as SocketClient<T>;
+    }
+
+    /**
+     * get client by session id
+     * @param id session id
+     * @returns 
+     */
+    getClientById(id: number) {
+        return this.id2Client.get(id);
     }
 
     /**

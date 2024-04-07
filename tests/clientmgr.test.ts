@@ -43,7 +43,7 @@ describe('ClientManager Crud functions', () => {
 
     test('fetch', () => {
         expect(mgr.getClient(fakeNativeSocket)).not.toBeUndefined();
-        expect(mgr.getClient(2)).not.toBeUndefined();
+        expect(mgr.getClientById(2)).not.toBeUndefined();
     });
 
     test('remove', () => {
