@@ -21,6 +21,7 @@ export class Server {
     addComponent<T extends Component>(classConstructor: ComponentConstructor<T>) {
         const comp = new classConstructor(this);
         this.components.set(classConstructor, comp);
+        return comp;
     }
 
     async start() {

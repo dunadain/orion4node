@@ -87,5 +87,22 @@ module.exports = {
             },
         ],
     },
+    overrides: [
+        {
+            files: ['tests/**/*'],
+            extends: [
+                'eslint:recommended',
+                'plugin:@typescript-eslint/recommended',
+                'plugin:@typescript-eslint/stylistic',
+            ],
+            env: {
+                jest: true,
+            },
+            rules: {
+                '@typescript-eslint/no-explicit-any': 'off',
+                '@typescript-eslint/no-unsafe-member-access': 'off',
+            },
+        },
+    ],
     ignorePatterns: ['*.js', '*.mjs', '/dist/', '/node_modules/'],
 };
