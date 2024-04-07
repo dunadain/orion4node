@@ -1,7 +1,8 @@
 import { RecognizedString } from 'uWebSockets.js';
 
-export interface WsClient {
+export interface SocketClient<T> {
+    id: number;
     uuidForUser: string;
-    socket: unknown;
+    socket: T;
     send(msg: RecognizedString): void;
 }
