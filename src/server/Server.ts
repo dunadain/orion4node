@@ -4,8 +4,8 @@ import { logger } from '../logger/Logger';
 
 
 export class Server {
-    addr = '';
-    port = 0;
+    constructor(public readonly addr: string, public readonly port: number) {
+    }
 
     private components = new Map<new () => Component, Component>();
 
