@@ -45,7 +45,7 @@ export class ClientManager extends Component {
      * @returns 
      */
     getClient<T>(key: T) {
-        return this.map.get(key) as SocketClient<T>;
+        return this.map.get(key) as SocketClient<T> | undefined;
     }
 
     /**

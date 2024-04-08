@@ -1,8 +1,8 @@
-import { RecognizedString } from 'uWebSockets.js';
-
 export interface SocketClient<T> {
     id: number;
     uuidForUser: string;
     socket: T;
-    send(msg: RecognizedString): void;
+    send<T>(msg: T): void;
+    onMessage(msg: ArrayBuffer): void;
+    onDrain?(): void;
 }
