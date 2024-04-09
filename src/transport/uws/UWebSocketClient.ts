@@ -1,6 +1,5 @@
 import { WebSocket } from 'uWebSockets.js';
 import { SocketClient } from '../SocketClient';
-import { arrayUtils } from '../../utils/ArrayUtils';
 
 export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     id = 0;
