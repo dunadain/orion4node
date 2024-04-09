@@ -40,8 +40,8 @@ describe('Package Protocol', () => {
             ]
         };
         const str = JSON.stringify(obj);
-        for (let i = 0; i < 10; ++i) {
-            const type = Math.floor(Math.random() * 4);
+        for (let i = 0; i < 4; ++i) {
+            const type = i;
             const id = type === message.TYPE_REQUEST || type === message.TYPE_RESPONSE ? Math.floor(Math.random() * 1000000) : 0;
             const route = type === message.TYPE_REQUEST || type === message.TYPE_NOTIFY ||
                 type === message.TYPE_PUSH ? Math.floor(Math.random() * 63000) : 0;
