@@ -19,20 +19,23 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     }
 
     onDrain() {
-        if (this.buffer.length === 0) return;
-        const bufferCopy = arrayUtils.clone(this.buffer);
-        this.buffer.length = 0;
-        for (const msg of bufferCopy) {
-            this.flush(msg);
-        }
+        this.flush();
     }
 
-    private flush(msg: ArrayBuffer) {
-        if (this.buffer.length > 0) {
-            this.buffer.push(msg);
-        } else {
+    private flush() {
+        const len = this.buffer.length;
+        if (len === 0) return;
+        let i = 0;
+        for (; i < len; ++i) {
+            const msg = this.buffer[i];
             const state = this.socket.send(msg);
-            if (state === 2) this.buffer.push(msg);
+            if (state === 2) {
+                break;
+            }
+        }
+        if (i > 0) {
+            if (i === len) this.buffer.length = 0;
+            else this.buffer.splice(0, i);
         }
     }
 }
