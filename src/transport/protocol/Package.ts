@@ -3,14 +3,16 @@ import { copyArray } from './utils';
 /* eslint-disable @typescript-eslint/naming-convention */
 const PKG_HEAD_BYTES = 4;
 
-export const TYPE_HANDSHAKE = 1;
-export const TYPE_HANDSHAKE_ACK = 2;
-export const TYPE_HEARTBEAT = 3;
-export const TYPE_DATA = 4;
-export const TYPE_KICK = 5;
+export enum PackType {
+    TYPE_HANDSHAKE = 1,
+    TYPE_HANDSHAKE_ACK,
+    TYPE_HEARTBEAT,
+    TYPE_DATA,
+    TYPE_KICK
+}
 
-function isValidType(type: number): boolean {
-    return type >= TYPE_HANDSHAKE && type <= TYPE_KICK;
+function isValidType(type: PackType): boolean {
+    return type >= PackType.TYPE_HANDSHAKE && type <= PackType.TYPE_KICK;
 }
 
 /**
@@ -56,7 +58,7 @@ export function encode(type: number, body?: Buffer) {
  * @param  {Buffer} buffer byte array containing package content
  * @return {Object}           {type: package type, buffer: body byte array}
  */
-export function decode(buffer: Buffer, out?: { type: number, body: Buffer | null }[]) {
+export function decode(buffer: Buffer, out?: { type: PackType, body: Buffer | null }[]) {
     let offset = 0;
     const bytes = Buffer.from(buffer);
     let length = 0;

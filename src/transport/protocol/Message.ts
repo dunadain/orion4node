@@ -13,10 +13,13 @@ const MSG_COMPRESS_GZIP_MASK = 0x1;
 const MSG_COMPRESS_GZIP_ENCODE_MASK = 1 << 3;
 const MSG_TYPE_MASK = 0x7;
 
-export const TYPE_REQUEST = 0;
-export const TYPE_NOTIFY = 1;
-export const TYPE_RESPONSE = 2;
-export const TYPE_PUSH = 3;
+export enum MsgType {
+    TYPE_REQUEST,
+    TYPE_NOTIFY,
+    TYPE_RESPONSE,
+    TYPE_PUSH
+}
+
 /**
  * Message protocol encode.
  *
@@ -26,7 +29,7 @@ export const TYPE_PUSH = 3;
  * @param  {Buffer} msg           message body bytes
  * @return {Buffer}               encode result
  */
-export function encode(id: number, type: number, route: number, msg?: Buffer, compressGzip?: boolean) {
+export function encode(id: number, type: MsgType, route: number, msg?: Buffer, compressGzip?: boolean) {
     // caculate message max length
     const idBytes = msgHasId(type) ? caculateMsgIdBytes(id) : 0;
     let msgLen = MSG_FLAG_BYTES + idBytes;
@@ -111,13 +114,13 @@ export function decode(buffer: Buffer) {
     };
 }
 
-function msgHasId(type: number) {
-    return type === TYPE_REQUEST || type === TYPE_RESPONSE;
+function msgHasId(type: MsgType) {
+    return type === MsgType.TYPE_REQUEST || type === MsgType.TYPE_RESPONSE;
 }
 
-function msgHasRoute(type: number) {
-    return type === TYPE_REQUEST || type === TYPE_NOTIFY ||
-        type === TYPE_PUSH;
+function msgHasRoute(type: MsgType) {
+    return type === MsgType.TYPE_REQUEST || type === MsgType.TYPE_NOTIFY ||
+        type === MsgType.TYPE_PUSH;
 }
 
 function caculateMsgIdBytes(id: number) {
@@ -130,8 +133,8 @@ function caculateMsgIdBytes(id: number) {
 }
 
 function encodeMsgFlag(type: number, buffer: Buffer, offset: number, compressGzip: boolean) {
-    if (type !== TYPE_REQUEST && type !== TYPE_NOTIFY &&
-        type !== TYPE_RESPONSE && type !== TYPE_PUSH) {
+    if (type !== Number(MsgType.TYPE_REQUEST) && type !== Number(MsgType.TYPE_NOTIFY) &&
+        type !== Number(MsgType.TYPE_RESPONSE) && type !== Number(MsgType.TYPE_PUSH)) {
         throw new Error('unkonw message type: ' + type.toString());
     }
 

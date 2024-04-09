@@ -16,14 +16,14 @@ describe('Package Protocol', () => {
             ]
         };
         const str = JSON.stringify(obj);
-        const buffer = pack.encode(pack.TYPE_DATA, Buffer.from(str, 'utf8'));
+        const buffer = pack.encode(pack.PackType.TYPE_DATA, Buffer.from(str, 'utf8'));
         const data = pack.decode(buffer);
-        expect(data[0].type).toBe(pack.TYPE_DATA);
+        expect(data[0].type).toBe(pack.PackType.TYPE_DATA);
         expect(data[0].body?.toString()).toBe(str);
-        const hbBuffer = pack.encode(pack.TYPE_HEARTBEAT);
+        const hbBuffer = pack.encode(pack.PackType.TYPE_HEARTBEAT);
         expect(hbBuffer.length).toBe(4);
         const hbData = pack.decode(hbBuffer);
-        expect(hbData[0].type).toBe(pack.TYPE_HEARTBEAT);
+        expect(hbData[0].type).toBe(pack.PackType.TYPE_HEARTBEAT);
         expect(hbData[0].body).toBeNull();
     });
 
@@ -41,10 +41,10 @@ describe('Package Protocol', () => {
         };
         const str = JSON.stringify(obj);
         for (let i = 0; i < 4; ++i) {
-            const type = i;
-            const id = type === message.TYPE_REQUEST || type === message.TYPE_RESPONSE ? Math.floor(Math.random() * 1000000) : 0;
-            const route = type === message.TYPE_REQUEST || type === message.TYPE_NOTIFY ||
-                type === message.TYPE_PUSH ? Math.floor(Math.random() * 63000) : 0;
+            const type = i as message.MsgType;
+            const id = type === message.MsgType.TYPE_REQUEST || type === message.MsgType.TYPE_RESPONSE ? Math.floor(Math.random() * 1000000) : 0;
+            const route = type === message.MsgType.TYPE_REQUEST || type === message.MsgType.TYPE_NOTIFY ||
+                type === message.MsgType.TYPE_PUSH ? Math.floor(Math.random() * 63000) : 0;
             const buf = Buffer.from(str, 'utf8');
             const compressGzip = false;
             const encodedBuf = message.encode(id, type, route, buf, compressGzip);
