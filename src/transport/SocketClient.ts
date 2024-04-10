@@ -1,3 +1,5 @@
+import { ErrorCode } from '../config/ErrorCode';
+
 export interface SocketClient<T> {
     id: number;
     uuidForUser: string;
@@ -5,6 +7,7 @@ export interface SocketClient<T> {
     state: ClientState;
     send<T>(msg: T): void;
     sendBuffer(buffer: Buffer): void;
+    reportError(code: ErrorCode, msg?: string): void;
     onMessage(msg: ArrayBuffer): void;
     onDrain?(): void;
     disconnect(): void;

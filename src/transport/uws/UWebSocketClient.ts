@@ -28,6 +28,14 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
         this.handlers.set(packUtils.PackType.DATA, new DataHandler(this));
     }
 
+    reportError(code: ErrorCode, msg?: string): void {
+        const errobj = {
+            code,
+            msg
+        };
+        this.sendBuffer(packUtils.encode(packUtils.PackType.ERROR, Buffer.from(JSON.stringify(errobj))));
+    }
+
     send<T>(msg: T) {
         if (ClientState.Ready !== this.state) return;
     }
