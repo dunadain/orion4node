@@ -48,12 +48,14 @@ const logger = createLogger({
         }),
         new DailyRotateFile(errOption),
     ],
+    handleExceptions: true,
     exceptionHandlers: [new DailyRotateFile(errOption)],
 });
 
 if (!isProduction) {
     logger.add(
         new transports.Console({
+            level: 'debug',
             format: format.combine(
                 format.colorize({ all: true }),
                 format.simple()
