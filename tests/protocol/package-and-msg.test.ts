@@ -67,4 +67,10 @@ describe('Package Protocol', () => {
             expect(decoded.body.toString()).toBe(str);
         }
     });
+
+    it('should throw error when route is too big', () => {
+        expect(() => {
+            message.encode(111, message.MsgType.REQUEST, 100000, Buffer.from('sldkjfsfjd'), false);
+        }).toThrowError();
+    });
 });
