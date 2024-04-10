@@ -1,5 +1,5 @@
 import { WebSocket } from 'uWebSockets.js';
-import { SocketClient } from '../SocketClient';
+import { ClientState, SocketClient } from '../SocketClient';
 import * as packUtils from '../protocol/Package';
 import { PkgHandler } from '../handlers/PkgHandler';
 import { logger } from '../../logger/Logger';
@@ -7,6 +7,7 @@ import { HeartBeat } from '../handlers/HeartBeat';
 import { HandShake } from '../handlers/HandShake';
 import { HandShakeAck } from '../handlers/HandShakeAck';
 import { DataHandler } from '../handlers/DataHandler';
+import { ErrorCode } from '../../config/ErrorCode';
 
 export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     id = 0;
@@ -14,19 +15,21 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
 
     socket!: WebSocket<unknown>;
 
+    state = ClientState.Default;
+
     private buffer: ArrayBuffer[] = [];
     private helperArr: { type: packUtils.PackType, body: Buffer | undefined }[] = [];
     private handlers = new Map<packUtils.PackType, PkgHandler>();
 
     init(): void {
-        this.handlers.set(packUtils.PackType.TYPE_HANDSHAKE, new HandShake(this));
-        this.handlers.set(packUtils.PackType.TYPE_HANDSHAKE_ACK, new HandShakeAck(this));
-        this.handlers.set(packUtils.PackType.TYPE_HEARTBEAT, new HeartBeat(this));
-        this.handlers.set(packUtils.PackType.TYPE_DATA, new DataHandler(this));
+        this.handlers.set(packUtils.PackType.HANDSHAKE, new HandShake(this));
+        this.handlers.set(packUtils.PackType.HANDSHAKE_ACK, new HandShakeAck(this));
+        this.handlers.set(packUtils.PackType.HEARTBEAT, new HeartBeat(this));
+        this.handlers.set(packUtils.PackType.DATA, new DataHandler(this));
     }
 
     send<T>(msg: T) {
-        //
+        if (ClientState.Ready !== this.state) return;
     }
 
     onMessage(dataRcv: ArrayBuffer) {
@@ -59,7 +62,7 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
 
     dispose(): void {
         this.handlers.forEach(handler => {
-            handler.dispose();
+            handler.dispose?.call(handler);
         });
         this.handlers.clear();
     }

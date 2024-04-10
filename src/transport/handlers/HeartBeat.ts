@@ -10,7 +10,7 @@ export class HeartBeat implements PkgHandler {
     }
 
     handle() {
-        this.client.sendBuffer(encode(PackType.TYPE_HEARTBEAT));
+        this.client.sendBuffer(encode(PackType.HEARTBEAT));
         if (this.timeout) clearTimeout(this.timeout);
         this.timeout = setTimeout(this.timoutAction, netConfig.hearbeatTimeout);
     }

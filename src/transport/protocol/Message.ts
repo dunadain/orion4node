@@ -14,10 +14,10 @@ const MSG_COMPRESS_GZIP_ENCODE_MASK = 1 << 3;
 const MSG_TYPE_MASK = 0x7;
 
 export enum MsgType {
-    TYPE_REQUEST,
-    TYPE_NOTIFY,
-    TYPE_RESPONSE,
-    TYPE_PUSH
+    REQUEST,
+    NOTIFY,
+    RESPONSE,
+    PUSH
 }
 
 /**
@@ -115,12 +115,12 @@ export function decode(buffer: Buffer) {
 }
 
 function msgHasId(type: MsgType) {
-    return type === MsgType.TYPE_REQUEST || type === MsgType.TYPE_RESPONSE;
+    return type === MsgType.REQUEST || type === MsgType.RESPONSE;
 }
 
 function msgHasRoute(type: MsgType) {
-    return type === MsgType.TYPE_REQUEST || type === MsgType.TYPE_NOTIFY ||
-        type === MsgType.TYPE_PUSH;
+    return type === MsgType.REQUEST || type === MsgType.NOTIFY ||
+        type === MsgType.PUSH;
 }
 
 function caculateMsgIdBytes(id: number) {
@@ -133,8 +133,8 @@ function caculateMsgIdBytes(id: number) {
 }
 
 function encodeMsgFlag(type: number, buffer: Buffer, offset: number, compressGzip: boolean) {
-    if (type !== Number(MsgType.TYPE_REQUEST) && type !== Number(MsgType.TYPE_NOTIFY) &&
-        type !== Number(MsgType.TYPE_RESPONSE) && type !== Number(MsgType.TYPE_PUSH)) {
+    if (type !== Number(MsgType.REQUEST) && type !== Number(MsgType.NOTIFY) &&
+        type !== Number(MsgType.RESPONSE) && type !== Number(MsgType.PUSH)) {
         throw new Error('unkonw message type: ' + type.toString());
     }
 

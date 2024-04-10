@@ -4,15 +4,16 @@ import { copyArray } from './utils';
 const PKG_HEAD_BYTES = 4;
 
 export enum PackType {
-    TYPE_HANDSHAKE = 1,
-    TYPE_HANDSHAKE_ACK,
-    TYPE_HEARTBEAT,
-    TYPE_DATA,
-    TYPE_KICK
+    HANDSHAKE,
+    HANDSHAKE_ACK,
+    HEARTBEAT,
+    DATA,
+    KICK,
+    ERROR
 }
 
 function isValidType(type: PackType): boolean {
-    return type >= PackType.TYPE_HANDSHAKE && type <= PackType.TYPE_KICK;
+    return type >= PackType.HANDSHAKE && type <= PackType.ERROR;
 }
 
 /**
