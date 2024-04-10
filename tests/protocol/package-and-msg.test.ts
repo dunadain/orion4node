@@ -24,7 +24,7 @@ describe('Package Protocol', () => {
         expect(hbBuffer.length).toBe(4);
         const hbData = pack.decode(hbBuffer);
         expect(hbData[0].type).toBe(pack.PackType.TYPE_HEARTBEAT);
-        expect(hbData[0].body).toBeNull();
+        expect(hbData[0].body).toBeUndefined();
     });
 
     it('should not change data content through message encode and decode', () => {

@@ -33,11 +33,11 @@ function isValidType(type: PackType): boolean {
  *   1 - 3: big-endian body length
  * Body: body length bytes
  *
- * @param  {Number}    type   package type
+ * @param  {PackType}    type   package type
  * @param  {Buffer} body   body content in bytes
  * @return {Buffer}        new byte array that contains encode result
  */
-export function encode(type: number, body?: Buffer) {
+export function encode(type: PackType, body?: Buffer) {
     const length = body ? body.length : 0;
     const buffer = Buffer.alloc(PKG_HEAD_BYTES + length);
     let index = 0;
@@ -58,7 +58,7 @@ export function encode(type: number, body?: Buffer) {
  * @param  {Buffer} buffer byte array containing package content
  * @return {Object}           {type: package type, buffer: body byte array}
  */
-export function decode(buffer: Buffer, out?: { type: PackType, body: Buffer | null }[]) {
+export function decode(buffer: Buffer, out?: { type: PackType, body: Buffer | undefined }[]) {
     let offset = 0;
     const bytes = Buffer.from(buffer);
     let length = 0;
@@ -69,7 +69,7 @@ export function decode(buffer: Buffer, out?: { type: PackType, body: Buffer | nu
         if (!isValidType(type) || length > bytes.length) {
             throw new Error('invalid data'); // return invalid type, then disconnect!
         }
-        const body = length ? Buffer.alloc(length) : null;
+        const body = length ? Buffer.alloc(length) : undefined;
         if (body) {
             copyArray(body, 0, bytes, offset, length);
         }

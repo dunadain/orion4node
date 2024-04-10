@@ -15,6 +15,7 @@ export class ConnectorComponent extends Component {
             open: (ws) => {
                 const client = new UWebSocketClient();
                 client.socket = ws;
+                client.init();
                 this.clientMgr.addClient(client);
             },
             message: (ws, message) => {
@@ -25,6 +26,8 @@ export class ConnectorComponent extends Component {
                 client?.onDrain?.call(client);
             },
             close: (ws) => {
+                const client = this.clientMgr.getClient(ws);
+                client?.dispose();
                 this.clientMgr.removeClient(ws);
             },
         }).listen(this.server.port, token => {

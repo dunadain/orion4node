@@ -1,5 +1,12 @@
 import { WebSocket } from 'uWebSockets.js';
 import { SocketClient } from '../SocketClient';
+import * as packUtils from '../protocol/Package';
+import { PkgHandler } from '../handlers/PkgHandler';
+import { logger } from '../../logger/Logger';
+import { HeartBeat } from '../handlers/HeartBeat';
+import { HandShake } from '../handlers/HandShake';
+import { HandShakeAck } from '../handlers/HandShakeAck';
+import { DataHandler } from '../handlers/DataHandler';
 
 export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     id = 0;
@@ -8,17 +15,53 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     socket!: WebSocket<unknown>;
 
     private buffer: ArrayBuffer[] = [];
+    private helperArr: { type: packUtils.PackType, body: Buffer | undefined }[] = [];
+    private handlers = new Map<packUtils.PackType, PkgHandler>();
+
+    init(): void {
+        this.handlers.set(packUtils.PackType.TYPE_HANDSHAKE, new HandShake(this));
+        this.handlers.set(packUtils.PackType.TYPE_HANDSHAKE_ACK, new HandShakeAck(this));
+        this.handlers.set(packUtils.PackType.TYPE_HEARTBEAT, new HeartBeat(this));
+        this.handlers.set(packUtils.PackType.TYPE_DATA, new DataHandler(this));
+    }
 
     send<T>(msg: T) {
         //
     }
 
-    onMessage(msg: ArrayBuffer) {
-        //
+    onMessage(dataRcv: ArrayBuffer) {
+        packUtils.decode(Buffer.from(dataRcv), this.helperArr);
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
+        for (let i = 0; i < this.helperArr.length; ++i) {
+            const pack = this.helperArr[i];
+            if (!this.handlers.has(pack.type)) {
+                logger.error(`invalid package type: ${pack.type.toString()}`);
+                this.disconnect();
+                return;
+            }
+            this.handlers.get(pack.type)?.handle(pack.body);
+        }
+        this.helperArr.length = 0;
     }
 
     onDrain() {
         this.flush();
+    }
+
+    sendBuffer(buffer: Buffer) {
+        this.buffer.push(buffer);
+        this.flush();
+    }
+
+    disconnect(): void {
+        this.socket.end(0);
+    }
+
+    dispose(): void {
+        this.handlers.forEach(handler => {
+            handler.dispose();
+        });
+        this.handlers.clear();
     }
 
     private flush() {
