@@ -65,4 +65,11 @@ if (!isProduction) {
     );
 }
 
-export { logger };
+function logErr(e: unknown) {
+    if (typeof e === 'string')
+        logger.error(e);
+    else if (e instanceof Error)
+        logger.error(e.stack);
+}
+
+export { logger, logErr };
