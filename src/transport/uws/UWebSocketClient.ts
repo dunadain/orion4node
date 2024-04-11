@@ -44,6 +44,8 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
         packUtils.decode(Buffer.from(dataRcv), this.helperArr);
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.helperArr.length; ++i) {
+            if (this.state === ClientState.Closed) return;
+
             const pack = this.helperArr[i];
             if (!this.handlers.has(pack.type)) {
                 logger.error(`invalid package type: ${pack.type.toString()}`);
@@ -66,6 +68,7 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
 
     disconnect(): void {
         this.socket.end(0);
+        this.state = ClientState.Closed;
     }
 
     dispose(): void {

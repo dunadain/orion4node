@@ -18,5 +18,6 @@ export interface SocketClient<T> {
 export enum ClientState {
     Default,
     WaitForAck,
-    Ready
+    Ready,
+    Closed
 }
