@@ -1,13 +1,15 @@
 import { WebSocket } from 'uWebSockets.js';
 import { ClientState, SocketClient } from '../SocketClient';
 import * as packUtils from '../protocol/Package';
+import * as msgUtils from '../protocol/Message';
 import { PkgHandler } from '../handlers/PkgHandler';
 import { logger } from '../../logger/Logger';
 import { HeartBeat } from '../handlers/HeartBeat';
 import { HandShake } from '../handlers/HandShake';
 import { HandShakeAck } from '../handlers/HandShakeAck';
-import { DataHandler } from '../handlers/DataHandler';
 import { ErrorCode } from '../../config/ErrorCode';
+import { EventEmitter } from 'node:events';
+import { EvtNames } from '../../config/EvtNames';
 
 export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     id = 0;
@@ -17,15 +19,31 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
 
     state = ClientState.Default;
 
+    private bodyDecoder: (body: Buffer, route?: number) => unknown = (body: Buffer) => JSON.parse(body.toString('utf8'));
+    private bodyEncoder: (data: unknown, route?: number) => Buffer = (data: unknown) => {
+        return Buffer.from(JSON.stringify(data), 'utf8');
+    };
     private buffer: ArrayBuffer[] = [];
     private helperArr: { type: packUtils.PackType, body: Buffer | undefined }[] = [];
     private handlers = new Map<packUtils.PackType, PkgHandler>();
+
+    constructor(readonly parentEventEmitter: EventEmitter) { }
 
     init(): void {
         this.handlers.set(packUtils.PackType.HANDSHAKE, new HandShake(this));
         this.handlers.set(packUtils.PackType.HANDSHAKE_ACK, new HandShakeAck(this));
         this.handlers.set(packUtils.PackType.HEARTBEAT, new HeartBeat(this));
-        this.handlers.set(packUtils.PackType.DATA, new DataHandler(this));
+        this.handlers.set(packUtils.PackType.DATA, {
+            handle: (msg: Buffer) => {
+                const decodedData = msgUtils.decode(msg);
+                this.parentEventEmitter.emit(EvtNames.Message, {
+                    id: decodedData.id,
+                    type: decodedData.type,
+                    route: decodedData.route,
+                    body: this.bodyDecoder(decodedData.body, decodedData.route),
+                });
+            }
+        });
     }
 
     reportError(code: ErrorCode, msg?: string): void {
@@ -36,8 +54,8 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
         this.sendBuffer(packUtils.encode(packUtils.PackType.ERROR, Buffer.from(JSON.stringify(errobj))));
     }
 
-    send<T>(msg: T) {
-        if (ClientState.Ready !== this.state) return;
+    sendMsg(type: msgUtils.MsgType, route: number, msg: unknown): void {
+        throw new Error('Method not implemented.');
     }
 
     onMessage(dataRcv: ArrayBuffer) {
