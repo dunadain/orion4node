@@ -9,7 +9,6 @@ import { HandShake } from '../handlers/HandShake';
 import { HandShakeAck } from '../handlers/HandShakeAck';
 import { ErrorCode } from '../../config/ErrorCode';
 import { EventEmitter } from 'node:events';
-import { EvtNames } from '../../config/EvtNames';
 
 export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     id = 0;
@@ -46,7 +45,7 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
         this.handlers.set(packUtils.PackType.DATA, {
             handle: (msg: Buffer) => {
                 const decodedData = msgUtils.decode(msg);
-                this.parentEventEmitter.emit(EvtNames.Message, {
+                this.parentEventEmitter.emit('message', {
                     id: decodedData.id,
                     type: decodedData.type,
                     route: decodedData.route,
