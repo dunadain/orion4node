@@ -17,7 +17,7 @@ export enum MsgType {
     REQUEST,
     NOTIFY,
     RESPONSE,
-    PUSH
+    PUSH,
 }
 
 /**
@@ -27,9 +27,16 @@ export enum MsgType {
  * @param  {Number} type          message type
  * @param  {Number} route         route code
  * @param  {Buffer} msg           message body bytes
+ * @param  compressGzip always false
  * @return {Buffer}               encode result
  */
-export function encode(id: number, type: MsgType, route: number, msg?: Buffer, compressGzip?: boolean) {
+export function encode(
+    id: number,
+    type: MsgType,
+    route: number,
+    msg?: Buffer,
+    compressGzip?: boolean
+) {
     // caculate message max length
     const idBytes = msgHasId(type) ? caculateMsgIdBytes(id) : 0;
     let msgLen = MSG_FLAG_BYTES + idBytes;
@@ -99,7 +106,7 @@ export function decode(buffer: Buffer) {
 
     // parse route
     if (msgHasRoute(type)) {
-        route = (bytes[offset++]) << 8 | bytes[offset++];
+        route = (bytes[offset++] << 8) | bytes[offset++];
     }
 
     // parse body
@@ -109,8 +116,11 @@ export function decode(buffer: Buffer) {
     copyArray(body, 0, bytes, offset, bodyLen);
 
     return {
-        'id': id, 'type': type,
-        'route': route, 'body': body, 'compressGzip': compressGzip
+        id: id,
+        type: type,
+        route: route,
+        body: body,
+        compressGzip: compressGzip,
     };
 }
 
@@ -119,8 +129,11 @@ function msgHasId(type: MsgType) {
 }
 
 function msgHasRoute(type: MsgType) {
-    return type === MsgType.REQUEST || type === MsgType.NOTIFY ||
-        type === MsgType.PUSH;
+    return (
+        type === MsgType.REQUEST ||
+        type === MsgType.NOTIFY ||
+        type === MsgType.PUSH
+    );
 }
 
 function caculateMsgIdBytes(id: number) {
@@ -132,9 +145,18 @@ function caculateMsgIdBytes(id: number) {
     return len;
 }
 
-function encodeMsgFlag(type: number, buffer: Buffer, offset: number, compressGzip: boolean) {
-    if (type !== Number(MsgType.REQUEST) && type !== Number(MsgType.NOTIFY) &&
-        type !== Number(MsgType.RESPONSE) && type !== Number(MsgType.PUSH)) {
+function encodeMsgFlag(
+    type: number,
+    buffer: Buffer,
+    offset: number,
+    compressGzip: boolean
+) {
+    if (
+        type !== Number(MsgType.REQUEST) &&
+        type !== Number(MsgType.NOTIFY) &&
+        type !== Number(MsgType.RESPONSE) &&
+        type !== Number(MsgType.PUSH)
+    ) {
         throw new Error('unkonw message type: ' + type.toString());
     }
 
