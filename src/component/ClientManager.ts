@@ -22,10 +22,12 @@ export class ClientManager extends Component {
      * @param key session id(number) or native socket
      */
     removeClient<T>(key: T) {
-        if (typeof key === 'number') { // session id
+        if (typeof key === 'number') {
+            // session id
             const client = this.id2Client.get(key);
             if (client) this.clear(client);
-        } else { // key is native socket
+        } else {
+            // key is native socket
             const client = this.map.get(key);
             if (client) this.clear(client);
         }
@@ -42,7 +44,7 @@ export class ClientManager extends Component {
     /**
      * get client by native socket
      * @param key native socket
-     * @returns 
+     * @returns
      */
     getClient<T>(key: T) {
         return this.map.get(key) as SocketClient<T> | undefined;
@@ -51,7 +53,7 @@ export class ClientManager extends Component {
     /**
      * get client by session id
      * @param id session id
-     * @returns 
+     * @returns
      */
     getClientById(id: number) {
         return this.id2Client.get(id);
@@ -59,12 +61,16 @@ export class ClientManager extends Component {
 
     /**
      * bind socketclient to user uuid
-     * @param id 
-     * @param uuidForUser 
+     * @param id
+     * @param uuidForUser
      */
     bind(id: number, uuidForUser: string) {
         if (this.hasClientFor(uuidForUser)) {
-            logger.error(`duplicate bindings, trying to bind ${uuidForUser} to ${String(id)}`);
+            logger.error(
+                `duplicate bindings, trying to bind ${uuidForUser} to ${String(
+                    id
+                )}`
+            );
             return;
         }
         const client = this.id2Client.get(id);
