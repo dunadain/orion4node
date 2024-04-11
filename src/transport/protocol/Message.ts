@@ -89,7 +89,7 @@ export function decode(buffer: Buffer) {
     // parse flag
     const flag = bytes[offset++];
     // const compressRoute = flag & MSG_COMPRESS_ROUTE_MASK;
-    const type = flag & MSG_TYPE_MASK;
+    const type = (flag & MSG_TYPE_MASK) as MsgType;
     const compressGzip = (flag >> 3) & MSG_COMPRESS_GZIP_MASK;
 
     // parse id
