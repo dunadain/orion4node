@@ -7,5 +7,6 @@
     "typescript.referencesCodeLens.enabled": true,
     "editor.codeActionsOnSave": {
         "source.fixAll": "always"
-    }
+    },
+    "typescript.format.enable": false
 }
