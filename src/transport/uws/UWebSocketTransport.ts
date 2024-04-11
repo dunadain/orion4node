@@ -1,10 +1,10 @@
 import { App, DISABLED } from 'uWebSockets.js';
-import { Component } from './Component';
-import { logger } from '../logger/Logger';
-import { ClientManager } from './ClientManager';
-import { UWebSocketClient } from '../transport/uws/UWebSocketClient';
+import { Component } from '../../component/Component';
+import { logger } from '../../logger/Logger';
+import { ClientManager } from '../../component/ClientManager';
+import { UWebSocketClient } from './UWebSocketClient';
 
-export class ConnectorComponent extends Component {
+export class UWebSocketTransport extends Component {
     private _clientMgr: ClientManager | undefined;
     async start() {
         const app = App();
