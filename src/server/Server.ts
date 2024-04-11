@@ -1,6 +1,6 @@
 import { ComponentConstructor } from '../TypeDef';
 import { Component } from '../component/Component';
-import { logger } from '../logger/Logger';
+import { logErr } from '../logger/Logger';
 
 
 export class Server {
@@ -30,7 +30,7 @@ export class Server {
             try {
                 await comp.start?.call(comp);
             } catch (e) {
-                logger.error(e);
+                logErr(e);
             }
         }
     }
