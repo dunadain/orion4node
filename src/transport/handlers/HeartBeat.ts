@@ -5,23 +5,24 @@ import { PackType, encode } from '../protocol/Package';
 import { PkgHandler } from './PkgHandler';
 
 export class HeartBeat implements PkgHandler {
-    private timeout: NodeJS.Timeout | undefined;
+    private timeout: NodeJS.Timeout;
     constructor(private client: SocketClient<unknown>) {
+        // if the handshake isn't finished in netConfig.hearbeatTimeout * 2 miliseconds, consider the client is unreachable
+        this.timeout = setTimeout(this.timoutAction, netConfig.hearbeatTimeout * 2);
     }
 
     handle() {
         this.client.sendBuffer(encode(PackType.HEARTBEAT));
-        if (this.timeout) clearTimeout(this.timeout);
+        clearTimeout(this.timeout);
         this.timeout = setTimeout(this.timoutAction, netConfig.hearbeatTimeout);
     }
 
     private timoutAction = () => {
-        logger.info('client %j heartbeat timeout.', this.client.uuidForUser);
+        logger.info(`client [${this.client.uuidForUser}/${this.client.id.toString()}] heartbeat timeout.`);
         this.client.disconnect();
     };
 
     dispose() {
         clearTimeout(this.timeout);
-        this.timeout = undefined;
     }
 }

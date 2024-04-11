@@ -1,13 +1,10 @@
-import { SocketClient } from '../SocketClient';
+import { ClientState, SocketClient } from '../SocketClient';
 import { PkgHandler } from './PkgHandler';
 
 export class HandShakeAck implements PkgHandler {
     constructor(private client: SocketClient<unknown>) { }
-    handle(msg?: Buffer): void {
-        throw new Error('Method not implemented.');
+    handle(): void {
+        if (ClientState.WaitForAck !== this.client.state) return;
+        this.client.state = ClientState.Ready;
     }
-    dispose(): void {
-        throw new Error('Method not implemented.');
-    }
-
 }
