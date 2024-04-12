@@ -146,20 +146,11 @@ function caculateMsgIdBytes(id: number) {
 }
 
 function encodeMsgFlag(
-    type: number,
+    type: MsgType,
     buffer: Buffer,
     offset: number,
     compressGzip: boolean
 ) {
-    if (
-        type !== Number(MsgType.REQUEST) &&
-        type !== Number(MsgType.NOTIFY) &&
-        type !== Number(MsgType.RESPONSE) &&
-        type !== Number(MsgType.PUSH)
-    ) {
-        throw new Error('unkonw message type: ' + type.toString());
-    }
-
     buffer[offset] = type;
 
     if (compressGzip) {
