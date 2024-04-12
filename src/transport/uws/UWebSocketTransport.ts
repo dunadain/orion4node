@@ -51,6 +51,10 @@ export class UWebSocketTransport extends Component {
             });
     }
 
+    dispose(): void {
+        this.app.close();
+    }
+
     get clientMgr() {
         if (!this._clientMgr) {
             this._clientMgr = this.getComponent(ClientManager);
