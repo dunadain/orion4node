@@ -59,7 +59,7 @@ export class UWebSocketTransport extends Component {
         if (!this._clientMgr) {
             this._clientMgr = this.getComponent(ClientManager);
             if (!this._clientMgr)
-                this._clientMgr = this.server.addComponent(ClientManager);
+                throw new Error('ClientManager Component is required!');
         }
         return this._clientMgr;
     }
