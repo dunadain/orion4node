@@ -40,7 +40,7 @@ function isValidType(type: PackType): boolean {
  */
 export function encode(type: PackType, body?: Buffer) {
     const length = body ? body.length : 0;
-    const buffer = Buffer.alloc(PKG_HEAD_BYTES + length, 'utf8');
+    const buffer = Buffer.alloc(PKG_HEAD_BYTES + length);
     let index = 0;
     buffer[index++] = type & 0xff;
     buffer[index++] = (length >> 16) & 0xff;

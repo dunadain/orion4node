@@ -49,7 +49,7 @@ export function encode(
         msgLen += msg.length;
     }
 
-    const buffer = Buffer.alloc(msgLen, 'utf8');
+    const buffer = Buffer.alloc(msgLen);
     let offset = 0;
 
     // add flag
