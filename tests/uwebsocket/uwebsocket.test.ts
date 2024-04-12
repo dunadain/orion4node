@@ -27,7 +27,7 @@ let server: Server;
 beforeEach(async () => {
     server = new Server('', port);
     server.addComponent(UWebSocketTransport);
-    server.addComponent(ClientManager);
+    // server.addComponent(ClientManager);
     try {
         await server.start();
     } catch (reason) {
