@@ -8,9 +8,13 @@ interface HandShakeInfo {
     sys: { ver: string; protoVer?: number } | undefined;
     user: unknown;
 }
+declare module './HandShake' {
+    interface HandShake {
+        checkClient?: (ver: string) => boolean; // can be injected through prototype
+    }
+}
 export class HandShake implements PkgHandler {
     constructor(private client: SocketClient<unknown>) {}
-    checkClient?: ((ver: string) => boolean) | undefined; // can be injected through prototype
     handle(msg: Buffer): void {
         if (ClientState.Default !== this.client.state) return;
 
@@ -46,7 +50,7 @@ export class HandShake implements PkgHandler {
         }
 
         const sysRsp = {
-            heartbeat: netConfig.hearbeatInterval,
+            heartbeat: netConfig.heartbeatInterval,
         };
 
         const res = {
