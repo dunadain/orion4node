@@ -65,7 +65,9 @@ export class ClientManager extends Component {
      * @param uuidForUser
      */
     bind(id: number, uuidForUser: string) {
-        if (this.hasClientFor(uuidForUser)) {
+        const client = this.id2Client.get(id);
+        if (!client) return;
+        if (this.hasClientFor(uuidForUser) || client.uuidForUser) {
             logger.error(
                 `duplicate bindings, trying to bind ${uuidForUser} to ${String(
                     id
@@ -73,8 +75,8 @@ export class ClientManager extends Component {
             );
             return;
         }
-        const client = this.id2Client.get(id);
-        if (client && uuidForUser) {
+
+        if (uuidForUser) {
             client.uuidForUser = uuidForUser;
             this.bindedClientMap.set(uuidForUser, id);
         }

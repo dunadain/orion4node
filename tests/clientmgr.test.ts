@@ -13,9 +13,15 @@ beforeAll(() => {
     server = new Server('', 0);
     mgr = server.addComponent(ClientManager);
     fakeNativeSocket = {};
-    fakeClient = { socket: fakeNativeSocket } as SocketClient<any>;
+    fakeClient = {
+        socket: fakeNativeSocket,
+        uuidForUser: '',
+    } as SocketClient<any>;
     fakeNativeSocket2 = {};
-    fakeClient2 = { socket: fakeNativeSocket2 } as SocketClient<any>;
+    fakeClient2 = {
+        socket: fakeNativeSocket2,
+        uuidForUser: '',
+    } as SocketClient<any>;
 });
 
 describe('ClientManager Crud functions', () => {
@@ -38,6 +44,19 @@ describe('ClientManager Crud functions', () => {
         expect((mgr as any).bindedClientMap.size).toBe(1);
         expect(mgr.hasClientFor('a')).toBeTruthy();
         expect(mgr.hasClientFor('b')).toBeFalsy();
+
+        mgr.bind(2, 'a');
+        expect((mgr as any).bindedClientMap.size).toBe(1);
+        expect(mgr.hasClientFor('b')).toBeFalsy();
+        expect(mgr.getClientById(2)?.uuidForUser).toBe('');
+        expect(mgr.getClientById(1)?.uuidForUser).toBe('a');
+
+        mgr.bind(1, 'b');
+        expect((mgr as any).bindedClientMap.size).toBe(1);
+        expect(mgr.hasClientFor('b')).toBeFalsy();
+        expect(mgr.getClientById(2)?.uuidForUser).toBe('');
+        expect(mgr.getClientById(1)?.uuidForUser).toBe('a');
+
         mgr.bind(2, 'b');
         expect((mgr as any).bindedClientMap.size).toBe(2);
         expect(mgr.hasClientFor('b')).toBeTruthy();
