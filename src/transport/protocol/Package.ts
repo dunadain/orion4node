@@ -9,7 +9,7 @@ export enum PackType {
     HEARTBEAT,
     DATA,
     KICK,
-    ERROR
+    ERROR,
 }
 
 function isValidType(type: PackType): boolean {
@@ -40,7 +40,7 @@ function isValidType(type: PackType): boolean {
  */
 export function encode(type: PackType, body?: Buffer) {
     const length = body ? body.length : 0;
-    const buffer = Buffer.alloc(PKG_HEAD_BYTES + length);
+    const buffer = Buffer.alloc(PKG_HEAD_BYTES + length, 'utf8');
     let index = 0;
     buffer[index++] = type & 0xff;
     buffer[index++] = (length >> 16) & 0xff;
@@ -59,14 +59,21 @@ export function encode(type: PackType, body?: Buffer) {
  * @param  {Buffer} buffer byte array containing package content
  * @return {Object}           {type: package type, buffer: body byte array}
  */
-export function decode(buffer: Buffer, out?: { type: PackType, body: Buffer | undefined }[]) {
+export function decode(
+    buffer: Buffer,
+    out?: { type: PackType; body: Buffer | undefined }[]
+) {
     let offset = 0;
     const bytes = Buffer.from(buffer);
     let length = 0;
     if (!out) out = [];
     while (offset < bytes.length) {
         const type = bytes[offset++];
-        length = ((bytes[offset++]) << 16 | (bytes[offset++]) << 8 | bytes[offset++]) >>> 0;
+        length =
+            ((bytes[offset++] << 16) |
+                (bytes[offset++] << 8) |
+                bytes[offset++]) >>>
+            0;
         if (!isValidType(type) || length > bytes.length) {
             throw new Error('invalid data'); // return invalid type, then disconnect!
         }
