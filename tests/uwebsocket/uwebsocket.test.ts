@@ -20,6 +20,7 @@ import { ErrorCode } from '../../src/config/ErrorCode';
 import { HandShake } from '../../src/transport/handlers/HandShake';
 import { netConfig } from '../../src/config/NetConfig';
 import { createConnection } from '../testUtils';
+import * as msgUtil from '../../src/transport/protocol/Message';
 
 const port = 9001;
 let server: Server;
@@ -284,3 +285,87 @@ function testHandshakeErr(
         );
     });
 }
+
+describe('sending messages', () => {
+    let socket: WebSocket;
+    beforeEach(async () => {
+        const result: any = {};
+        const p = createConnection(port, result);
+        socket = result.socket;
+        await p;
+    });
+    afterEach(() => {
+        socket.close();
+    });
+
+    test('client send msg', () => {
+        const data = {
+            a: 1,
+            b: '223d',
+            c: true,
+            dsldksdjfk: '$$####asfdjal',
+        };
+        const reqId = 2344;
+        const route = 52;
+        return new Promise<any>((resolve) => {
+            const transport = server.getComponent(UWebSocketTransport);
+            transport?.eventEmitter.on('message', (msg) => {
+                resolve(msg);
+            });
+
+            const encodedMsg = msgUtil.encode(
+                reqId,
+                msgUtil.MsgType.REQUEST,
+                route,
+                Buffer.from(JSON.stringify(data), 'utf8')
+            );
+            const pkg = packUtil.encode(packUtil.PackType.DATA, encodedMsg);
+            socket.send(pkg);
+        }).then((msg) => {
+            expect(msg.id).toBe(reqId);
+            expect(msg.route).toBe(route);
+            for (const k in msg.body) {
+                expect(msg.body[k]).toBe((data as any)[k]);
+            }
+        });
+    });
+
+    test('server sending messages', () => {
+        const reqId = 2332;
+        const route = 7899;
+        const data = {
+            a: 1,
+            b: '223d',
+            c: true,
+            dsldksdjfk: '$$####asfdjal',
+        };
+        return new Promise<any>((resolve) => {
+            const clientMgr = server.getComponent(ClientManager);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const uwsClient = clientMgr!.getClientById(1)!;
+            socket.onmessage = (e: MessageEvent) => {
+                const buffer = Buffer.from(e.data as ArrayBuffer);
+                const pkgs = packUtil.decode(buffer);
+                if (pkgs[0].type === packUtil.PackType.DATA) {
+                    if (pkgs[0].body) {
+                        const decodedMsg = msgUtil.decode(pkgs[0].body);
+                        const parsedObj = JSON.parse(
+                            decodedMsg.body.toString()
+                        );
+                        resolve({
+                            id: decodedMsg.id,
+                            route: decodedMsg.route,
+                            body: parsedObj,
+                        });
+                    }
+                }
+            };
+            uwsClient.sendMsg(msgUtil.MsgType.PUSH, route, data, reqId);
+        }).then((msg) => {
+            expect(msg.route).toBe(route);
+            for (const k in msg.body) {
+                expect(msg.body[k]).toBe((data as any)[k]);
+            }
+        });
+    });
+});
