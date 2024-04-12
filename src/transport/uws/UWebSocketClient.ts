@@ -124,7 +124,7 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
         let i = 0;
         for (; i < len; ++i) {
             const msg = this.buffer[i];
-            const state = this.socket.send(msg);
+            const state = this.socket.send(msg, true);
             if (state === 2) {
                 break;
             }
