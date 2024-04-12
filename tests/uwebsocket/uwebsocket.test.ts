@@ -1,15 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import {
-    afterEach,
-    beforeEach,
-    describe,
-    expect,
-    it,
-    jest,
-    test,
-} from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest, test } from '@jest/globals';
 import { Server } from '../../src/server/Server';
 import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport';
 import { MessageEvent, WebSocket } from 'ws';
@@ -77,14 +69,9 @@ describe('handshake test', () => {
     test('handshake normal', () => {
         const clientMgr = server.getComponent(ClientManager);
         const uwsClient = clientMgr?.getClientById(1) as any;
-        const mockHandshakeHandle = jest.fn(
-            uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle
-        );
-        const mockHandshakeAckHandle = jest.fn(
-            uwsClient.handlers.get(packUtil.PackType.HANDSHAKE_ACK).handle
-        );
-        uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle =
-            mockHandshakeHandle;
+        const mockHandshakeHandle = jest.fn(uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle);
+        const mockHandshakeAckHandle = jest.fn(uwsClient.handlers.get(packUtil.PackType.HANDSHAKE_ACK).handle);
+        uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle = mockHandshakeHandle;
 
         // eslint-disable-next-line @typescript-eslint/unbound-method
         const mockWsSend = jest.fn(socket.send);
@@ -97,9 +84,7 @@ describe('handshake test', () => {
             for (const pkg of pkgs) {
                 packs.push({
                     type: pkg.type,
-                    body: pkg.body
-                        ? JSON.parse(pkg.body.toString())
-                        : undefined,
+                    body: pkg.body ? JSON.parse(pkg.body.toString()) : undefined,
                 });
             }
             if (pkgs[0].type === packUtil.PackType.HANDSHAKE) {
@@ -113,9 +98,7 @@ describe('handshake test', () => {
             }
         });
         return new Promise<void>((resolve) => {
-            const handler = uwsClient.handlers.get(
-                packUtil.PackType.HANDSHAKE_ACK
-            );
+            const handler = uwsClient.handlers.get(packUtil.PackType.HANDSHAKE_ACK);
             handler.handle = () => {
                 expect(uwsClient.state).toBe(ClientState.WaitForAck);
                 mockHandshakeAckHandle.bind(handler)();
@@ -125,10 +108,7 @@ describe('handshake test', () => {
 
             socket.onmessage = mockOnMsg;
             socket.send(
-                packUtil.encode(
-                    packUtil.PackType.HANDSHAKE,
-                    Buffer.from(JSON.stringify({ sys: { ver: '1.0.0' } }))
-                )
+                packUtil.encode(packUtil.PackType.HANDSHAKE, Buffer.from(JSON.stringify({ sys: { ver: '1.0.0' } })))
             );
         }).then(() => {
             expect(mockHandshakeAckHandle.mock.calls).toHaveLength(1);
@@ -151,11 +131,7 @@ describe('handshake test', () => {
         HandShake.prototype.checkClient = (ver: string) => {
             return ver > '1.1.0';
         };
-        return testHandshakeErr(
-            { sys: { ver: '1.0.0' } },
-            ErrorCode.OutdatedClient,
-            socket
-        );
+        return testHandshakeErr({ sys: { ver: '1.0.0' } }, ErrorCode.OutdatedClient, socket);
     });
 });
 
@@ -226,15 +202,11 @@ describe('heartbeat test', () => {
                 const buffer = Buffer.from(e.data as ArrayBuffer);
                 const pkgs = packUtil.decode(buffer);
                 if (pkgs[0].type === packUtil.PackType.HANDSHAKE) {
-                    socket.send(
-                        packUtil.encode(packUtil.PackType.HANDSHAKE_ACK)
-                    );
+                    socket.send(packUtil.encode(packUtil.PackType.HANDSHAKE_ACK));
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     const obj = JSON.parse(pkgs[0].body!.toString());
                     setTimeout(() => {
-                        socket.send(
-                            packUtil.encode(packUtil.PackType.HEARTBEAT)
-                        );
+                        socket.send(packUtil.encode(packUtil.PackType.HEARTBEAT));
                         setTimeout(() => {
                             resolve();
                         }, obj.sys.heartbeat * 2);
@@ -242,10 +214,7 @@ describe('heartbeat test', () => {
                 }
             };
             socket.send(
-                packUtil.encode(
-                    packUtil.PackType.HANDSHAKE,
-                    Buffer.from(JSON.stringify({ sys: { ver: '1.0.0' } }))
-                )
+                packUtil.encode(packUtil.PackType.HANDSHAKE, Buffer.from(JSON.stringify({ sys: { ver: '1.0.0' } })))
             );
         }).then(() => {
             expect((clientMgr as any).id2Client.size).toBe(0);
@@ -255,11 +224,7 @@ describe('heartbeat test', () => {
     });
 });
 
-function testHandshakeErr(
-    handshakeMsg: any,
-    errCode: ErrorCode,
-    socket: WebSocket
-) {
+function testHandshakeErr(handshakeMsg: any, errCode: ErrorCode, socket: WebSocket) {
     return new Promise<void>((resolve) => {
         const mockOnMsg = jest.fn((e: MessageEvent) => {
             const buffer = Buffer.from(e.data as ArrayBuffer);
@@ -277,12 +242,7 @@ function testHandshakeErr(
             }
         });
         socket.onmessage = mockOnMsg;
-        socket.send(
-            packUtil.encode(
-                packUtil.PackType.HANDSHAKE,
-                Buffer.from(JSON.stringify(handshakeMsg))
-            )
-        );
+        socket.send(packUtil.encode(packUtil.PackType.HANDSHAKE, Buffer.from(JSON.stringify(handshakeMsg))));
     });
 }
 
@@ -349,9 +309,7 @@ describe('sending messages', () => {
                 if (pkgs[0].type === packUtil.PackType.DATA) {
                     if (pkgs[0].body) {
                         const decodedMsg = msgUtil.decode(pkgs[0].body);
-                        const parsedObj = JSON.parse(
-                            decodedMsg.body.toString()
-                        );
+                        const parsedObj = JSON.parse(decodedMsg.body.toString());
                         resolve({
                             id: decodedMsg.id,
                             route: decodedMsg.route,
