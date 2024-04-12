@@ -68,11 +68,7 @@ export class ClientManager extends Component {
         const client = this.id2Client.get(id);
         if (!client) return;
         if (this.hasClientFor(uuidForUser) || client.uuidForUser) {
-            logger.error(
-                `duplicate bindings, trying to bind ${uuidForUser} to ${String(
-                    id
-                )}`
-            );
+            logger.error(`duplicate bindings, trying to bind ${uuidForUser} to ${String(id)}`);
             return;
         }
 

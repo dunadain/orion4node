@@ -30,13 +30,7 @@ export enum MsgType {
  * @param  compressGzip always false
  * @return {Buffer}               encode result
  */
-export function encode(
-    id: number,
-    type: MsgType,
-    route: number,
-    msg?: Buffer,
-    compressGzip?: boolean
-) {
+export function encode(id: number, type: MsgType, route: number, msg?: Buffer, compressGzip?: boolean) {
     // caculate message max length
     const idBytes = msgHasId(type) ? caculateMsgIdBytes(id) : 0;
     let msgLen = MSG_FLAG_BYTES + idBytes;
@@ -129,11 +123,7 @@ function msgHasId(type: MsgType) {
 }
 
 function msgHasRoute(type: MsgType) {
-    return (
-        type === MsgType.REQUEST ||
-        type === MsgType.NOTIFY ||
-        type === MsgType.PUSH
-    );
+    return type === MsgType.REQUEST || type === MsgType.NOTIFY || type === MsgType.PUSH;
 }
 
 function caculateMsgIdBytes(id: number) {
@@ -145,12 +135,7 @@ function caculateMsgIdBytes(id: number) {
     return len;
 }
 
-function encodeMsgFlag(
-    type: MsgType,
-    buffer: Buffer,
-    offset: number,
-    compressGzip: boolean
-) {
+function encodeMsgFlag(type: MsgType, buffer: Buffer, offset: number, compressGzip: boolean) {
     buffer[offset] = type;
 
     if (compressGzip) {

@@ -22,29 +22,18 @@ export class HandShake implements PkgHandler {
         try {
             data = JSON.parse(msg.toString()) as HandShakeInfo;
         } catch (e) {
-            this.processError(
-                ErrorCode.InvaildHandShakeInfo,
-                'What went wrong:handshake info json parse'
-            );
-            logger.error(
-                `handshake info json parse error. received msg was ${msg.toString()}`
-            );
+            this.processError(ErrorCode.InvaildHandShakeInfo, 'What went wrong:handshake info json parse');
+            logger.error(`handshake info json parse error. received msg was ${msg.toString()}`);
             return;
         }
 
         if (!data.sys) {
-            this.processError(
-                ErrorCode.InvaildHandShakeInfo,
-                'Handshake info is insufficient.'
-            );
+            this.processError(ErrorCode.InvaildHandShakeInfo, 'Handshake info is insufficient.');
             return;
         }
         if (typeof this.checkClient === 'function') {
             if (!data.sys.ver || !this.checkClient(data.sys.ver)) {
-                this.processError(
-                    ErrorCode.OutdatedClient,
-                    'The client is outdated'
-                );
+                this.processError(ErrorCode.OutdatedClient, 'The client is outdated');
                 return;
             }
         }
@@ -56,9 +45,7 @@ export class HandShake implements PkgHandler {
         const res = {
             sys: sysRsp,
         };
-        this.client.sendBuffer(
-            encode(PackType.HANDSHAKE, Buffer.from(JSON.stringify(res)))
-        );
+        this.client.sendBuffer(encode(PackType.HANDSHAKE, Buffer.from(JSON.stringify(res))));
         this.client.state = ClientState.WaitForAck;
     }
 

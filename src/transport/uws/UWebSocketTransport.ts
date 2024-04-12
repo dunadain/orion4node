@@ -42,12 +42,8 @@ export class UWebSocketTransport extends Component {
                 },
             })
             .listen(host, this.server.port, (token) => {
-                if (token)
-                    logger.info(
-                        `Listening on ${host}:${String(this.server.port)}`
-                    );
-                else
-                    logger.error(`Server ${this.server.addr} failed to listen`);
+                if (token) logger.info(`Listening on ${host}:${String(this.server.port)}`);
+                else logger.error(`Server ${this.server.addr} failed to listen`);
             });
     }
 
@@ -58,8 +54,7 @@ export class UWebSocketTransport extends Component {
     get clientMgr() {
         if (!this._clientMgr) {
             this._clientMgr = this.getComponent(ClientManager);
-            if (!this._clientMgr)
-                throw new Error('ClientManager Component is required!');
+            if (!this._clientMgr) throw new Error('ClientManager Component is required!');
         }
         return this._clientMgr;
     }

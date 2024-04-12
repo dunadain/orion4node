@@ -6,9 +6,7 @@ export abstract class Component {
     start?(): Promise<void>;
     dispose?(): void;
 
-    getComponent<T extends Component>(
-        classConstructor: ComponentConstructor<T>
-    ): T | undefined {
+    getComponent<T extends Component>(classConstructor: ComponentConstructor<T>): T | undefined {
         return this.server.getComponent(classConstructor);
     }
 }

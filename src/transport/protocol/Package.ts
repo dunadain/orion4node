@@ -59,21 +59,14 @@ export function encode(type: PackType, body?: Buffer) {
  * @param  {Buffer} buffer byte array containing package content
  * @return {Object}           {type: package type, buffer: body byte array}
  */
-export function decode(
-    buffer: Buffer,
-    out?: { type: PackType; body: Buffer | undefined }[]
-) {
+export function decode(buffer: Buffer, out?: { type: PackType; body: Buffer | undefined }[]) {
     let offset = 0;
     const bytes = Buffer.from(buffer);
     let length = 0;
     if (!out) out = [];
     while (offset < bytes.length) {
         const type = bytes[offset++];
-        length =
-            ((bytes[offset++] << 16) |
-                (bytes[offset++] << 8) |
-                bytes[offset++]) >>>
-            0;
+        length = ((bytes[offset++] << 16) | (bytes[offset++] << 8) | bytes[offset++]) >>> 0;
         if (!isValidType(type) || length > bytes.length) {
             throw new Error('invalid data'); // return invalid type, then disconnect!
         }
