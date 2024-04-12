@@ -76,8 +76,8 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     ): void {
         if (ClientState.Ready !== this.state) return;
         const encodedBody = this.bodyEncoder(msg, route);
-        const pkg = msgUtils.encode(reqId, type, route, encodedBody, false);
-        this.sendBuffer(pkg);
+        const msgBody = msgUtils.encode(reqId, type, route, encodedBody, false);
+        this.sendBuffer(packUtils.encode(packUtils.PackType.DATA, msgBody));
     }
 
     onMessage(dataRcv: ArrayBuffer) {
