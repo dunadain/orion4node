@@ -4,6 +4,9 @@ import { MsgType } from './protocol/Message';
 export interface SocketClient<T> {
     id: number;
     uuidForUser: string;
+    /**
+     * native socket
+     */
     socket: T;
     state: ClientState;
     sendMsg(type: MsgType, route: number, msg: unknown, reqId?: number): void;
