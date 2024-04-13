@@ -3,12 +3,10 @@ import { Component } from '../../component/Component';
 import { logger } from '../../logger/Logger';
 import { ClientManager } from '../../component/ClientManager';
 import { UWebSocketClient } from './UWebSocketClient';
-import { EventEmitter } from 'node:events';
 import { Server } from '../../server/Server';
 
 export class UWebSocketTransport extends Component {
     app: TemplatedApp;
-    readonly eventEmitter = new EventEmitter();
     private _clientMgr: ClientManager | undefined;
 
     constructor(server: Server) {
@@ -23,7 +21,7 @@ export class UWebSocketTransport extends Component {
                 idleTimeout: 0,
                 compression: DISABLED,
                 open: (ws) => {
-                    const client = new UWebSocketClient(this.eventEmitter);
+                    const client = new UWebSocketClient(this.server.eventEmitter);
                     client.socket = ws;
                     client.init();
                     this.clientMgr.addClient(client);

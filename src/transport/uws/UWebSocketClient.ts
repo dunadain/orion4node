@@ -27,7 +27,7 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     private helperArr: { type: packUtils.PackType; body: Buffer | undefined }[] = [];
     private handlers = new Map<packUtils.PackType, PkgHandler>();
 
-    constructor(readonly parentEventEmitter: EventEmitter) {}
+    constructor(readonly serverEventEmitter: EventEmitter) {}
 
     init(): void {
         this.handlers.set(packUtils.PackType.HANDSHAKE, new HandShake(this));
@@ -36,7 +36,7 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
         this.handlers.set(packUtils.PackType.DATA, {
             handle: (msg: Buffer) => {
                 const decodedData = msgUtils.decode(msg);
-                this.parentEventEmitter.emit('message', {
+                this.serverEventEmitter.emit('message', {
                     id: decodedData.id,
                     type: decodedData.type,
                     route: decodedData.route,
