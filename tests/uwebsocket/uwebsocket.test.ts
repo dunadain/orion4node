@@ -6,13 +6,14 @@ import { Server } from '../../src/server/Server';
 import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport';
 import { MessageEvent, WebSocket } from 'ws';
 import { ClientManager } from '../../src/component/ClientManager';
-import * as packUtil from '../../src/transport/protocol/Package';
+import * as packUtil from '../../src/transport/protocol/PkgProcessor';
 import { ClientState } from '../../src/transport/SocketClient';
 import { ErrorCode } from '../../src/config/ErrorCode';
 import { HandShake } from '../../src/transport/handlers/HandShake';
 import { netConfig } from '../../src/config/NetConfig';
 import { createConnection } from '../testUtils';
-import * as msgUtil from '../../src/transport/protocol/Message';
+import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
+import { RouterComponent } from '../../src/component/RouterComponent';
 
 const port = 9001;
 let server: Server;
@@ -20,6 +21,7 @@ beforeEach(async () => {
     server = new Server('', port);
     server.addComponent(UWebSocketTransport);
     server.addComponent(ClientManager);
+    server.addComponent(RouterComponent);
     try {
         await server.start();
     } catch (reason) {
@@ -268,8 +270,7 @@ describe('sending messages', () => {
         const reqId = 2344;
         const route = 52;
         return new Promise<any>((resolve) => {
-            const transport = server.getComponent(UWebSocketTransport);
-            transport?.eventEmitter.on('message', (msg) => {
+            server.eventEmitter.on('message', (msg) => {
                 resolve(msg);
             });
 

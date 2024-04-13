@@ -1,5 +1,5 @@
 import { ErrorCode } from '../config/ErrorCode';
-import { MsgType } from './protocol/Message';
+import { MsgType } from './protocol/MsgProcessor';
 
 export interface SocketClient<T> {
     id: number;

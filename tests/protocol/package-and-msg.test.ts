@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
-import * as pack from '../../src/transport/protocol/Package';
-import * as message from '../../src/transport/protocol/Message';
+import * as pack from '../../src/transport/protocol/PkgProcessor';
+import * as message from '../../src/transport/protocol/MsgProcessor';
 
 describe('Package Protocol', () => {
     it('should be the same before encode and after decode', () => {
@@ -9,11 +9,9 @@ describe('Package Protocol', () => {
             b: '33',
             c: {
                 e: 33,
-                arr: ['1', '$', '##', '%%%']
+                arr: ['1', '$', '##', '%%%'],
             },
-            d: [
-                4, 5, 2, 1, 3, 5, 2, 5
-            ]
+            d: [4, 5, 2, 1, 3, 5, 2, 5],
         };
         let str = JSON.stringify(obj);
         let buffer = pack.encode(pack.PackType.DATA, Buffer.from(str, 'utf8'));
@@ -33,7 +31,7 @@ describe('Package Protocol', () => {
         decodedData = pack.decode(buffer);
         expect(decodedData[0].type).toBe(pack.PackType.ERROR);
         expect(decodedData[0].body?.toString()).toBe(str);
-        const errObj = JSON.parse(String(decodedData[0].body?.toString())) as { code: number, msg: string };
+        const errObj = JSON.parse(String(decodedData[0].body?.toString())) as { code: number; msg: string };
         expect(errObj.code).toBe(originalErr.code);
         expect(errObj.msg).toBe(originalErr.msg);
     });
@@ -44,18 +42,21 @@ describe('Package Protocol', () => {
             b: '33',
             c: {
                 e: 33,
-                arr: ['1', '$', '##', '%%%']
+                arr: ['1', '$', '##', '%%%'],
             },
-            d: [
-                4, 5, 2, 1, 3, 5, 2, 5
-            ]
+            d: [4, 5, 2, 1, 3, 5, 2, 5],
         };
         const str = JSON.stringify(obj);
         for (let i = 0; i < 4; ++i) {
             const type = i as message.MsgType;
-            const id = type === message.MsgType.REQUEST || type === message.MsgType.RESPONSE ? Math.floor(Math.random() * 1000000) : 0;
-            const route = type === message.MsgType.REQUEST || type === message.MsgType.NOTIFY ||
-                type === message.MsgType.PUSH ? Math.floor(Math.random() * 63000) : 0;
+            const id =
+                type === message.MsgType.REQUEST || type === message.MsgType.RESPONSE
+                    ? Math.floor(Math.random() * 1000000)
+                    : 0;
+            const route =
+                type === message.MsgType.REQUEST || type === message.MsgType.NOTIFY || type === message.MsgType.PUSH
+                    ? Math.floor(Math.random() * 63000)
+                    : 0;
             const buf = Buffer.from(str, 'utf8');
             const compressGzip = false;
             const encodedBuf = message.encode(id, type, route, buf, compressGzip);

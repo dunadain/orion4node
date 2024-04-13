@@ -1,7 +1,7 @@
 import { netConfig } from '../../config/NetConfig';
 import { logger } from '../../logger/Logger';
 import { SocketClient } from '../SocketClient';
-import { PackType, encode } from '../protocol/Package';
+import { PackType, encode } from '../protocol/PkgProcessor';
 import { PkgHandler } from './PkgHandler';
 
 export class HeartBeat implements PkgHandler {

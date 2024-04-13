@@ -1,5 +1,5 @@
 import { ClientState, SocketClient } from '../SocketClient';
-import { PackType, encode } from '../protocol/Package';
+import { PackType, encode } from '../protocol/PkgProcessor';
 import { PkgHandler } from './PkgHandler';
 
 export class HandShakeAck implements PkgHandler {

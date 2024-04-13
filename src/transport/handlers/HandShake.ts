@@ -2,7 +2,7 @@ import { ErrorCode } from '../../config/ErrorCode';
 import { netConfig } from '../../config/NetConfig';
 import { logger } from '../../logger/Logger';
 import { ClientState, SocketClient } from '../SocketClient';
-import { PackType, encode } from '../protocol/Package';
+import { PackType, encode } from '../protocol/PkgProcessor';
 import { PkgHandler } from './PkgHandler';
 interface HandShakeInfo {
     sys: { ver: string; protoVer?: number } | undefined;

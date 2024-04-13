@@ -1,5 +1,5 @@
 import { MessageEvent, WebSocket } from 'ws';
-import * as packUtil from '../src/transport/protocol/Package';
+import * as packUtil from '../src/transport/protocol/PkgProcessor';
 
 export function createConnection(port: number, obj?: any) {
     return new Promise<void>((resolve) => {
@@ -7,10 +7,7 @@ export function createConnection(port: number, obj?: any) {
         if (obj) obj.socket = newSocket;
         newSocket.onopen = () => {
             newSocket.send(
-                packUtil.encode(
-                    packUtil.PackType.HANDSHAKE,
-                    Buffer.from(JSON.stringify({ sys: { ver: '1.0.0' } }))
-                )
+                packUtil.encode(packUtil.PackType.HANDSHAKE, Buffer.from(JSON.stringify({ sys: { ver: '1.0.0' } })))
             );
         };
         newSocket.onmessage = (e: MessageEvent) => {
@@ -18,9 +15,7 @@ export function createConnection(port: number, obj?: any) {
             const pkgs = packUtil.decode(buffer);
             const pkg = pkgs[0];
             if (pkg.type === packUtil.PackType.HANDSHAKE) {
-                newSocket.send(
-                    packUtil.encode(packUtil.PackType.HANDSHAKE_ACK)
-                );
+                newSocket.send(packUtil.encode(packUtil.PackType.HANDSHAKE_ACK));
             } else if (pkg.type === packUtil.PackType.HANDSHAKE_ACK) {
                 resolve();
             }
