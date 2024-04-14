@@ -1,8 +1,12 @@
+import { SocketClient } from '../SocketClient';
 import { MsgType } from './MsgProcessor';
 
 export interface Message {
-    id: number;
-    type: MsgType;
-    route: number;
-    body: unknown;
+    msg: {
+        readonly id: number;
+        readonly type: MsgType;
+        readonly route: number;
+        readonly body: unknown;
+    };
+    client: SocketClient<unknown>;
 }
