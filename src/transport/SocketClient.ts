@@ -3,7 +3,8 @@ import { MsgType } from './protocol/MsgProcessor';
 
 export interface SocketClient<T> {
     id: number;
-    uuidForUser: string;
+    uid: string;
+    rid: number;
     /**
      * native socket
      */

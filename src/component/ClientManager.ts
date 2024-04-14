@@ -38,7 +38,7 @@ export class ClientManager extends Component {
     private clear<T>(client: SocketClient<T>) {
         this.map.delete(client.socket);
         this.id2Client.delete(client.id);
-        if (client.uuidForUser) this.bindedClientMap.delete(client.uuidForUser);
+        if (client.uid) this.bindedClientMap.delete(client.uid);
     }
 
     /**
@@ -67,13 +67,13 @@ export class ClientManager extends Component {
     bind(id: number, uuidForUser: string) {
         const client = this.id2Client.get(id);
         if (!client) return;
-        if (this.hasClientFor(uuidForUser) || client.uuidForUser) {
+        if (this.hasClientFor(uuidForUser) || client.uid) {
             logger.error(`duplicate bindings, trying to bind ${uuidForUser} to ${String(id)}`);
             return;
         }
 
         if (uuidForUser) {
-            client.uuidForUser = uuidForUser;
+            client.uid = uuidForUser;
             this.bindedClientMap.set(uuidForUser, id);
         }
     }

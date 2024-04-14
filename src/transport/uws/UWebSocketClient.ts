@@ -12,8 +12,8 @@ import { EventEmitter } from 'node:events';
 
 export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     id = 0;
-    uuidForUser = '';
-
+    uid = '';
+    rid = -1;
     socket!: WebSocket<unknown>;
 
     state = ClientState.Default;
@@ -36,11 +36,15 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
         this.handlers.set(packUtils.PackType.DATA, {
             handle: (msg: Buffer) => {
                 const decodedData = msgUtils.decode(msg);
+
                 this.serverEventEmitter.emit('message', {
-                    id: decodedData.id,
-                    type: decodedData.type,
-                    route: decodedData.route,
-                    body: this.bodyDecoder(decodedData.body, decodedData.route),
+                    msg: {
+                        id: decodedData.id,
+                        type: decodedData.type,
+                        route: decodedData.route,
+                        body: this.bodyDecoder(decodedData.body, decodedData.route),
+                    },
+                    client: this,
                 });
             },
         });

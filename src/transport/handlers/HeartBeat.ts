@@ -18,7 +18,7 @@ export class HeartBeat implements PkgHandler {
     }
 
     private timoutAction = () => {
-        logger.info(`client [${this.client.uuidForUser}/${this.client.id.toString()}] heartbeat timeout.`);
+        logger.info(`client [${this.client.uid}/${this.client.id.toString()}] heartbeat timeout.`);
         this.client.disconnect();
     };
 
