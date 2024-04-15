@@ -13,7 +13,6 @@ import { EventEmitter } from 'node:events';
 export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     id = 0;
     uid = '';
-    rid = -1;
     socket!: WebSocket<unknown>;
 
     state = ClientState.Default;

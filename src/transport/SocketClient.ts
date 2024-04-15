@@ -4,7 +4,6 @@ import { MsgType } from './protocol/MsgProcessor';
 export interface SocketClient<T> {
     id: number;
     uid: string;
-    rid: number;
     /**
      * native socket
      */
