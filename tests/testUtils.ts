@@ -1,5 +1,5 @@
 import { MessageEvent, WebSocket } from 'ws';
-import * as packUtil from '../src/transport/protocol/PkgProcessor';
+import * as packUtil from '../src/transport/protocol/PacketProcessor';
 
 export function createConnection(port: number, obj?: any) {
     return new Promise<void>((resolve) => {

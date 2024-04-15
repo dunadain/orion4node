@@ -6,7 +6,7 @@ import { Server } from '../../src/server/Server';
 import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport';
 import { MessageEvent, WebSocket } from 'ws';
 import { ClientManager } from '../../src/component/ClientManager';
-import * as packUtil from '../../src/transport/protocol/PkgProcessor';
+import * as packUtil from '../../src/transport/protocol/PacketProcessor';
 import { ClientState } from '../../src/transport/SocketClient';
 import { ErrorCode } from '../../src/config/ErrorCode';
 import { HandShake } from '../../src/transport/handlers/HandShake';

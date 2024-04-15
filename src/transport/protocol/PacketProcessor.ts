@@ -17,15 +17,15 @@ function isValidType(type: PackType): boolean {
 }
 
 /**
- * Package protocol encode.
+ * packet protocol encode.
  *
- * Pinus package format:
+ * Pinus packet format:
  * +------+-------------+------------------+
  * | type | body length |       body       |
  * +------+-------------+------------------+
  *
  * Head: 4bytes
- *   0: package type,
+ *   0: packet type,
  *      1 - handshake,
  *      2 - handshake ack,
  *      3 - heartbeat,
@@ -34,7 +34,7 @@ function isValidType(type: PackType): boolean {
  *   1 - 3: big-endian body length
  * Body: body length bytes
  *
- * @param  {PackType}    type   package type
+ * @param  {PackType}    type   packet type
  * @param  {Buffer} body   body content in bytes
  * @return {Buffer}        new byte array that contains encode result
  */
@@ -53,11 +53,11 @@ export function encode(type: PackType, body?: Buffer) {
 }
 
 /**
- * Package protocol decode.
- * See encode for package format.
+ * packet protocol decode.
+ * See encode for packet format.
  *
- * @param  {Buffer} buffer byte array containing package content
- * @return {Object}           {type: package type, buffer: body byte array}
+ * @param  {Buffer} buffer byte array containing packet content
+ * @return {Object}           {type: packet type, buffer: body byte array}
  */
 export function decode(buffer: Buffer, out?: { type: PackType; body: Buffer | undefined }[]) {
     let offset = 0;

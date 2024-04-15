@@ -1,8 +1,8 @@
 import { WebSocket } from 'uWebSockets.js';
 import { ClientState, SocketClient } from '../SocketClient';
-import * as packUtils from '../protocol/PkgProcessor';
+import * as packUtils from '../protocol/PacketProcessor';
 import * as msgUtils from '../protocol/MsgProcessor';
-import { PkgHandler } from '../handlers/PkgHandler';
+import { PkgHandler } from '../handlers/PacketHandler';
 import { logErr, logger } from '../../logger/Logger';
 import { HeartBeat } from '../handlers/HeartBeat';
 import { HandShake } from '../handlers/HandShake';

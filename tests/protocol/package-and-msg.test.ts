@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import * as pack from '../../src/transport/protocol/PkgProcessor';
+import * as pack from '../../src/transport/protocol/PacketProcessor';
 import * as message from '../../src/transport/protocol/MsgProcessor';
 
 describe('Package Protocol', () => {
