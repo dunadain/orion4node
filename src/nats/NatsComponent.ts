@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import { ConnectionOptions, DebugEvents, Events, NatsConnection, connect } from 'nats';
-import { Component } from './Component';
+import { Component } from '../component/Component';
 import { logErr, logger } from '../logger/Logger';
 import * as fs from 'node:fs/promises';
 import { existsSync } from 'node:fs';
