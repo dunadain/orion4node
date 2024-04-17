@@ -56,20 +56,15 @@ if (!isProduction) {
     logger.add(
         new transports.Console({
             level: 'debug',
-            format: format.combine(
-                format.colorize({ all: true }),
-                format.simple()
-            ),
+            format: format.combine(format.colorize({ all: true }), format.simple()),
             handleExceptions: true,
         })
     );
 }
 
 function logErr(e: unknown) {
-    if (typeof e === 'string')
-        logger.error(e);
-    else if (e instanceof Error)
-        logger.error(e.stack);
+    if (typeof e === 'string') logger.error(e);
+    else if (e instanceof Error) logger.error(e.stack);
 }
 
 export { logger, logErr };
