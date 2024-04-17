@@ -14,6 +14,7 @@ import { netConfig } from '../../src/config/NetConfig';
 import { createConnection } from '../testUtils';
 import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
 import { RouterComponent } from '../../src/component/RouterComponent';
+import { Message } from '../../src/transport/protocol/ProtocolTypeDefs';
 
 const port = 9001;
 let server: Server;
@@ -269,7 +270,7 @@ describe('sending messages', () => {
         };
         const reqId = 2344;
         const route = 52;
-        return new Promise<any>((resolve) => {
+        return new Promise<Message>((resolve) => {
             server.eventEmitter.on('message', (msg) => {
                 resolve(msg);
             });
@@ -283,10 +284,11 @@ describe('sending messages', () => {
             const pkg = packUtil.encode(packUtil.PackType.DATA, encodedMsg);
             socket.send(pkg);
         }).then((msg) => {
-            expect(msg.id).toBe(reqId);
-            expect(msg.route).toBe(route);
-            for (const k in msg.body) {
-                expect(msg.body[k]).toBe((data as any)[k]);
+            expect(msg.msg.id).toBe(reqId);
+            expect(msg.msg.route).toBe(route);
+            const body: any = msg.msg.body;
+            for (const k in body) {
+                expect(body[k]).toBe((data as any)[k]);
             }
         });
     });
