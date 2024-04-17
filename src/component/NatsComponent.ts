@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-base-to-string */
-import { DebugEvents, Events, NatsConnection, connect } from 'nats';
+import { ConnectionOptions, DebugEvents, Events, NatsConnection, connect } from 'nats';
 import { Component } from './Component';
 import { logErr, logger } from '../logger/Logger';
+import * as fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { configPaths } from '../config/ConfigPaths';
 
 export class NatsComponent extends Component {
     private _nc: NatsConnection | undefined;
@@ -12,8 +15,10 @@ export class NatsComponent extends Component {
     }
 
     async start() {
+        const connectionOption = await this.getConnectionOption();
         try {
-            this._nc = await connect();
+            this._nc = await connect(connectionOption);
+            logger.info(`${this.server.name} is connected to nats`);
             this.setupListeners().catch((reason: unknown) => {
                 logErr(reason);
             });
@@ -62,6 +67,13 @@ export class NatsComponent extends Component {
                     break;
             }
         }
+    }
+
+    private async getConnectionOption() {
+        const natsConfigPath = configPaths.nats;
+        let exists = false;
+        if (natsConfigPath) exists = existsSync(natsConfigPath);
+        return exists ? (JSON.parse(await fs.readFile(natsConfigPath, 'utf8')) as ConnectionOptions) : undefined;
     }
 
     dispose(): void {
