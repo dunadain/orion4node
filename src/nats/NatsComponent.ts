@@ -83,3 +83,7 @@ export class NatsComponent extends Component {
         });
     }
 }
+
+export function setNatsOptionsGetter(method: () => Promise<ConnectionOptions | undefined>) {
+    Object.defineProperty(NatsComponent.prototype, 'getConnectionOption', { value: method });
+}
