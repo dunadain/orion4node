@@ -10,7 +10,7 @@ export class Server {
         public readonly addr: string,
         public readonly port: number,
         public readonly serverType: string,
-        private sname = ''
+        private readonly sname = ''
     ) {}
 
     get name() {
