@@ -6,8 +6,11 @@ import { logErr } from '../logger/Logger';
 export class Server {
     readonly eventEmitter = new EventEmitter();
     private components = new Map<new () => Component, Component>();
-    constructor(public readonly addr: string, public readonly port: number) {}
+    constructor(public readonly addr: string, public readonly port: number, private sname = '') {}
 
+    get name() {
+        return this.sname ? this.sname : `${this.addr}:${this.port.toString()}`;
+    }
     /**
      * get component
      * @param classConstructor
