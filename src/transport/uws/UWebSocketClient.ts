@@ -10,18 +10,18 @@ import { HandShakeAck } from '../handlers/HandShakeAck';
 import { ErrorCode } from '../../config/ErrorCode';
 import { EventEmitter } from 'node:events';
 
+type Decoder = (body: Buffer, route?: number) => unknown;
+
+type Encoder = (data: unknown, route?: number) => Buffer;
+
 export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     id = 0;
     uid = '';
     socket!: WebSocket<unknown>;
-
     state = ClientState.Default;
 
-    private bodyDecoder: (body: Buffer, route?: number) => unknown = (body: Buffer) =>
-        JSON.parse(body.toString('utf8'));
-    private bodyEncoder: (data: unknown, route?: number) => Buffer = (data: unknown) => {
-        return Buffer.from(JSON.stringify(data), 'utf8');
-    };
+    private bodyDecoder: Decoder = (body: Buffer) => JSON.parse(body.toString('utf8'));
+    private bodyEncoder: Encoder = (data: unknown) => Buffer.from(JSON.stringify(data), 'utf8');
     private buffer: ArrayBuffer[] = [];
     private helperArr: { type: packUtils.PackType; body: Buffer | undefined }[] = [];
     private handlers = new Map<packUtils.PackType, PkgHandler>();
