@@ -18,7 +18,7 @@ import { RouterComponent } from '../../src/component/RouterComponent';
 const port = 9001;
 let server: Server;
 beforeEach(async () => {
-    server = new Server('', port);
+    server = new Server('', port, 'connector');
     server.addComponent(UWebSocketTransport);
     server.addComponent(ClientManager);
     server.addComponent(RouterComponent);
