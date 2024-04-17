@@ -62,27 +62,27 @@ export class ClientManager extends Component {
     /**
      * bind socketclient to user uuid
      * @param id
-     * @param uuidForUser
+     * @param uid
      */
-    bind(id: number, uuidForUser: string) {
+    bind(id: number, uid: string) {
         const client = this.id2Client.get(id);
         if (!client) return;
-        if (this.hasClientFor(uuidForUser) || client.uid) {
-            logger.error(`duplicate bindings, trying to bind ${uuidForUser} to ${String(id)}`);
+        if (this.hasClientFor(uid) || client.uid) {
+            logger.error(`duplicate bindings, trying to bind ${uid} to ${String(id)}`);
             return;
         }
 
-        if (uuidForUser) {
-            client.uid = uuidForUser;
-            this.bindedClientMap.set(uuidForUser, id);
+        if (uid) {
+            client.uid = uid;
+            this.bindedClientMap.set(uid, id);
         }
     }
 
-    hasClientFor(uuid: string) {
-        return this.bindedClientMap.has(uuid);
+    hasClientFor(uid: string) {
+        return this.bindedClientMap.has(uid);
     }
 
-    getSessionId(uuid: string) {
-        return this.bindedClientMap.get(uuid) ?? 0;
+    getSessionId(uid: string) {
+        return this.bindedClientMap.get(uid) ?? 0;
     }
 }
