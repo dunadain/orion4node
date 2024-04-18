@@ -1,6 +1,6 @@
 import { Subscription } from 'nats';
 import { NatsComponent } from '../nats/NatsComponent';
-import { Component } from './Component';
+import { Component } from '../component/Component';
 import { logErr } from '../logger/Logger';
 
 export class RouteSubscriber extends Component {
@@ -8,7 +8,7 @@ export class RouteSubscriber extends Component {
     async start() {
         const nc = this.getComponent(NatsComponent)?.nc;
 
-        this.sub = nc?.subscribe(`${this.server.serverType}.*`, {
+        this.sub = nc?.subscribe(`${this.server.serverType}.>`, {
             queue: this.server.serverType,
             callback: (err, msg) => {
                 if (err) {

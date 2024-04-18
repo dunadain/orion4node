@@ -13,7 +13,7 @@ import { HandShake } from '../../src/transport/handlers/HandShake';
 import { netConfig } from '../../src/config/NetConfig';
 import { createConnection } from '../testUtils';
 import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
-import { Router } from '../../src/component/Router';
+import { Router } from '../../src/router/Router';
 import { NatsComponent } from '../../src/nats/NatsComponent';
 
 const port = 9001;
