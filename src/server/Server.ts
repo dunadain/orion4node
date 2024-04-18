@@ -40,6 +40,15 @@ export class Server {
                 logErr(e);
             }
         }
+
+        for (const pair of this.components) {
+            const comp = pair[1];
+            try {
+                await comp.start?.call(comp);
+            } catch (e) {
+                logErr(e);
+            }
+        }
     }
 
     shutdown() {
