@@ -10,14 +10,18 @@ import { ProtocolMgr } from './ProtocolMgr';
 
 export class Router extends Component {
     private _nc: NatsConnection | undefined;
-    private _clientMgr: ClientManager | undefined;
-    private _protoMgr: ProtocolMgr | undefined;
+
     async start() {
+        const clientMgr = this.getComponent(ClientManager);
+        if (!clientMgr) throw new Error('ClientManager Component is required!');
+        const protoMgr = this.getComponent(ProtocolMgr);
+        if (!protoMgr) throw new Error('ProtocolMgr Component is required!');
+
         this.server.eventEmitter.on('message', (data: Message) => {
             const msg = data.msg;
             const client = data.client;
 
-            const subject = this.protocolMgr.getSubject(msg.route);
+            const subject = protoMgr.getSubject(msg.route);
             if (!subject) return;
 
             const buf = encodeRouterPack(
@@ -34,7 +38,7 @@ export class Router extends Component {
                         .then((replyu8a) => {
                             const rBuf = Buffer.from(replyu8a);
                             const response = decodeRouterPack(rBuf);
-                            const client = this.clientMgr.getClientById(response.session.id);
+                            const client = clientMgr.getClientById(response.session.id);
                             client?.sendMsg(MsgType.RESPONSE, msg.route, response.body, msg.id);
                         })
                         .catch((e: unknown) => {
@@ -64,22 +68,6 @@ export class Router extends Component {
             }
         }
         throw new Error('timeout');
-    }
-
-    get clientMgr() {
-        if (!this._clientMgr) {
-            this._clientMgr = this.getComponent(ClientManager);
-            if (!this._clientMgr) throw new Error('ClientManager Component is required!');
-        }
-        return this._clientMgr;
-    }
-
-    get protocolMgr() {
-        if (!this._protoMgr) {
-            this._protoMgr = this.getComponent(ProtocolMgr);
-            if (!this._protoMgr) throw new Error('ProtocolMgr Component is required!');
-        }
-        return this._protoMgr;
     }
 
     get nc() {
