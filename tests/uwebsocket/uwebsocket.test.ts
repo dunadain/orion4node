@@ -15,6 +15,7 @@ import { createConnection } from '../testUtils';
 import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
 import { Router } from '../../src/router/Router';
 import { NatsComponent } from '../../src/nats/NatsComponent';
+import { Message } from '../../src/transport/protocol/ProtocolTypeDefs';
 
 const port = 9001;
 let server: Server;
@@ -285,7 +286,7 @@ describe('sending messages', () => {
             );
             const pkg = packUtil.encode(packUtil.PackType.DATA, encodedMsg);
             socket.send(pkg);
-        }).then((msg) => {
+        }).then((msg: Message) => {
             expect(msg.msg.id).toBe(reqId);
             expect(msg.msg.protoId).toBe(route);
             const body: any = JSON.parse(msg.msg.body.toString());
