@@ -19,7 +19,7 @@ import { NatsComponent } from '../../src/nats/NatsComponent';
 const port = 9001;
 let server: Server;
 beforeEach(async () => {
-    server = new Server('', port, 'connector');
+    server = new Server('', port, 'connector', '111');
     server.addComponent(UWebSocketTransport);
     server.addComponent(ClientManager);
     server.addComponent(NatsComponent);
