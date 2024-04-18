@@ -25,11 +25,11 @@ class ProtocolMgr {
         return this.id2Subject.get(protocolId);
     }
 
-    encodeMsgBody(body: unknown) {
+    encodeMsgBody(body: unknown, protoId?: number) {
         return Buffer.from(JSON.stringify(body));
     }
 
-    decodeMsgBody(buf: Buffer) {
+    decodeMsgBody(buf: Buffer, protoId?: number) {
         return JSON.parse(buf.toString()) as unknown;
     }
 }

@@ -22,13 +22,18 @@ export class RouteSubscriber extends Component {
                 const routeKey = msg.subject.substring(index + 1);
                 const data = decodeRouterPack(Buffer.from(msg.data));
                 const func = routeFunctions.get(routeKey);
-                func?.call(null, data.session, data.body ? protoMgr.decodeMsgBody(data.body) : undefined, this.server)
+                func?.call(
+                    null,
+                    data.context,
+                    data.body ? protoMgr.decodeMsgBody(data.body, data.context.protoId) : undefined,
+                    this.server
+                )
                     .then((result) => {
                         if (msg.reply) {
                             msg.respond(
                                 encodeRouterPack(
-                                    { id: data.session.id },
-                                    result ? protoMgr.encodeMsgBody(result) : undefined
+                                    { id: data.context.id },
+                                    result ? protoMgr.encodeMsgBody(result, data.context.protoId) : undefined
                                 )
                             );
                         }

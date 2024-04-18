@@ -14,7 +14,7 @@ describe('test router pack encode decode', () => {
         expect(decoded.body).not.toBe(undefined);
         if (decoded.body) expect(str).toBe(decoded.body.toString());
         for (const k in session) {
-            expect(session[k]).toBe((decoded.session as any)[k]);
+            expect(session[k]).toBe((decoded.context as any)[k]);
         }
     });
 
@@ -27,7 +27,7 @@ describe('test router pack encode decode', () => {
         const buf = encodeRouterPack(session);
         const decoded = decodeRouterPack(buf);
         for (const k in session) {
-            expect(session[k]).toBe((decoded.session as any)[k]);
+            expect(session[k]).toBe((decoded.context as any)[k]);
         }
         expect(decoded.body).toBe(undefined);
     });

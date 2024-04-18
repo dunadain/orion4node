@@ -5,7 +5,7 @@ export interface Message {
     msg: {
         readonly id: number;
         readonly type: MsgType;
-        readonly route: number;
+        readonly protoId: number;
         readonly body: Buffer;
     };
     client: SocketClient<unknown>;

@@ -1,21 +1,21 @@
 import { Server } from '../server/Server';
 import { copyArray } from '../transport/protocol/utils';
-import { Session } from './RouterTypeDef';
+import { Context } from './RouterTypeDef';
 
-export function encodeRouterPack(sessionInfo: unknown, body?: Buffer) {
-    const str = JSON.stringify(sessionInfo);
-    const sessionBuf = Buffer.from(str);
-    let len = 2; // session buffer length
-    len += sessionBuf.length; // session buffer
+export function encodeRouterPack(contextInfo: unknown, body?: Buffer) {
+    const str = JSON.stringify(contextInfo);
+    const contextBuf = Buffer.from(str);
+    let len = 2; // context buffer length
+    len += contextBuf.length; // context buffer
     if (body) {
         len += 4; // body length;
         len += body.length; // body
     }
     const buf = Buffer.alloc(len);
-    let offset = buf.writeUInt16BE(sessionBuf.length);
-    copyArray(buf, offset, sessionBuf, 0, sessionBuf.length);
+    let offset = buf.writeUInt16BE(contextBuf.length);
+    copyArray(buf, offset, contextBuf, 0, contextBuf.length);
     if (body) {
-        offset += sessionBuf.length;
+        offset += contextBuf.length;
         offset = buf.writeUInt32BE(body.length, offset);
         copyArray(buf, offset, body, 0, body.length);
     }
@@ -24,11 +24,11 @@ export function encodeRouterPack(sessionInfo: unknown, body?: Buffer) {
 
 export function decodeRouterPack(buffer: Buffer) {
     let offset = 0;
-    const sessionLen = buffer.readUint16BE(offset);
+    const contextLen = buffer.readUint16BE(offset);
     offset += 2;
-    const sBuf = Buffer.alloc(sessionLen);
-    copyArray(sBuf, 0, buffer, offset, sessionLen);
-    offset += sessionLen;
+    const sBuf = Buffer.alloc(contextLen);
+    copyArray(sBuf, 0, buffer, offset, contextLen);
+    offset += contextLen;
     let bBuf: Buffer | undefined;
     if (offset < buffer.length) {
         const bodyLen = buffer.readUInt32BE(offset);
@@ -38,7 +38,7 @@ export function decodeRouterPack(buffer: Buffer) {
     }
 
     return {
-        session: JSON.parse(sBuf.toString()) as Session,
+        context: JSON.parse(sBuf.toString()) as Context,
         body: bBuf,
     };
 }
@@ -47,7 +47,7 @@ export function isUpperCase(char: string) {
     return char === char.toUpperCase();
 }
 
-export const routeFunctions = new Map<string, (session: Session, data: unknown, server: Server) => Promise<unknown>>();
+export const routeFunctions = new Map<string, (context: Context, data: unknown, server: Server) => Promise<unknown>>();
 
 export function route(routeKey: number) {
     return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {

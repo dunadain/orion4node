@@ -34,7 +34,7 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
                     msg: {
                         id: decodedData.id,
                         type: decodedData.type,
-                        route: decodedData.route,
+                        protoId: decodedData.route,
                         body: decodedData.body,
                     },
                     client: this,

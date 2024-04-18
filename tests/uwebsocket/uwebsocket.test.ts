@@ -287,7 +287,7 @@ describe('sending messages', () => {
             socket.send(pkg);
         }).then((msg) => {
             expect(msg.msg.id).toBe(reqId);
-            expect(msg.msg.route).toBe(route);
+            expect(msg.msg.protoId).toBe(route);
             const body: any = JSON.parse(msg.msg.body.toString());
             for (const k in body) {
                 expect(body[k]).toBe((data as any)[k]);
