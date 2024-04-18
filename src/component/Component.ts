@@ -7,6 +7,9 @@ import { Server } from '../server/Server';
 export abstract class Component {
     constructor(public readonly server: Server) {}
     init?(): Promise<void>;
+    /**
+     * will be called after init
+     */
     start?(): Promise<void>;
     dispose?(): void;
 
