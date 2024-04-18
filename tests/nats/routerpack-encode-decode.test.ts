@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { decodeRouterBuf, encodeRouterBuf } from '../../src/router/RouterUtils';
+import { decodeRouterPack, encodeRouterPack } from '../../src/router/RouterUtils';
 
 describe('test router pack encode decode', () => {
     test('data should not change after encode and decode', () => {
@@ -14,11 +14,26 @@ describe('test router pack encode decode', () => {
             sid: 'SD4348%@#$5',
         };
         const str = JSON.stringify(obj);
-        const buf = encodeRouterBuf(session, Buffer.from(str));
-        const decoded = decodeRouterBuf(buf);
-        expect(str).toBe(decoded.body.toString());
+        const buf = encodeRouterPack(session, Buffer.from(str));
+        const decoded = decodeRouterPack(buf);
+        expect(decoded.body).not.toBe(undefined);
+        if (decoded.body) expect(str).toBe(decoded.body.toString());
         for (const k in session) {
             expect(session[k]).toBe((decoded.session as any)[k]);
         }
+    });
+
+    test('when data is empty', () => {
+        const session: Record<string, any> = {
+            id: 2343,
+            uid: '@#$kl4h23$#S',
+            sid: 'SD4348%@#$5',
+        };
+        const buf = encodeRouterPack(session);
+        const decoded = decodeRouterPack(buf);
+        for (const k in session) {
+            expect(session[k]).toBe((decoded.session as any)[k]);
+        }
+        expect(decoded.body).toBe(undefined);
     });
 });
