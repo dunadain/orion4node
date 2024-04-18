@@ -1,6 +1,9 @@
 import { ComponentConstructor } from '../TypeDef';
 import { Server } from '../server/Server';
 
+/**
+ * Component lift cycle: init -> start -> dispose
+ */
 export abstract class Component {
     constructor(public readonly server: Server) {}
     init?(): Promise<void>;
