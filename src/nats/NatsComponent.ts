@@ -14,7 +14,7 @@ export class NatsComponent extends Component {
         return this._nc;
     }
 
-    async start() {
+    async init() {
         const connectionOption = await this.getConnectionOption();
         try {
             this._nc = await connect(connectionOption);

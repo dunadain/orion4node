@@ -14,7 +14,7 @@ export class UWebSocketTransport extends Component {
         this.app = App();
     }
 
-    async start() {
+    async init() {
         const host = this.server.addr ? this.server.addr : 'localhost';
         this.app
             .ws('/*', {

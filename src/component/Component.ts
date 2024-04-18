@@ -3,6 +3,7 @@ import { Server } from '../server/Server';
 
 export abstract class Component {
     constructor(public readonly server: Server) {}
+    init?(): Promise<void>;
     start?(): Promise<void>;
     dispose?(): void;
 

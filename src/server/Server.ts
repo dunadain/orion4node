@@ -35,7 +35,7 @@ export class Server {
         for (const pair of this.components) {
             const comp = pair[1];
             try {
-                await comp.start?.call(comp);
+                await comp.init?.call(comp);
             } catch (e) {
                 logErr(e);
             }
