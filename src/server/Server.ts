@@ -10,12 +10,11 @@ export class Server {
         public readonly addr: string,
         public readonly port: number,
         public readonly serverType: string,
-        public readonly uuid: string,
-        private readonly sname = ''
+        public readonly uuid: string
     ) {}
 
     get name() {
-        return this.sname ? this.sname : `${this.serverType}-${this.addr}:${this.port.toString()}`;
+        return `${this.serverType}-${this.uuid}`;
     }
     /**
      * get component
