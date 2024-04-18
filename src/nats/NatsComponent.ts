@@ -84,6 +84,7 @@ export class NatsComponent extends Component {
     }
 }
 
-export function setNatsOptionsGetter(method: () => Promise<ConnectionOptions | undefined>) {
-    Object.defineProperty(NatsComponent.prototype, 'getConnectionOption', { value: method });
+export function natsOptionGetter(target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    Object.defineProperty(NatsComponent.prototype, 'getConnectionOption', { value: descriptor.value });
 }
