@@ -2,45 +2,47 @@ import { ErrorCode, NatsConnection, NatsError, Payload } from 'nats';
 import { Message } from '../transport/protocol/ProtocolTypeDefs';
 import { Component } from '../component/Component';
 import { NatsComponent } from '../nats/NatsComponent';
-import { getRoute } from '../config/Route';
 import { MsgType } from '../transport/protocol/MsgProcessor';
 import { logErr } from '../logger/Logger';
-import { copyArray } from '../transport/protocol/utils';
+import { decodeRouterPack, encodeRouterPack } from './RouterUtils';
+import { ClientManager } from '../component/ClientManager';
+import { ProtocolMgr } from './ProtocolMgr';
 
 export class Router extends Component {
     private _nc: NatsConnection | undefined;
+    private _clientMgr: ClientManager | undefined;
+    private _protoMgr: ProtocolMgr | undefined;
     async start() {
         this.server.eventEmitter.on('message', (data: Message) => {
             const msg = data.msg;
             const client = data.client;
-            const routeStr = getRoute(msg.route); // servertype.file.method
-            const session = {
-                id: client.id,
-                uid: client.uid,
-                sId: this.server.uuid,
-            };
-            const sessionBuf = Buffer.from(JSON.stringify(session));
-            let len = 2; // session buffer length
-            len += sessionBuf.length; // session buffer
-            len += 4; // body length;
-            len += msg.body.length; // body
-            const buf = Buffer.alloc(len);
-            let offset = buf.writeUInt16BE(sessionBuf.length);
-            offset = copyArray(buf, offset, sessionBuf, 0, sessionBuf.length);
-            offset = buf.writeUInt32BE(msg.body.length, offset);
-            copyArray(buf, offset, msg.body, 0, msg.body.length);
+
+            const subject = this.protocolMgr.getSubject(msg.route);
+            if (!subject) return;
+
+            const buf = encodeRouterPack(
+                {
+                    id: client.id,
+                    uid: client.uid,
+                    sId: this.server.uuid,
+                },
+                msg.body
+            );
             switch (msg.type) {
                 case MsgType.REQUEST:
-                    this.tryRequest(routeStr, buf)
-                        .then((buffer) => {
-                            buffer;
+                    this.tryRequest(subject, buf)
+                        .then((replyu8a) => {
+                            const rBuf = Buffer.from(replyu8a);
+                            const response = decodeRouterPack(rBuf);
+                            const client = this.clientMgr.getClientById(response.session.id);
+                            client?.sendMsg(MsgType.RESPONSE, msg.route, response.body, msg.id);
                         })
                         .catch((e: unknown) => {
                             logErr(e);
                         });
                     break;
                 case MsgType.NOTIFY:
-                    this.nc.publish(routeStr, buf);
+                    this.nc.publish(subject, buf);
                     break;
                 default:
                     break;
@@ -62,6 +64,22 @@ export class Router extends Component {
             }
         }
         throw new Error('timeout');
+    }
+
+    get clientMgr() {
+        if (!this._clientMgr) {
+            this._clientMgr = this.getComponent(ClientManager);
+            if (!this._clientMgr) throw new Error('ClientManager Component is required!');
+        }
+        return this._clientMgr;
+    }
+
+    get protocolMgr() {
+        if (!this._protoMgr) {
+            this._protoMgr = this.getComponent(ProtocolMgr);
+            if (!this._protoMgr) throw new Error('ProtocolMgr Component is required!');
+        }
+        return this._protoMgr;
     }
 
     get nc() {
