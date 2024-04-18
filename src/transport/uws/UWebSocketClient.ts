@@ -10,9 +10,9 @@ import { HandShakeAck } from '../handlers/HandShakeAck';
 import { ErrorCode } from '../../config/ErrorCode';
 import { EventEmitter } from 'node:events';
 
-type Decoder = (body: Buffer, route?: number) => unknown;
+// type Decoder = (body: Buffer, route?: number) => unknown;
 
-type Encoder = (data: unknown, route?: number) => Buffer;
+// type Encoder = (data: unknown, route?: number) => Buffer;
 
 export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     id = 0;
@@ -20,8 +20,8 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     socket!: WebSocket<unknown>;
     state = ClientState.Default;
 
-    private bodyDecoder: Decoder = (body: Buffer) => JSON.parse(body.toString('utf8'));
-    private bodyEncoder: Encoder = (data: unknown) => Buffer.from(JSON.stringify(data), 'utf8');
+    // private bodyDecoder: Decoder = (body: Buffer) => JSON.parse(body.toString('utf8'));
+    // private bodyEncoder: Encoder = (data: unknown) => Buffer.from(JSON.stringify(data), 'utf8');
     private buffer: ArrayBuffer[] = [];
     private helperArr: { type: packUtils.PackType; body: Buffer | undefined }[] = [];
     private handlers = new Map<packUtils.PackType, PkgHandler>();
@@ -41,7 +41,7 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
                         id: decodedData.id,
                         type: decodedData.type,
                         route: decodedData.route,
-                        body: this.bodyDecoder(decodedData.body, decodedData.route),
+                        body: decodedData.body,
                     },
                     client: this,
                 });
@@ -57,10 +57,9 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
         this.sendBuffer(packUtils.encode(packUtils.PackType.ERROR, Buffer.from(JSON.stringify(errobj))));
     }
 
-    sendMsg(type: msgUtils.MsgType, route: number, msg: unknown, reqId = 0): void {
+    sendMsg(type: msgUtils.MsgType, route: number, msg: Buffer, reqId = 0): void {
         if (ClientState.Ready !== this.state) return;
-        const encodedBody = this.bodyEncoder(msg, route);
-        const msgBody = msgUtils.encode(reqId, type, route, encodedBody, false);
+        const msgBody = msgUtils.encode(reqId, type, route, msg, false);
         this.sendBuffer(packUtils.encode(packUtils.PackType.DATA, msgBody));
     }
 

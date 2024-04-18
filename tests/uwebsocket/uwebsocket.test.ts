@@ -13,8 +13,8 @@ import { HandShake } from '../../src/transport/handlers/HandShake';
 import { netConfig } from '../../src/config/NetConfig';
 import { createConnection } from '../testUtils';
 import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
-import { RouterComponent } from '../../src/component/RouterComponent';
-import { Message } from '../../src/transport/protocol/ProtocolTypeDefs';
+import { Router } from '../../src/component/Router';
+import { NatsComponent } from '../../src/nats/NatsComponent';
 
 const port = 9001;
 let server: Server;
@@ -22,7 +22,8 @@ beforeEach(async () => {
     server = new Server('', port, 'connector');
     server.addComponent(UWebSocketTransport);
     server.addComponent(ClientManager);
-    server.addComponent(RouterComponent);
+    server.addComponent(NatsComponent);
+    server.addComponent(Router);
     try {
         await server.start();
     } catch (reason) {
@@ -270,7 +271,8 @@ describe('sending messages', () => {
         };
         const reqId = 2344;
         const route = 52;
-        return new Promise<Message>((resolve) => {
+        return new Promise<any>((resolve) => {
+            server.eventEmitter.removeAllListeners();
             server.eventEmitter.on('message', (msg) => {
                 resolve(msg);
             });
@@ -286,7 +288,7 @@ describe('sending messages', () => {
         }).then((msg) => {
             expect(msg.msg.id).toBe(reqId);
             expect(msg.msg.route).toBe(route);
-            const body: any = msg.msg.body;
+            const body: any = JSON.parse(msg.msg.body.toString());
             for (const k in body) {
                 expect(body[k]).toBe((data as any)[k]);
             }
@@ -321,7 +323,8 @@ describe('sending messages', () => {
                     }
                 }
             };
-            uwsClient.sendMsg(msgUtil.MsgType.PUSH, route, data, reqId);
+            const buffer = Buffer.from(JSON.stringify(data));
+            uwsClient.sendMsg(msgUtil.MsgType.PUSH, route, buffer, reqId);
         }).then((msg) => {
             expect(msg.route).toBe(route);
             for (const k in msg.body) {
