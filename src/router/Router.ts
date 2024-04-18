@@ -6,7 +6,7 @@ import { MsgType } from '../transport/protocol/MsgProcessor';
 import { logErr } from '../logger/Logger';
 import { decodeRouterPack, encodeRouterPack } from './RouterUtils';
 import { ClientManager } from '../component/ClientManager';
-import { ProtocolMgr } from './ProtocolMgr';
+import { protoMgr } from './ProtocolMgr';
 
 export class Router extends Component {
     private _nc: NatsConnection | undefined;
@@ -14,8 +14,6 @@ export class Router extends Component {
     async start() {
         const clientMgr = this.getComponent(ClientManager);
         if (!clientMgr) throw new Error('ClientManager Component is required!');
-        const protoMgr = this.getComponent(ProtocolMgr);
-        if (!protoMgr) throw new Error('ProtocolMgr Component is required!');
 
         this.server.eventEmitter.on('message', (data: Message) => {
             const msg = data.msg;

@@ -3,14 +3,12 @@ import { NatsComponent } from '../nats/NatsComponent';
 import { Component } from '../component/Component';
 import { logErr, logger } from '../logger/Logger';
 import { decodeRouterPack, encodeRouterPack, routeFunctions } from './RouterUtils';
-import { ProtocolMgr } from './ProtocolMgr';
+import { protoMgr } from './ProtocolMgr';
 
 export class RouteSubscriber extends Component {
     private sub: Subscription | undefined;
     async start() {
         const nc = this.getComponent(NatsComponent)?.nc;
-        const protocolMgr = this.getComponent(ProtocolMgr);
-        if (!protocolMgr) throw new Error('protocolMgr is required!');
 
         // example subject: game.2134
         this.sub = nc?.subscribe(`${this.server.serverType}.*`, {
@@ -24,18 +22,13 @@ export class RouteSubscriber extends Component {
                 const routeKey = msg.subject.substring(index + 1);
                 const data = decodeRouterPack(Buffer.from(msg.data));
                 const func = routeFunctions.get(routeKey);
-                func?.call(
-                    null,
-                    data.session,
-                    data.body ? protocolMgr.decodeMsgBody(data.body) : undefined,
-                    this.server
-                )
+                func?.call(null, data.session, data.body ? protoMgr.decodeMsgBody(data.body) : undefined, this.server)
                     .then((result) => {
                         if (msg.reply) {
                             msg.respond(
                                 encodeRouterPack(
                                     { id: data.session.id },
-                                    result ? protocolMgr.encodeMsgBody(result) : undefined
+                                    result ? protoMgr.encodeMsgBody(result) : undefined
                                 )
                             );
                         }

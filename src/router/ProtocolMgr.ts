@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component } from '../component/Component';
 import { isUpperCase } from './RouterUtils';
 
-export class ProtocolMgr extends Component {
+class ProtocolMgr {
     protected id2Subject = new Map<number, string>();
     setProtocol(proto: any) {
         for (const k in proto) {
@@ -34,3 +33,5 @@ export class ProtocolMgr extends Component {
         return JSON.parse(buf.toString()) as unknown;
     }
 }
+
+export const protoMgr = new ProtocolMgr();
