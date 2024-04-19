@@ -2,6 +2,8 @@ import { EventEmitter } from 'node:events';
 import { ComponentConstructor } from '../TypeDef';
 import { Component } from '../component/Component';
 import { logErr } from '../logger/Logger';
+import * as path from 'node:path';
+import * as fs from 'fs/promises';
 
 export class Server {
     readonly eventEmitter = new EventEmitter();
@@ -32,6 +34,7 @@ export class Server {
     }
 
     async start() {
+        await this.loadHandlers();
         for (const pair of this.components) {
             const comp = pair[1];
             try {
@@ -48,6 +51,21 @@ export class Server {
             } catch (e) {
                 logErr(e);
             }
+        }
+    }
+
+    private async loadHandlers() {
+        if (!require.main) return;
+        const handlerDir = path.join(require.main.path, 'handler');
+        try {
+            const list = await fs.readdir(handlerDir);
+            const promises: Promise<unknown>[] = [];
+            for (const fileName of list) {
+                promises.push(import(path.join(handlerDir, fileName)));
+            }
+            await Promise.all(promises);
+        } catch (e) {
+            logErr(e);
         }
     }
 
