@@ -3,7 +3,7 @@ import * as path from 'node:path';
 import * as fs from 'fs/promises';
 import { logErr } from '../logger/Logger';
 
-export class HandlerLoader extends Component {
+export class FileLoader extends Component {
     async init() {
         if (!require.main) return;
         const handlerDir = path.join(require.main.path, 'handler');
