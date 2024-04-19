@@ -49,10 +49,10 @@ export function isUpperCase(char: string) {
 
 const routeFunctions = new Map<string, (context: Context, data: unknown, server: Server) => Promise<unknown>>();
 
-export function route(routeKey: number) {
+export function protocol(protoId: number) {
     return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        routeFunctions.set(routeKey.toString(), descriptor.value);
+        routeFunctions.set(protoId.toString(), descriptor.value);
     };
 }
 
