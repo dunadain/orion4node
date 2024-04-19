@@ -8,6 +8,9 @@ import { decodeRouterPack, encodeRouterPack } from './RouterUtils';
 import { ClientManager } from '../component/ClientManager';
 import { protoMgr } from './ProtocolMgr';
 
+/**
+ * only exists in connector or gate server
+ */
 export class Router extends Component {
     private _nc: NatsConnection | undefined;
 

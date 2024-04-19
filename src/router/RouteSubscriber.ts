@@ -2,7 +2,7 @@ import { Subscription } from 'nats';
 import { NatsComponent } from '../nats/NatsComponent';
 import { Component } from '../component/Component';
 import { logErr, logger } from '../logger/Logger';
-import { decodeRouterPack, encodeRouterPack, routeFunctions } from './RouterUtils';
+import { decodeRouterPack, encodeRouterPack, handle } from './RouterUtils';
 import { protoMgr } from './ProtocolMgr';
 
 export class RouteSubscriber extends Component {
@@ -21,9 +21,8 @@ export class RouteSubscriber extends Component {
                 const index = msg.subject.indexOf('.');
                 const routeKey = msg.subject.substring(index + 1);
                 const data = decodeRouterPack(Buffer.from(msg.data));
-                const func = routeFunctions.get(routeKey);
-                func?.call(
-                    null,
+                handle(
+                    routeKey,
                     data.context,
                     data.body ? protoMgr.decodeMsgBody(data.body, data.context.protoId) : undefined,
                     this.server

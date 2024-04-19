@@ -47,11 +47,17 @@ export function isUpperCase(char: string) {
     return char === char.toUpperCase();
 }
 
-export const routeFunctions = new Map<string, (context: Context, data: unknown, server: Server) => Promise<unknown>>();
+const routeFunctions = new Map<string, (context: Context, data: unknown, server: Server) => Promise<unknown>>();
 
 export function route(routeKey: number) {
     return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         routeFunctions.set(routeKey.toString(), descriptor.value);
     };
+}
+
+export function handle(protoIdStr: string, context: Context, data: unknown, server: Server) {
+    const func = routeFunctions.get(protoIdStr);
+    if (!func) throw new Error(`no handler for protocol:${protoIdStr}`);
+    return func.call(null, context, data, server);
 }
