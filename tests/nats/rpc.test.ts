@@ -30,15 +30,15 @@ beforeAll(async () => {
     server2 = new Server('', 9003, 'game', '2');
     server2.addComponent(NatsComponent);
     const rsc = server2.addComponent(RouteSubscriber) as any;
-    mockCb1 = jest.fn(rsc.callback);
-    rsc.callback = mockCb1;
+    mockCb1 = jest.fn(rsc.process);
+    rsc.process = mockCb1;
     server2.addComponent(FileLoader);
 
     server3 = new Server('', 9004, 'game', '3');
     server3.addComponent(NatsComponent);
     const rsc2 = server3.addComponent(RouteSubscriber) as any;
-    mockCb2 = jest.fn(rsc2.callback);
-    rsc2.callback = mockCb2;
+    mockCb2 = jest.fn(rsc2.process);
+    rsc2.process = mockCb2;
     server3.addComponent(FileLoader);
     try {
         await server.start();
@@ -104,4 +104,6 @@ describe('communication', () => {
         const numCalls = Number(mockCb1.mock.calls.length) + Number(mockCb2.mock.calls.length);
         expect(numCalls).toBe(1);
     });
+
+    // test('client to server notification', () => {});
 });
