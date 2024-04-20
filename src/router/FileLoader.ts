@@ -2,6 +2,9 @@ import { Component } from '../component/Component';
 import * as path from 'node:path';
 import * as fs from 'fs/promises';
 
+/**
+ * load handler files and remote files
+ */
 export class FileLoader extends Component {
     async init() {
         if (!require.main) return;
