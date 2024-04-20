@@ -5,8 +5,8 @@ import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport
 import { ClientManager } from '../../src/component/ClientManager';
 import { NatsComponent } from '../../src/nats/NatsComponent';
 import { Router } from '../../src/router/Router';
-import { RouteSubscriber } from '../../src/router/RouteSubscriber';
-import { PushSubscriber } from '../../src/router/PushSubscriber';
+import { RouteSubscriber } from '../../src/router/subscribers/RouteSubscriber';
+import { PushSubscriber } from '../../src/router/subscribers/PushSubscriber';
 import { FileLoader } from '../../src/router/FileLoader';
 import { MessageEvent, WebSocket } from 'ws';
 import { createConnection } from '../utils/testUtils';

@@ -1,9 +1,9 @@
 import { Msg, Subscription } from 'nats';
-import { NatsComponent } from '../nats/NatsComponent';
-import { Component } from '../component/Component';
-import { logErr } from '../logger/Logger';
-import { decodeRouterPack, encodeRouterPack, handle } from './RouterUtils';
-import { protoMgr } from './ProtocolMgr';
+import { NatsComponent } from '../../nats/NatsComponent';
+import { Component } from '../../component/Component';
+import { logErr } from '../../logger/Logger';
+import { decodeRouterPack, encodeRouterPack, handle } from '../RouterUtils';
+import { protoMgr } from '../ProtocolMgr';
 
 export class RouteSubscriber extends Component {
     private sub: Subscription | undefined;
