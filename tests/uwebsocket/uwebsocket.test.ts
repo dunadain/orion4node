@@ -11,7 +11,7 @@ import { ClientState } from '../../src/transport/SocketClient';
 import { ErrorCode } from '../../src/config/ErrorCode';
 import { HandShake } from '../../src/transport/handlers/HandShake';
 import { netConfig } from '../../src/config/NetConfig';
-import { createConnection } from '../testUtils';
+import { createConnection } from '../utils/testUtils';
 import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
 import { Router } from '../../src/router/Router';
 import { NatsComponent } from '../../src/nats/NatsComponent';
