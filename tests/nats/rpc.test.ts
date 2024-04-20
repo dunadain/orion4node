@@ -13,12 +13,11 @@ import { createConnection } from '../utils/testUtils';
 import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
 import * as packUtil from '../../src/transport/protocol/PacketProcessor';
 import { Proto } from '../utils/Proto';
+import * as routerUtils from '../../src/router/RouterUtils';
 
 let server: Server;
 let server2: Server;
 let server3: Server;
-let mockCb1: any;
-let mockCb2: any;
 beforeAll(async () => {
     server = new Server('', 9002, 'connector', '1');
     server.addComponent(UWebSocketTransport);
@@ -29,21 +28,11 @@ beforeAll(async () => {
 
     server2 = new Server('', 9003, 'game', '2');
     server2.addComponent(NatsComponent);
-    const rsc = server2.addComponent(RouteSubscriber) as any;
-    mockCb1 = jest.fn(rsc.process);
-    rsc.process = mockCb1;
+    server2.addComponent(RouteSubscriber);
     server2.addComponent(FileLoader);
-
-    server3 = new Server('', 9004, 'game', '3');
-    server3.addComponent(NatsComponent);
-    const rsc2 = server3.addComponent(RouteSubscriber) as any;
-    mockCb2 = jest.fn(rsc2.process);
-    rsc2.process = mockCb2;
-    server3.addComponent(FileLoader);
     try {
         await server.start();
         await server2.start();
-        await server3.start();
     } catch (reason) {
         console.error(reason);
     }
@@ -52,7 +41,6 @@ beforeAll(async () => {
 afterAll(() => {
     server.shutdown();
     server2.shutdown();
-    server3.shutdown();
 });
 
 describe('communication', () => {
@@ -67,6 +55,19 @@ describe('communication', () => {
         socket.close();
     });
     test('req/resp', async () => {
+        server3 = new Server('', 9004, 'game', '3');
+        server3.addComponent(NatsComponent);
+        server3.addComponent(RouteSubscriber);
+        server3.addComponent(FileLoader);
+        await server3.start();
+        let rsb = server2.getComponent(RouteSubscriber) as any;
+        const mockP1 = jest.spyOn(rsb, 'process');
+        rsb = server3.getComponent(RouteSubscriber) as any;
+        const mockP2 = jest.spyOn(rsb, 'process');
+        const mockHandler = jest.spyOn(routerUtils, 'handle');
+        const nc = server.getComponent(NatsComponent)?.nc;
+        if (!nc) return;
+        const mockRequest = jest.spyOn(nc, 'request');
         const data = {
             a: 1,
             b: '223d',
@@ -100,10 +101,49 @@ describe('communication', () => {
             socket.send(pkg);
         });
         expect(result.id).toBe(reqId);
-        expect(result.body.name);
-        const numCalls = Number(mockCb1.mock.calls.length) + Number(mockCb2.mock.calls.length);
+        expect(result.body.name).toBe('Hello Game');
+        const numCalls = Number(mockP1.mock.calls.length) + Number(mockP2.mock.calls.length);
         expect(numCalls).toBe(1);
+        expect(mockHandler).toBeCalledTimes(1);
+        expect(mockRequest).toBeCalledTimes(1);
+        jest.clearAllMocks();
+        server3.shutdown();
     });
 
-    // test('client to server notification', () => {});
+    test('client to server notification', () => {
+        const nc = server.getComponent(NatsComponent)?.nc;
+        expect(nc).not.toBeUndefined();
+        if (!nc) return;
+        const mockPublish = jest.spyOn(nc, 'publish');
+        const mockHandler = jest.spyOn(routerUtils, 'handle');
+        const rsb = server2.getComponent(RouteSubscriber) as any;
+        const mockP1 = jest.spyOn(rsb, 'process');
+        const data = {
+            a: 1,
+            b: '223d',
+            c: true,
+            dsldksdjfk: '$$####asfdjal',
+        };
+        const reqId = 0;
+        const encodedMsg = msgUtil.encode(
+            reqId,
+            msgUtil.MsgType.NOTIFY,
+            Proto.GameUpdate,
+            Buffer.from(JSON.stringify(data), 'utf8')
+        );
+        const pkg = packUtil.encode(packUtil.PackType.DATA, encodedMsg);
+        socket.send(pkg);
+        return new Promise<void>((resolve) => {
+            setTimeout(() => {
+                expect(mockPublish).toBeCalledTimes(1);
+                expect(mockHandler).toBeCalledTimes(1);
+                expect(mockHandler.mock.results[0].value).resolves.toBeUndefined();
+                expect(mockHandler.mock.calls[0][0]).toBe(Proto.GameUpdate.toString());
+                expect(mockHandler.mock.calls[0][1].id).toBe(1);
+                expect((mockP1.mock.calls[0][0] as any).reply).toBe('');
+                jest.clearAllMocks();
+                resolve();
+            }, 10);
+        });
+    });
 });

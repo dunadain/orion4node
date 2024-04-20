@@ -9,4 +9,9 @@ export class GameHandler {
     async handle(context: Context, data: unknown, server: Server) {
         return { name: 'Hello Game' };
     }
+
+    @protocol(Proto.GameUpdate)
+    async gameUpdate(context: Context, data: unknown, server: Server) {
+        console.log('game update');
+    }
 }
