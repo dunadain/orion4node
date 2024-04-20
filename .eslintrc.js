@@ -17,12 +17,9 @@ module.exports = {
     },
     plugins: ['@typescript-eslint'],
     rules: {
+        '@typescript-eslint/no-extraneous-class': 'off',
         '@typescript-eslint/require-await': 'off',
-        quotes: [
-            'error',
-            'single',
-            { avoidEscape: true, allowTemplateLiterals: true },
-        ],
+        quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
         semi: ['error', 'always'],
         'no-multi-spaces': ['error'],
         // "camelcase": ['error', { "properties": "always" }],
