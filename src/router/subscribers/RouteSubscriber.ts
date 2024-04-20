@@ -1,30 +1,16 @@
-import { Msg, Subscription } from 'nats';
-import { NatsComponent } from '../../nats/NatsComponent';
-import { Component } from '../../component/Component';
+import { Msg } from 'nats';
 import { logErr } from '../../logger/Logger';
 import { decodeRouterPack, encodeRouterPack, handle } from '../RouterUtils';
 import { protoMgr } from '../ProtocolMgr';
+import { SubscriberBase } from './SubscriberBase';
 
-export class RouteSubscriber extends Component {
-    private sub: Subscription | undefined;
-    async start() {
-        const nc = this.getComponent(NatsComponent)?.nc;
-
-        // example subject: game.2134
-        this.sub = nc?.subscribe(`${this.server.serverType}.*`, { queue: this.server.serverType });
-        this.waitForMsgs().catch((e: unknown) => {
-            logErr(e);
-        });
+export class RouteSubscriber extends SubscriberBase {
+    async init() {
+        this.subject = `${this.server.serverType}.*`;
+        this.opt = { queue: this.server.serverType };
     }
 
-    private async waitForMsgs() {
-        if (!this.sub) return;
-        for await (const msg of this.sub) {
-            this.process(msg);
-        }
-    }
-
-    private process(msg: Msg) {
+    protected process(msg: Msg) {
         const index = msg.subject.indexOf('.');
         const routeKey = msg.subject.substring(index + 1);
         const data = decodeRouterPack(Buffer.from(msg.data));
@@ -47,11 +33,5 @@ export class RouteSubscriber extends Component {
             .catch((e: unknown) => {
                 logErr(e);
             });
-    }
-
-    dispose(): void {
-        this.sub?.drain().catch((e: unknown) => {
-            logErr(e);
-        });
     }
 }

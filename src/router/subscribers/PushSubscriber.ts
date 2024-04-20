@@ -1,34 +1,21 @@
-import { Msg, Subscription } from 'nats';
-import { Component } from '../../component/Component';
-import { NatsComponent } from '../../nats/NatsComponent';
-import { logErr } from '../../logger/Logger';
+import { Msg } from 'nats';
 import { decodeRouterPack } from '../RouterUtils';
 import { ClientManager } from '../../component/ClientManager';
 import { MsgType } from '../../transport/protocol/MsgProcessor';
+import { SubscriberBase } from './SubscriberBase';
 
 /**
  * only exist on connector/gate servers to listen for push events
  * and send msgs to clients
  */
-export class PushSubscriber extends Component {
-    private sub: Subscription | undefined;
+export class PushSubscriber extends SubscriberBase {
     private _clientMgr: ClientManager | undefined;
-    async start() {
-        const nc = this.getComponent(NatsComponent)?.nc;
-        this.sub = nc?.subscribe(this.server.uuid);
-        this.waitForMsgs().catch((e: unknown) => {
-            logErr(e);
-        });
+
+    async init() {
+        this.subject = this.server.uuid;
     }
 
-    private async waitForMsgs() {
-        if (!this.sub) return;
-        for await (const msg of this.sub) {
-            this.process(msg);
-        }
-    }
-
-    private process(msg: Msg) {
+    protected process(msg: Msg) {
         const data = decodeRouterPack(Buffer.from(msg.data));
         const client = this.clientMgr.getClientById(data.context.id);
         client?.sendMsg(MsgType.PUSH, data.context.protoId, data.body);
@@ -40,11 +27,5 @@ export class PushSubscriber extends Component {
             if (!this._clientMgr) throw new Error('ClientManager Component is required!');
         }
         return this._clientMgr;
-    }
-
-    dispose(): void {
-        this.sub?.drain().catch((e: unknown) => {
-            logErr(e);
-        });
     }
 }
