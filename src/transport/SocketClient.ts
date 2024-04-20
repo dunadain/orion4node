@@ -9,7 +9,7 @@ export interface SocketClient<T> {
      */
     socket: T;
     state: ClientState;
-    sendMsg(type: MsgType, route: number, msg: unknown, reqId?: number): void;
+    sendMsg(type: MsgType, route: number, msg: Buffer | undefined, reqId?: number): void;
     sendBuffer(buffer: Buffer): void;
     reportError(code: ErrorCode, msg?: string): void;
     onMessage(msg: ArrayBuffer): void;

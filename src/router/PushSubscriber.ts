@@ -21,7 +21,7 @@ export class PushSubscriber extends Component {
                 }
                 const data = decodeRouterPack(Buffer.from(msg.data));
                 const client = clientMgr.getClientById(data.context.id);
-                client?.sendMsg(MsgType.PUSH, data.context.protoId, data);
+                client?.sendMsg(MsgType.PUSH, data.context.protoId, data.body);
             },
         });
     }
