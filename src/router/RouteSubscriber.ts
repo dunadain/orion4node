@@ -1,7 +1,7 @@
-import { Msg, NatsError, Subscription } from 'nats';
+import { Msg, Subscription } from 'nats';
 import { NatsComponent } from '../nats/NatsComponent';
 import { Component } from '../component/Component';
-import { logErr, logger } from '../logger/Logger';
+import { logErr } from '../logger/Logger';
 import { decodeRouterPack, encodeRouterPack, handle } from './RouterUtils';
 import { protoMgr } from './ProtocolMgr';
 
@@ -11,17 +11,20 @@ export class RouteSubscriber extends Component {
         const nc = this.getComponent(NatsComponent)?.nc;
 
         // example subject: game.2134
-        this.sub = nc?.subscribe(`${this.server.serverType}.*`, {
-            queue: this.server.serverType,
-            callback: this.callback.bind(this),
+        this.sub = nc?.subscribe(`${this.server.serverType}.*`, { queue: this.server.serverType });
+        this.waitForMsgs().catch((e: unknown) => {
+            logErr(e);
         });
     }
 
-    private callback(err: NatsError | null, msg: Msg) {
-        if (err) {
-            logger.error(`subscription error: ${err.message}`);
-            return;
+    private async waitForMsgs() {
+        if (!this.sub) return;
+        for await (const msg of this.sub) {
+            this.process(msg);
         }
+    }
+
+    private process(msg: Msg) {
         const index = msg.subject.indexOf('.');
         const routeKey = msg.subject.substring(index + 1);
         const data = decodeRouterPack(Buffer.from(msg.data));
