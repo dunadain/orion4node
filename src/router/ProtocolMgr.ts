@@ -22,7 +22,7 @@ export const protoMgr = new ProtocolMgr();
 
 export function protocolIds(clazz: any) {
     for (const k in clazz) {
-        id2Subject.set(clazz[k], `${getServer(k)}.${String(clazz[k])}`);
+        id2Subject.set(clazz[k], `${getServer(k)}.handler.${String(clazz[k])}`);
     }
 }
 

@@ -6,12 +6,12 @@ import { SubscriberBase } from './SubscriberBase';
 
 export class RouteSubscriber extends SubscriberBase {
     async init() {
-        this.subject = `${this.server.serverType}.*`;
+        this.subject = `${this.server.serverType}.handler.*`;
         this.opt = { queue: this.server.serverType };
     }
 
     protected process(msg: Msg) {
-        const index = msg.subject.indexOf('.');
+        const index = msg.subject.lastIndexOf('.');
         const routeKey = msg.subject.substring(index + 1);
         const data = decodeRouterPack(Buffer.from(msg.data));
         handle(
