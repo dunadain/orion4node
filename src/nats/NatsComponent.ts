@@ -33,7 +33,7 @@ export class NatsComponent extends Component {
             .closed()
             .then((e) => {
                 if (e instanceof Error) logErr(e);
-                logger.info(`${this.server.name} the connection closed`);
+                logger.info(`${this.server.name} the nats connection is closed`);
             })
             .catch(() => {
                 // no rejection needed. nats resolves errors
