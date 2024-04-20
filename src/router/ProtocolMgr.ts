@@ -3,26 +3,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { isUpperCase } from './RouterUtils';
 
+const id2Subject = new Map<number, string>();
 class ProtocolMgr {
-    protected id2Subject = new Map<number, string>();
-    setProtocol(proto: any) {
-        for (const k in proto) {
-            this.id2Subject.set(proto[k], `${this.getServer(k)}.${String(proto[k])}`);
-        }
-    }
-
-    private getServer(key: string) {
-        let i = 1;
-        for (; i < key.length; ++i) {
-            if (isUpperCase(key.charAt(i))) {
-                break;
-            }
-        }
-        return key.substring(0, i).toLowerCase();
-    }
-
     getSubject(protocolId: number) {
-        return this.id2Subject.get(protocolId);
+        return id2Subject.get(protocolId);
     }
 
     encodeMsgBody(body: unknown, protoId?: number) {
@@ -35,3 +19,19 @@ class ProtocolMgr {
 }
 
 export const protoMgr = new ProtocolMgr();
+
+export function protocolIds(clazz: any) {
+    for (const k in clazz) {
+        id2Subject.set(clazz[k], `${getServer(k)}.${String(clazz[k])}`);
+    }
+}
+
+function getServer(key: string) {
+    let i = 1;
+    for (; i < key.length; ++i) {
+        if (isUpperCase(key.charAt(i))) {
+            break;
+        }
+    }
+    return key.substring(0, i).toLowerCase();
+}
