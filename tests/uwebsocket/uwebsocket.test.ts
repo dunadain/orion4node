@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { afterEach, beforeEach, describe, expect, it, jest, test } from '@jest/globals';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, jest, test } from '@jest/globals';
 import { Server } from '../../src/server/Server';
 import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport';
 import { MessageEvent, WebSocket } from 'ws';
@@ -19,7 +19,7 @@ import { Message } from '../../src/transport/protocol/ProtocolTypeDefs';
 
 const port = 9001;
 let server: Server;
-beforeEach(async () => {
+beforeAll(async () => {
     server = new Server('', port, 'connector', '111');
     server.addComponent(UWebSocketTransport);
     server.addComponent(ClientManager);
@@ -32,7 +32,7 @@ beforeEach(async () => {
     }
 });
 
-afterEach(() => {
+afterAll(() => {
     server.shutdown();
 });
 
