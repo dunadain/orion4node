@@ -9,7 +9,7 @@ export class PushSender extends Component {
     private _nc: NatsConnection | undefined;
     send(context: Context, msg: unknown) {
         const buf = encodeRouterPack(
-            { id: context.id },
+            { id: context.id, protoId: context.protoId },
             msg ? protoMgr.encodeMsgBody(msg, context.protoId) : undefined
         );
         if (context.sId === undefined)
