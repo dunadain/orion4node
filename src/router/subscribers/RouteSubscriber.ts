@@ -13,7 +13,6 @@ export class RouteSubscriber extends SubscriberBase {
     protected process(msg: Msg) {
         const data = decodeRouterPack(Buffer.from(msg.data));
         handle(
-            data.context.protoId,
             data.context,
             data.body ? protoMgr.decodeMsgBody(data.body, data.context.protoId) : undefined,
             this.server
