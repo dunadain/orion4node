@@ -139,13 +139,16 @@ describe('communication', () => {
         });
     });
 
-    test('server to client notification(push)', () => {
-        return new Promise<any>((resolve) => {
+    test('server to client notification(push)', async () => {
+        const result = await new Promise<any>((resolve) => {
             socket.onmessage = (e: MessageEvent) => {
                 resolve(decodeClientData(e));
             };
             const sender = server2.getComponent(PushSender);
-            sender?.send({ id: 1, protoId: Proto.GameUpdate, sId: id1 }, { name: 'Hello Game' });
+            sender?.send({ id: 1, protoId: Proto.PushToClient, sId: id1 }, { name: 'Hello Game' });
         });
+        expect(result.id).toBe(0);
+        expect(result.route).toBe(Proto.PushToClient);
+        expect(result.body.name).toBe('Hello Game');
     });
 });
