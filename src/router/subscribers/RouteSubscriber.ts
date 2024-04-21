@@ -6,7 +6,7 @@ import { SubscriberBase } from './SubscriberBase';
 
 export class RouteSubscriber extends SubscriberBase {
     async init() {
-        this.subject = `${this.server.serverType}.handler`;
+        this.subject = `handler.${this.server.serverType}`;
         this.opt = { queue: this.server.serverType };
     }
 

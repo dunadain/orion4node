@@ -9,7 +9,7 @@ describe('subject creation', () => {
             static readonly ChatSend = 1;
         }
 
-        expect(protoMgr.getSubject(Proto.GameLogin)).toBe('game.handler');
-        expect(protoMgr.getSubject(Proto.ChatSend)).toBe('chat.handler');
+        expect(protoMgr.getSubject(Proto.GameLogin)).toBe('handler.game');
+        expect(protoMgr.getSubject(Proto.ChatSend)).toBe('handler.chat');
     });
 });
