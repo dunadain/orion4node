@@ -12,7 +12,7 @@ export class PushSubscriber extends SubscriberBase {
     private _clientMgr: ClientManager | undefined;
 
     async init() {
-        this.subject = this.server.uuid;
+        this.subject = `push.${this.server.uuid}`;
     }
 
     protected process(msg: Msg) {

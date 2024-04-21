@@ -138,7 +138,7 @@ describe('communication', () => {
                 expect(mockPublish).toBeCalledTimes(1);
                 expect(mockHandler).toBeCalledTimes(1);
                 expect(mockHandler.mock.results[0].value).resolves.toBeUndefined();
-                expect(mockHandler.mock.calls[0][0]).toBe(Proto.GameUpdate.toString());
+                expect(mockHandler.mock.calls[0][0]).toBe(Proto.GameUpdate);
                 expect(mockHandler.mock.calls[0][1].id).toBe(1);
                 expect((mockP1.mock.calls[0][0] as any).reply).toBe('');
                 jest.clearAllMocks();

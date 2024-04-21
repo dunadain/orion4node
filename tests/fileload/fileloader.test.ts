@@ -19,7 +19,7 @@ describe('load handlers', () => {
 
     it('should have handlers in RouteUtils', async () => {
         await expect(
-            handle(Proto.GameLogin.toString(), { id: 1, protoId: Proto.GameLogin }, undefined, {} as Server)
+            handle(Proto.GameLogin, { id: 1, protoId: Proto.GameLogin }, undefined, {} as Server)
         ).resolves.toBe(1000);
     });
 });

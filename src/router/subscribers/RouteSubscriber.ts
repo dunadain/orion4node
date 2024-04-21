@@ -6,16 +6,14 @@ import { SubscriberBase } from './SubscriberBase';
 
 export class RouteSubscriber extends SubscriberBase {
     async init() {
-        this.subject = `${this.server.serverType}.handler.*`;
+        this.subject = `${this.server.serverType}.handler`;
         this.opt = { queue: this.server.serverType };
     }
 
     protected process(msg: Msg) {
-        const index = msg.subject.lastIndexOf('.');
-        const routeKey = msg.subject.substring(index + 1);
         const data = decodeRouterPack(Buffer.from(msg.data));
         handle(
-            routeKey,
+            data.context.protoId,
             data.context,
             data.body ? protoMgr.decodeMsgBody(data.body, data.context.protoId) : undefined,
             this.server
