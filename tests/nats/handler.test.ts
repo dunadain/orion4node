@@ -9,27 +9,31 @@ import { RouteSubscriber } from '../../src/router/subscribers/RouteSubscriber';
 import { PushSubscriber } from '../../src/router/subscribers/PushSubscriber';
 import { FileLoader } from '../../src/router/FileLoader';
 import { MessageEvent, WebSocket } from 'ws';
-import { createConnection } from '../utils/testUtils';
+import { createConnection, decodeClientData } from '../utils/testUtils';
 import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
 import * as packUtil from '../../src/transport/protocol/PacketProcessor';
 import { Proto } from '../utils/Proto';
 import * as routerUtils from '../../src/router/RouterUtils';
+import { PushSender } from '../../src/router/PushSender';
 
 let server: Server;
 let server2: Server;
 let server3: Server;
+const id1 = '1';
+const id2 = '2';
 beforeAll(async () => {
-    server = new Server('', 9002, 'connector', '1');
+    server = new Server('', 9002, 'connector', id1);
     server.addComponent(UWebSocketTransport);
     server.addComponent(ClientManager);
     server.addComponent(NatsComponent);
     server.addComponent(Router);
     server.addComponent(PushSubscriber);
 
-    server2 = new Server('', 9003, 'game', '2');
+    server2 = new Server('', 9003, 'game', id2);
     server2.addComponent(NatsComponent);
     server2.addComponent(RouteSubscriber);
     server2.addComponent(FileLoader);
+    server2.addComponent(PushSender);
     try {
         await server.start();
         await server2.start();
@@ -83,19 +87,7 @@ describe('communication', () => {
         );
         const result: { id: number; route: number; body: any } = await new Promise<any>((resolve) => {
             socket.onmessage = (e: MessageEvent) => {
-                const buffer = Buffer.from(e.data as ArrayBuffer);
-                const pkgs = packUtil.decode(buffer);
-                if (pkgs[0].type === packUtil.PackType.DATA) {
-                    if (pkgs[0].body) {
-                        const decodedMsg = msgUtil.decode(pkgs[0].body);
-                        const parsedObj = JSON.parse(decodedMsg.body.toString());
-                        resolve({
-                            id: decodedMsg.id,
-                            route: decodedMsg.route,
-                            body: parsedObj,
-                        });
-                    }
-                }
+                resolve(decodeClientData(e));
             };
             const pkg = packUtil.encode(packUtil.PackType.DATA, encodedMsg);
             socket.send(pkg);
@@ -144,6 +136,16 @@ describe('communication', () => {
                 jest.clearAllMocks();
                 resolve();
             }, 10);
+        });
+    });
+
+    test('server to client notification(push)', () => {
+        return new Promise<any>((resolve) => {
+            socket.onmessage = (e: MessageEvent) => {
+                resolve(decodeClientData(e));
+            };
+            const sender = server2.getComponent(PushSender);
+            sender?.send({ id: 1, protoId: Proto.GameUpdate, sId: id1 }, { name: 'Hello Game' });
         });
     });
 });

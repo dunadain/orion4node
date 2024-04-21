@@ -1,5 +1,6 @@
 import { MessageEvent, WebSocket } from 'ws';
 import * as packUtil from '../../src/transport/protocol/PacketProcessor';
+import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
 
 export function createConnection(port: number, obj?: any) {
     return new Promise<void>((resolve) => {
@@ -21,4 +22,20 @@ export function createConnection(port: number, obj?: any) {
             }
         };
     });
+}
+
+export function decodeClientData(e: MessageEvent) {
+    const buffer = Buffer.from(e.data as ArrayBuffer);
+    const pkgs = packUtil.decode(buffer);
+    if (pkgs[0].type === packUtil.PackType.DATA) {
+        if (pkgs[0].body) {
+            const decodedMsg = msgUtil.decode(pkgs[0].body);
+            const parsedObj = JSON.parse(decodedMsg.body.toString());
+            return {
+                id: decodedMsg.id,
+                route: decodedMsg.route,
+                body: parsedObj,
+            };
+        }
+    }
 }

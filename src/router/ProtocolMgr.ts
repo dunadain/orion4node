@@ -22,6 +22,8 @@ export const protoMgr = new ProtocolMgr();
 
 export function protocolIds(clazz: any) {
     for (const k in clazz) {
+        const id = clazz[k] as number;
+        if (id2Subject.has(id)) throw new Error(`protocol id:${String(id)} is duplicated!`);
         id2Subject.set(clazz[k], `handler.${getServer(k)}`);
     }
 }
