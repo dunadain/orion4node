@@ -2,7 +2,7 @@ import { describe, expect, it, test } from '@jest/globals';
 import { protoMgr, protocolIds } from '../../src/router/ProtocolMgr';
 
 describe('subject creation', () => {
-    test('subject should have the form servertype.protocolid', () => {
+    test('subject should have the form handler.servertype', () => {
         @protocolIds
         class Proto {
             static readonly GameLogin = 0;
