@@ -7,7 +7,7 @@ import { existsSync } from 'node:fs';
 import { addRpcCall } from '../rpc/RpcUtils';
 
 /**
- * load handler files and remote files
+ * load handler files and rpc files
  */
 export class FileLoader extends Component {
     async init() {
