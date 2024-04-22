@@ -13,7 +13,17 @@ export enum PackType {
 }
 
 function isValidType(type: PackType): boolean {
-    return type >= PackType.HANDSHAKE && type <= PackType.ERROR;
+    switch (type) {
+        case PackType.HANDSHAKE:
+        case PackType.HANDSHAKE_ACK:
+        case PackType.HEARTBEAT:
+        case PackType.DATA:
+        case PackType.KICK:
+        case PackType.ERROR:
+            return true;
+        default:
+            return false;
+    }
 }
 
 /**
