@@ -1,5 +1,5 @@
 import { describe, expect, it, test } from '@jest/globals';
-import { FileLoader } from '../../src/router/FileLoader';
+import { FileLoader } from '../../src/server/FileLoader';
 import { Server } from '../../src/server/Server';
 import * as path from 'node:path';
 import { handle } from '../../src/router/RouterUtils';
