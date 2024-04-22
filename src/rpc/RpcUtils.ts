@@ -3,8 +3,8 @@ export function addRpcCall(funcName: string, func: (param: unknown) => Promise<u
     rpcCalls.set(funcName, func);
 }
 
-export function callRpc(funcName: string, param: unknown) {
+export async function callRpc(funcName: string, param: unknown) {
     const rpcCall = rpcCalls.get(funcName);
     if (!rpcCall) throw new Error(`rpc call ${funcName} not found`);
-    return rpcCall(param);
+    return await rpcCall(param);
 }

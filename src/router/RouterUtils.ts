@@ -56,8 +56,8 @@ export function protocol(protoId: number) {
     };
 }
 
-export function handle(context: Context, data: unknown, server: Server) {
+export async function handle(context: Context, data: unknown, server: Server) {
     const func = routeFunctions.get(context.protoId);
     if (!func) throw new Error(`no handler for protocol:${context.protoId.toString()}`);
-    return func.call(null, context, data, server);
+    return await func.call(null, context, data, server);
 }
