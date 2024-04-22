@@ -3,7 +3,7 @@ import * as packUtil from '../../src/transport/protocol/PacketProcessor';
 import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
 
 export function createConnection(port: number, obj?: any) {
-    return new Promise<void>((resolve) => {
+    return new Promise<WebSocket>((resolve) => {
         const newSocket = new WebSocket(`ws://localhost:${port.toString()}`);
         if (obj) obj.socket = newSocket;
         newSocket.onopen = () => {
@@ -18,7 +18,7 @@ export function createConnection(port: number, obj?: any) {
             if (pkg.type === packUtil.PackType.HANDSHAKE) {
                 newSocket.send(packUtil.encode(packUtil.PackType.HANDSHAKE_ACK));
             } else if (pkg.type === packUtil.PackType.HANDSHAKE_ACK) {
-                resolve();
+                resolve(newSocket);
             }
         };
     });

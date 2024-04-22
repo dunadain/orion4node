@@ -52,6 +52,24 @@ describe('connection test', () => {
             socket.close();
         });
     });
+
+    test('multiple connections', async () => {
+        const p: Promise<WebSocket>[] = [];
+        for (let i = 0; i < 10; ++i) {
+            p.push(createConnection(port));
+        }
+        const arr = await Promise.all(p);
+        const clientMgr = server.getComponent(ClientManager);
+        expect((clientMgr as any).id2Client.size).toBe(10);
+        expect((clientMgr as any).map.size).toBe(10);
+        expect((clientMgr as any).idGenerator).toBe(10);
+        (clientMgr as any).id2Client.forEach((client: any) => {
+            expect(client.state).toBe(ClientState.Ready);
+        });
+        for (const ws of arr) {
+            ws.close();
+        }
+    });
 });
 
 describe('handshake test', () => {
@@ -137,24 +155,6 @@ describe('handshake test', () => {
             return ver > '1.1.0';
         };
         return testHandshakeErr({ sys: { ver: '1.0.0' } }, ErrorCode.OutdatedClient, socket);
-    });
-});
-
-describe('multiple connections', () => {
-    test('test connections', () => {
-        const p: Promise<void>[] = [];
-        for (let i = 0; i < 10; ++i) {
-            p.push(createConnection(port));
-        }
-        return Promise.all(p).then(() => {
-            const clientMgr = server.getComponent(ClientManager);
-            expect((clientMgr as any).id2Client.size).toBe(10);
-            expect((clientMgr as any).map.size).toBe(10);
-            expect((clientMgr as any).idGenerator).toBe(10);
-            (clientMgr as any).id2Client.forEach((client: any) => {
-                expect(client.state).toBe(ClientState.Ready);
-            });
-        });
     });
 });
 
