@@ -60,7 +60,7 @@ export class Router extends Component {
     private async tryRequest(subject: string, payload: Payload) {
         for (let i = 0; i < 3; ++i) {
             try {
-                const rep = await this.nc.request(subject, payload, { timeout: 3000 });
+                const rep = await this.nc.request(subject, payload, { timeout: 1000 });
                 return rep.data;
             } catch (e: unknown) {
                 const nErr = e as NatsError;
