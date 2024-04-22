@@ -1,6 +1,6 @@
 import { App, DISABLED, TemplatedApp } from 'uWebSockets.js';
 import { Component } from '../../component/Component';
-import { logger } from '../../logger/Logger';
+import { logErr, logger } from '../../logger/Logger';
 import { ClientManager } from '../../component/ClientManager';
 import { UWebSocketClient } from './UWebSocketClient';
 import { Server } from '../../server/Server';
@@ -28,7 +28,14 @@ export class UWebSocketTransport extends Component {
                     this.clientMgr.addClient(client);
                 },
                 message: (ws, message) => {
-                    this.clientMgr.getClient(ws)?.onMessage(message);
+                    const client = this.clientMgr.getClient(ws);
+                    if (!client) return;
+                    try {
+                        client.onMessage(message);
+                    } catch (e) {
+                        client.disconnect();
+                        logErr(e);
+                    }
                 },
                 drain: (ws) => {
                     const client = this.clientMgr.getClient(ws);

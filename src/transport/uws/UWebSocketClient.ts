@@ -3,7 +3,6 @@ import { ClientState, SocketClient } from '../SocketClient';
 import * as packUtils from '../protocol/PacketProcessor';
 import * as msgUtils from '../protocol/MsgProcessor';
 import { PkgHandler } from '../handlers/PacketHandler';
-import { logErr, logger } from '../../logger/Logger';
 import { HeartBeat } from '../handlers/HeartBeat';
 import { HandShake } from '../handlers/HandShake';
 import { HandShakeAck } from '../handlers/HandShakeAck';
@@ -58,26 +57,18 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     }
 
     onMessage(dataRcv: ArrayBuffer) {
-        try {
-            packUtils.decode(Buffer.from(dataRcv), this.helperArr);
-        } catch (e) {
-            logErr(e);
-            this.disconnect();
-            return;
-        }
+        this.helperArr.length = 0;
+        packUtils.decode(Buffer.from(dataRcv), this.helperArr);
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.helperArr.length; ++i) {
             if (this.state === ClientState.Closed) return;
 
             const pack = this.helperArr[i];
             if (!this.handlers.has(pack.type)) {
-                logger.error(`invalid package type: ${pack.type.toString()}`);
-                this.disconnect();
-                return;
+                throw new Error(`invalid package type: ${pack.type.toString()}`);
             }
             this.handlers.get(pack.type)?.handle(pack.body);
         }
-        this.helperArr.length = 0;
     }
 
     onDrain() {
