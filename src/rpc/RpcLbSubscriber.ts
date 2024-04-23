@@ -4,7 +4,6 @@ import { SubscriberBase } from '../router/subscribers/SubscriberBase';
 /**
  * listen for rpc events
  * don't store any state in the server
- * typically used for io rpcs
  */
 export class RpcLbSubscriber extends SubscriberBase {
     async init() {
