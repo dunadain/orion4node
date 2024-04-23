@@ -24,10 +24,11 @@
     "allowJs": true
   },
   "include": [
-    "./**/*.ts"
+    "./**/*"
   ],
   "exclude": [
     "./dist/**/*.*",
-    "node_modules"
+    "node_modules",
+    "jest.config.js"
   ]
 }
