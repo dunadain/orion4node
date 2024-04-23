@@ -103,5 +103,5 @@ module.exports = {
             },
         },
     ],
-    ignorePatterns: ['*.js', '*.mjs', '/dist/', '/node_modules/'],
+    ignorePatterns: ['*.d.ts', '*.js', '*.mjs', '/dist/', '/node_modules/'],
 };
