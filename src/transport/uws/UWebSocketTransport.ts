@@ -6,7 +6,7 @@ import { UWebSocketClient } from './UWebSocketClient';
 import { Server } from '../../server/Server';
 
 export class UWebSocketTransport extends Component {
-    app: TemplatedApp;
+    private app: TemplatedApp;
     private _clientMgr: ClientManager | undefined;
 
     constructor(server: Server) {
