@@ -2,7 +2,7 @@ import { NatsConnection } from 'nats';
 import { Component } from '../component/Component';
 import { NatsComponent } from '../nats/NatsComponent';
 import { Constructor } from '../TypeDef';
-import { Message, Method, Namespace, RPCImplCallback, Service, rpc } from 'protobufjs';
+import { Message, Method, RPCImplCallback, Root, Service, rpc } from 'protobufjs';
 
 interface MetaData {
     serverType: string;
@@ -51,10 +51,10 @@ export class RpcClient extends Component {
         return this._nc;
     }
 
-    addServices(root: Namespace, serverType: string) {
+    addServices(root: Root, serverType: string) {
         for (const k in root.nested) {
             const clazz = root.nested[k];
-            const constructor = clazz as unknown as { className: string };
+            const constructor = clazz.constructor as unknown as { className: string };
             if (constructor.className !== 'Service') continue;
             const serviceClazz = clazz as Service;
             const extra = {
@@ -68,17 +68,21 @@ export class RpcClient extends Component {
             for (const key in serviceClazz.methods) {
                 const methodName = key.charAt(0).toLowerCase() + key.slice(1);
                 Object.defineProperty(proxy, methodName, {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    value: function (...args: any[]) {
+                    value: function (request: unknown, callback?: (err: Error | null, res?: unknown) => void) {
                         const self = this as Proxy;
                         extra.serverId = self.serverId;
                         extra.publish = self.mute;
-                        if (!self.service) throw new Error('service not found');
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
-                        const result = (self.service as Record<string, any>)[key](...args);
+                        if (!self.service) {
+                            if (callback) {
+                                callback(new Error('service not found'), null);
+                                return;
+                            } else return Promise.reject(new Error('service not found'));
+                        }
+
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+                        const result = (self.service as any)[methodName](request, callback) as unknown;
                         self.serverId = '';
                         self.mute = false;
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                         return result;
                     },
                 });
