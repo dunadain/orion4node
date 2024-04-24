@@ -36,7 +36,7 @@ export class Router extends Component {
             switch (msg.type) {
                 case MsgType.REQUEST:
                     this.nats
-                        .tryRequest(subject, buf)
+                        .tryRequest(subject, buf, { timeout: 1000 })
                         .then((replyu8a) => {
                             const rBuf = Buffer.from(replyu8a);
                             const response = decodeRouterPack(rBuf);

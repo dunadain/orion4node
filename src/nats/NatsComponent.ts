@@ -1,6 +1,17 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-base-to-string */
-import { ConnectionOptions, DebugEvents, ErrorCode, Events, NatsConnection, NatsError, Payload, connect } from 'nats';
+import {
+    ConnectionOptions,
+    DebugEvents,
+    ErrorCode,
+    Events,
+    NatsConnection,
+    NatsError,
+    Payload,
+    PublishOptions,
+    RequestOptions,
+    connect,
+} from 'nats';
 import { Component } from '../component/Component';
 import { logErr, logger } from '../logger/Logger';
 import * as fs from 'node:fs/promises';
@@ -20,11 +31,11 @@ export class NatsComponent extends Component {
      * @param payload
      * @returns
      */
-    async tryRequest(subject: string, payload: Payload) {
+    async tryRequest(subject: string, payload?: Payload, opts?: RequestOptions) {
         if (!this.nc) throw new Error('nats connection is not ready');
         for (let i = 0; i < 3; ++i) {
             try {
-                const rep = await this.nc.request(subject, payload, { timeout: 1000 });
+                const rep = await this.nc.request(subject, payload, opts);
                 return rep.data;
             } catch (e: unknown) {
                 const nErr = e as NatsError;
@@ -36,9 +47,9 @@ export class NatsComponent extends Component {
         throw new Error(`request ${subject} timeout`);
     }
 
-    publish(subject: string, payload: Payload) {
+    publish(subject: string, payload?: Payload, options?: PublishOptions) {
         try {
-            this.nc?.publish(subject, payload);
+            this.nc?.publish(subject, payload, options);
         } catch (e: unknown) {
             logErr(e);
         }

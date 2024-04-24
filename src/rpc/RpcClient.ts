@@ -33,7 +33,7 @@ export class RpcClient extends Component {
             callback(null, null);
         } else
             this.nats
-                .tryRequest(subject, requestData)
+                .tryRequest(subject, requestData, { timeout: 1000 })
                 .then((res) => {
                     callback(null, res);
                 })
