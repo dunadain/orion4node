@@ -1,4 +1,3 @@
-import { ErrorCode, NatsConnection, NatsError, Payload } from 'nats';
 import { Message } from '../transport/protocol/ProtocolTypeDefs';
 import { Component } from '../component/Component';
 import { NatsComponent } from '../nats/NatsComponent';
@@ -12,7 +11,7 @@ import { protoMgr } from './ProtocolMgr';
  * only exists in connector or gate server
  */
 export class Router extends Component {
-    private _nc: NatsConnection | undefined;
+    private _nats: NatsComponent | undefined;
 
     async start() {
         const clientMgr = this.getComponent(ClientManager);
@@ -36,7 +35,8 @@ export class Router extends Component {
             );
             switch (msg.type) {
                 case MsgType.REQUEST:
-                    this.tryRequest(subject, buf)
+                    this.nats
+                        .tryRequest(subject, buf)
                         .then((replyu8a) => {
                             const rBuf = Buffer.from(replyu8a);
                             const response = decodeRouterPack(rBuf);
@@ -48,7 +48,7 @@ export class Router extends Component {
                         });
                     break;
                 case MsgType.NOTIFY:
-                    this.nc.publish(subject, buf);
+                    this.nats.publish(subject, buf);
                     break;
                 default:
                     break;
@@ -56,28 +56,11 @@ export class Router extends Component {
         });
     }
 
-    // try 3 times, before consider it totally failed;
-    private async tryRequest(subject: string, payload: Payload) {
-        for (let i = 0; i < 3; ++i) {
-            try {
-                const rep = await this.nc.request(subject, payload, { timeout: 1000 });
-                return rep.data;
-            } catch (e: unknown) {
-                const nErr = e as NatsError;
-                if ((nErr.code as ErrorCode) === ErrorCode.NoResponders) {
-                    throw e;
-                }
-            }
+    get nats() {
+        if (!this._nats) {
+            this._nats = this.getComponent(NatsComponent);
+            if (!this._nats) throw new Error('NatsComponent not found');
         }
-        throw new Error(`request ${subject} timeout`);
-    }
-
-    get nc() {
-        if (!this._nc) {
-            const nats = this.getComponent(NatsComponent);
-            if (!nats?.nc) throw new Error('nats component is required');
-            this._nc = nats.nc;
-        }
-        return this._nc;
+        return this._nats;
     }
 }

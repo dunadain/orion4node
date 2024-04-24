@@ -1,4 +1,3 @@
-import { NatsConnection } from 'nats';
 import { Component } from '../component/Component';
 import { NatsComponent } from '../nats/NatsComponent';
 import { Constructor } from '../TypeDef';
@@ -11,7 +10,7 @@ interface MetaData {
 }
 
 export class RpcClient extends Component {
-    private _nc: NatsConnection | undefined;
+    private _nats: NatsComponent | undefined;
     private map = new Map<string, unknown>();
 
     private rpcImpl(
@@ -30,25 +29,25 @@ export class RpcClient extends Component {
             method.name
         }.${method1.requestType}.${method1.responseType}`;
         if (metaData.publish) {
-            this.nc.publish(subject, requestData);
+            this.nats.publish(subject, requestData);
             callback(null, null);
         } else
-            this.nc
-                .request(subject, requestData, { timeout: 1000 })
+            this.nats
+                .tryRequest(subject, requestData)
                 .then((res) => {
-                    callback(null, res.data);
+                    callback(null, res);
                 })
                 .catch((e: unknown) => {
                     callback(e as Error, null);
                 });
     }
 
-    get nc() {
-        if (!this._nc) {
-            this._nc = this.server.getComponent(NatsComponent)?.nc;
-            if (!this._nc) throw new Error('NatsComponent not found');
+    get nats() {
+        if (!this._nats) {
+            this._nats = this.server.getComponent(NatsComponent);
+            if (!this._nats) throw new Error('NatsComponent not found');
         }
-        return this._nc;
+        return this._nats;
     }
 
     addServices(root: Root, serverType: string) {
