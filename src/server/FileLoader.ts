@@ -27,11 +27,13 @@ export class FileLoader extends Component {
             for (const fileName of list) {
                 promises.push(
                     import(path.join(remoteDir, fileName)).then((m) => {
-                        const prototype = m.default.prototype;
-                        for (const key in prototype) {
-                            if (typeof prototype[key] === 'function') {
-                                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                                addRpcCall(key, prototype[key]);
+                        for (const className in m) {
+                            const prototype = m[className].prototype;
+                            for (const key in prototype) {
+                                if (typeof prototype[key] === 'function') {
+                                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                                    addRpcCall(`${className}.${key}`, prototype[key]);
+                                }
                             }
                         }
                     })
