@@ -69,7 +69,7 @@ export class Router extends Component {
                 }
             }
         }
-        throw new Error('timeout');
+        throw new Error(`request ${subject} timeout`);
     }
 
     get nc() {
