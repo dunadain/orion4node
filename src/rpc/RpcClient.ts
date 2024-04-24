@@ -85,36 +85,6 @@ export class RpcClient extends Component {
             }
             this.map.set(clazz.name, proxy);
         }
-        // for (const key in root) {
-        //     if (!root[key]) continue;
-        //     if (Object.hasOwn(root[key], 'methods')) {
-        //         const constructor = root[key];
-        //         const extra = {
-        //             serverType: serverType,
-        //             serverId: '',
-        //             publish: false,
-        //         };
-        //         const service = constructor.create(this.rpcImpl.bind(this, extra), false, false);
-        //         const proxy = new Proxy();
-        //         proxy.service = service;
-        //         for (const key in service) {
-        //             if (key === 'rpcImpl') continue;
-        //             if (Object.hasOwn(service, key) && typeof service[key] === 'function') {
-        //                 Object.defineProperty(proxy, key, {
-        //                     value: function (...args: any[]) {
-        //                         extra.serverId = this.serverId;
-        //                         extra.publish = this.mute;
-        //                         const result = this.service[key](...args);
-        //                         this.serverId = '';
-        //                         this.mute = false;
-        //                         return result;
-        //                     },
-        //                 });
-        //             }
-        //         }
-        //         this.map.set(constructor.name, proxy);
-        //     }
-        // }
     }
 
     getService<T>(constructor: Constructor<T>): RemoteProxy<T> {
