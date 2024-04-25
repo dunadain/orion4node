@@ -6,9 +6,19 @@ import { protoMgr } from './ProtocolMgr';
 
 export class PushSender extends Component {
     private _nc: NatsConnection | undefined;
+
+    /**
+     * Sends a push message.
+     *
+     * @param context - The context object containing the following fields:
+     *   - id: The client ID.
+     *   - protoId: The protocol ID.
+     *   - sId: The server ID.
+     * @param msg - The message to be sent.
+     */
     send(
         context: {
-            id: number; // clientId
+            id: number;
             protoId: number;
             sId: string;
         },
