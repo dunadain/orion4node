@@ -11,7 +11,8 @@ class ProtocolMgr {
         const serverType = id2Server.get(protocolId);
         if (!serverType) return '';
         if (serverSelector.hasRoute(serverType)) {
-            return `handler.${await serverSelector.selectServer(uid, serverType)}`;
+            const serverId = await serverSelector.selectServer(uid, serverType);
+            return 'handler.' + serverId;
         }
         return 'handler.' + serverType;
     }
@@ -30,7 +31,7 @@ export const protoMgr = new ProtocolMgr();
 export function protocolIds(clazz: any) {
     for (const k in clazz) {
         const id = clazz[k] as number;
-        if (id2Subject.has(id)) throw new Error(`protocol id:${String(id)} is duplicated!`);
+        if (id2Server.has(id)) throw new Error(`protocol id:${String(id)} is duplicated!`);
         id2Server.set(id, getServer(k));
     }
 }

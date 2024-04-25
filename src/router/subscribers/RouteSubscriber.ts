@@ -4,12 +4,7 @@ import { decodeRouterPack, encodeRouterPack, handle } from '../RouterUtils';
 import { protoMgr } from '../ProtocolMgr';
 import { SubscriberBase } from './SubscriberBase';
 
-export class RouteSubscriber extends SubscriberBase {
-    async init() {
-        this.subject = `handler.${this.server.serverType}`;
-        this.opt = { queue: this.server.serverType };
-    }
-
+export abstract class RouteSubscriber extends SubscriberBase {
     protected process(msg: Msg) {
         const data = decodeRouterPack(Buffer.from(msg.data));
         handle(

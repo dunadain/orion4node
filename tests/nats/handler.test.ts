@@ -5,7 +5,6 @@ import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport
 import { ClientManager } from '../../src/component/ClientManager';
 import { NatsComponent } from '../../src/nats/NatsComponent';
 import { Router } from '../../src/router/Router';
-import { RouteSubscriber } from '../../src/router/subscribers/RouteSubscriber';
 import { PushSubscriber } from '../../src/router/subscribers/PushSubscriber';
 import { FileLoader } from '../../src/server/FileLoader';
 import { MessageEvent, WebSocket } from 'ws';
@@ -15,6 +14,7 @@ import * as packUtil from '../../src/transport/protocol/PacketProcessor';
 import { Proto } from '../utils/Proto';
 import * as routerUtils from '../../src/router/RouterUtils';
 import { PushSender } from '../../src/router/PushSender';
+import { StatelessRouteSubscriber } from '../../src/router/subscribers/StatelessRouteSubscriber';
 
 let server: Server;
 let server2: Server;
@@ -31,7 +31,7 @@ beforeAll(async () => {
 
     server2 = new Server('', 9003, 'game', id2);
     server2.addComponent(NatsComponent);
-    server2.addComponent(RouteSubscriber);
+    server2.addComponent(StatelessRouteSubscriber);
     server2.addComponent(FileLoader);
     server2.addComponent(PushSender);
     try {
@@ -61,13 +61,13 @@ describe('communication', () => {
     test('req/resp', async () => {
         server3 = new Server('', 9004, 'game', '3');
         server3.addComponent(NatsComponent);
-        server3.addComponent(RouteSubscriber);
+        server3.addComponent(StatelessRouteSubscriber);
         server3.addComponent(FileLoader);
         await server3.start();
-        let rsb = server2.getComponent(RouteSubscriber) as any;
-        const mockP1 = jest.spyOn(rsb, 'process');
-        rsb = server3.getComponent(RouteSubscriber) as any;
-        const mockP2 = jest.spyOn(rsb, 'process');
+        const rsb = server2.getComponent(StatelessRouteSubscriber);
+        if (!rsb) return;
+        // the two StatelessRouteSubscribers have the same prototype
+        const mockP = jest.spyOn(Object.getPrototypeOf(rsb), 'process');
         const mockHandler = jest.spyOn(routerUtils, 'handle');
         const nc = server.getComponent(NatsComponent)?.nc;
         if (!nc) return;
@@ -94,8 +94,7 @@ describe('communication', () => {
         });
         expect(result.id).toBe(reqId);
         expect(result.body.name).toBe('Hello Game');
-        const numCalls = Number(mockP1.mock.calls.length) + Number(mockP2.mock.calls.length);
-        expect(numCalls).toBe(1);
+        expect(mockP).toBeCalledTimes(1);
         expect(mockHandler).toBeCalledTimes(1);
         expect(mockRequest).toBeCalledTimes(1);
         jest.clearAllMocks();
@@ -108,8 +107,9 @@ describe('communication', () => {
         if (!nc) return;
         const mockPublish = jest.spyOn(nc, 'publish');
         const mockHandler = jest.spyOn(routerUtils, 'handle');
-        const rsb = server2.getComponent(RouteSubscriber) as any;
-        const mockP1 = jest.spyOn(rsb, 'process');
+        const rsb = server2.getComponent(StatelessRouteSubscriber);
+        if (!rsb) return;
+        const mockP1 = jest.spyOn(Object.getPrototypeOf(rsb), 'process');
         const data = {
             a: 1,
             b: '223d',
