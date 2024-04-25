@@ -8,12 +8,10 @@ import { Root } from 'protobufjs';
  * listen for rpc events
  * don't store any state in the server
  */
-export class RpcLbSubscriber extends SubscriberBase {
+export class RpcSubscriber extends SubscriberBase {
     protoPath = '';
     private protoRoot: Root | undefined;
     async init() {
-        this.subject = `rpc.${this.server.serverType}.*`; // example: rpc.game.{remotehandler}.method.request.response,  rpc.{uuid}.{remotehandler}.method
-        this.opt = { queue: this.server.serverType };
         this.protoRoot = (await import(this.protoPath)) as Root;
     }
 
