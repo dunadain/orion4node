@@ -20,39 +20,41 @@ export class Router extends Component {
         this.server.eventEmitter.on('message', (data: Message) => {
             const msg = data.msg;
             const client = data.client;
-
-            const subject = protoMgr.getSubject(msg.protoId);
-            if (!subject) return;
-
-            const buf = encodeRouterPack(
-                {
-                    id: client.id,
-                    protoId: msg.protoId,
-                    uid: client.uid,
-                    sId: this.server.uuid,
-                },
-                msg.body
-            );
-            switch (msg.type) {
-                case MsgType.REQUEST:
-                    this.nats
-                        .tryRequest(subject, buf, { timeout: 1000 })
-                        .then((replyu8a) => {
-                            const rBuf = Buffer.from(replyu8a);
-                            const response = decodeRouterPack(rBuf);
-                            const client = clientMgr.getClientById(response.context.id);
-                            client?.sendMsg(MsgType.RESPONSE, msg.protoId, response.body, msg.id);
-                        })
-                        .catch((e: unknown) => {
-                            logErr(e);
-                        });
-                    break;
-                case MsgType.NOTIFY:
-                    this.nats.publish(subject, buf);
-                    break;
-                default:
-                    break;
-            }
+            (async () => {
+                const subject = await protoMgr.getHandlerSubject(msg.protoId, client.uid);
+                if (!subject) return;
+                const buf = encodeRouterPack(
+                    {
+                        id: client.id,
+                        protoId: msg.protoId,
+                        uid: client.uid,
+                        sId: this.server.uuid,
+                    },
+                    msg.body
+                );
+                switch (msg.type) {
+                    case MsgType.REQUEST:
+                        this.nats
+                            .tryRequest(subject, buf, { timeout: 1000 })
+                            .then((replyu8a) => {
+                                const rBuf = Buffer.from(replyu8a);
+                                const response = decodeRouterPack(rBuf);
+                                const client = clientMgr.getClientById(response.context.id);
+                                client?.sendMsg(MsgType.RESPONSE, msg.protoId, response.body, msg.id);
+                            })
+                            .catch((e: unknown) => {
+                                logErr(e);
+                            });
+                        break;
+                    case MsgType.NOTIFY:
+                        this.nats.publish(subject, buf);
+                        break;
+                    default:
+                        break;
+                }
+            })().catch((e: unknown) => {
+                logErr(e);
+            });
         });
     }
 

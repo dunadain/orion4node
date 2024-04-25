@@ -2,11 +2,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { isUpperCase } from './RouterUtils';
+import { serverSelector } from './ServerSelector';
 
-const id2Subject = new Map<number, string>();
+const id2Server = new Map<number, string>();
 class ProtocolMgr {
-    getSubject(protocolId: number) {
-        return id2Subject.get(protocolId);
+    async getHandlerSubject(protocolId: number, uid: string) {
+        if (!id2Server.has(protocolId)) return '';
+        const serverType = id2Server.get(protocolId);
+        if (!serverType) return '';
+        if (serverSelector.hasRoute(serverType)) {
+            return `handler.${await serverSelector.selectServer(uid, serverType)}`;
+        }
+        return 'handler.' + serverType;
     }
 
     encodeMsgBody(body: unknown, protoId?: number) {
@@ -24,7 +31,7 @@ export function protocolIds(clazz: any) {
     for (const k in clazz) {
         const id = clazz[k] as number;
         if (id2Subject.has(id)) throw new Error(`protocol id:${String(id)} is duplicated!`);
-        id2Subject.set(clazz[k], `handler.${getServer(k)}`);
+        id2Server.set(id, getServer(k));
     }
 }
 

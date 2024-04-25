@@ -9,8 +9,8 @@ describe('subject creation', () => {
             static readonly ChatSend = 1;
         }
 
-        expect(protoMgr.getSubject(Proto.GameLogin)).toBe('handler.game');
-        expect(protoMgr.getSubject(Proto.ChatSend)).toBe('handler.chat');
+        expect(protoMgr.getHandlerSubject(Proto.GameLogin, '')).toBe('handler.game');
+        expect(protoMgr.getHandlerSubject(Proto.ChatSend, '')).toBe('handler.chat');
     });
     it('should throw error if protocol id is duplicated', () => {
         expect(() => {
