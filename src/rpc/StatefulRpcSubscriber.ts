@@ -1,5 +1,8 @@
 import { RpcSubscriber } from './RpcSubscriber';
 
+/**
+ * StatefulRpcSubscriber use unique uuid to listen for rpc events
+ */
 export class StatefulRpcSubscriber extends RpcSubscriber {
     async init() {
         await super.init();
