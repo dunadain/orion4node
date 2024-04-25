@@ -8,7 +8,7 @@ import { Root } from 'protobufjs';
  * listen for rpc events
  * don't store any state in the server
  */
-export class RpcSubscriber extends SubscriberBase {
+export abstract class RpcSubscriber extends SubscriberBase {
     protoPath = '';
     private protoRoot: Root | undefined;
     async init() {
