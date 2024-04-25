@@ -57,15 +57,11 @@ export class NatsComponent extends Component {
 
     async init() {
         const connectionOption = await this.getConnectionOption();
-        try {
-            this._nc = await connect(connectionOption);
-            logger.info(`${this.server.name} is connected to nats`);
-            this.setupListeners().catch((reason: unknown) => {
-                logErr(reason);
-            });
-        } catch (e) {
-            logErr(e);
-        }
+        this._nc = await connect(connectionOption);
+        logger.info(`${this.server.name} is connected to nats`);
+        this.setupListeners().catch((reason: unknown) => {
+            logErr(reason);
+        });
     }
 
     private async setupListeners() {
@@ -73,7 +69,7 @@ export class NatsComponent extends Component {
         this._nc
             .closed()
             .then((e) => {
-                if (e instanceof Error) logErr(e);
+                logErr(e);
                 logger.info(`${this.server.name} the nats connection is closed`);
             })
             .catch(() => {
