@@ -21,13 +21,14 @@ export class RpcClient extends Component {
     ) {
         const method1 = method as Method;
         const serviceName = method1.parent?.name;
+        const methodName = method1.name.charAt(0).toLowerCase() + method1.name.slice(1);
         if (!serviceName) {
             callback(new Error('service not found'), null);
             return;
         }
-        const subject = `rpc.${metaData.serverId ? String(metaData.serverId) : metaData.serverType}.${serviceName}.${
-            method.name
-        }.${method1.requestType}.${method1.responseType}`;
+        const subject = `rpc.${
+            metaData.serverId ? String(metaData.serverId) : metaData.serverType
+        }.${serviceName}.${methodName}.${method1.requestType}.${method1.responseType}`;
         if (metaData.publish) {
             this.nats.publish(subject, requestData);
             callback(null, null);
