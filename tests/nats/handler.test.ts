@@ -84,6 +84,7 @@ describe('communication', () => {
     });
     afterEach(() => {
         socket.close();
+        jest.clearAllMocks();
     });
     test('req/resp', async () => {
         // the two StatelessRouteSubscribers have the same prototype
@@ -99,7 +100,6 @@ describe('communication', () => {
         expect(mockP).toBeCalledTimes(1);
         expect(mockHandler).toBeCalledTimes(1);
         expect(mockRequest).toBeCalledTimes(1);
-        jest.clearAllMocks();
     });
 
     test('stateful req/resp', async () => {
@@ -128,7 +128,6 @@ describe('communication', () => {
         expect(mockPc3).not.toBeCalled();
         expect(mockPc2).toBeCalledTimes(1);
         ((serverSelector as any).routes as Map<any, any>).clear();
-        jest.clearAllMocks();
     });
 
     test('client to server notification', () => {
@@ -158,7 +157,6 @@ describe('communication', () => {
                 expect(mockHandler.mock.calls[0][0].id).toBe(1);
                 expect(mockP1).toBeCalledTimes(1);
                 expect((mockP1.mock.calls[0][0] as any).reply).toBe('');
-                jest.clearAllMocks();
                 resolve();
             }, 10);
         });
@@ -200,7 +198,6 @@ describe('communication', () => {
                 expect(mockPc3).toBeCalledTimes(1);
                 expect((mockPc3.mock.calls[0][0] as any).reply).toBe('');
                 expect(mockPc2).not.toBeCalled();
-                jest.clearAllMocks();
                 resolve();
             }, 10);
         });
