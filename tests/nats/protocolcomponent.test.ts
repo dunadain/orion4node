@@ -1,5 +1,6 @@
 import { describe, expect, it, test } from '@jest/globals';
-import { protoMgr, protocolIds } from '../../src/router/ProtocolMgr';
+import { ProtocolMgr, protocolIds } from '../../src/router/ProtocolMgr';
+import { Server } from '../../src/server/Server';
 
 describe('subject creation', () => {
     test('subject should have the form handler.servertype', async () => {
@@ -8,7 +9,7 @@ describe('subject creation', () => {
             static readonly GameLogin = 0;
             static readonly ChatSend = 1;
         }
-
+        const protoMgr = new ProtocolMgr({} as Server);
         expect(await protoMgr.getHandlerSubject(Proto.GameLogin, '')).toBe('handler.game');
         expect(await protoMgr.getHandlerSubject(Proto.ChatSend, '')).toBe('handler.chat');
     });

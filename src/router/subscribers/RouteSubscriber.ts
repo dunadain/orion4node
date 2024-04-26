@@ -1,15 +1,16 @@
 import { Msg } from 'nats';
 import { logErr } from '../../logger/Logger';
 import { decodeRouterPack, encodeRouterPack, handle } from '../RouterUtils';
-import { protoMgr } from '../ProtocolMgr';
 import { SubscriberBase } from './SubscriberBase';
+import { ProtocolMgr } from '../ProtocolMgr';
 
 export abstract class RouteSubscriber extends SubscriberBase {
+    private _protoMgr: ProtocolMgr | undefined;
     protected process(msg: Msg) {
         const data = decodeRouterPack(Buffer.from(msg.data));
         handle(
             data.context,
-            data.body ? protoMgr.decodeMsgBody(data.body, data.context.protoId) : undefined,
+            data.body ? this.protoMgr.decodeMsgBody(data.body, data.context.protoId) : undefined,
             this.server
         )
             .then((result) => {
@@ -17,7 +18,7 @@ export abstract class RouteSubscriber extends SubscriberBase {
                     msg.respond(
                         encodeRouterPack(
                             { id: data.context.id },
-                            result ? protoMgr.encodeMsgBody(result, data.context.protoId) : undefined
+                            result ? this.protoMgr.encodeMsgBody(result, data.context.protoId) : undefined
                         )
                     );
                 }
@@ -25,5 +26,13 @@ export abstract class RouteSubscriber extends SubscriberBase {
             .catch((e: unknown) => {
                 logErr(e);
             });
+    }
+
+    get protoMgr() {
+        if (!this._protoMgr) {
+            this._protoMgr = this.getComponent(ProtocolMgr);
+            if (!this._protoMgr) throw new Error('ProtocolMgr is required!');
+        }
+        return this._protoMgr;
     }
 }
