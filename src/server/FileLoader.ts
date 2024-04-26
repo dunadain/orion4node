@@ -5,6 +5,7 @@ import * as path from 'node:path';
 import * as fs from 'fs/promises';
 import { existsSync } from 'node:fs';
 import { addRpcCall } from '../rpc/RpcUtils';
+import { logErr } from '../logger/Logger';
 
 /**
  * load handler files and rpc files
@@ -12,34 +13,53 @@ import { addRpcCall } from '../rpc/RpcUtils';
 export class FileLoader extends Component {
     async init() {
         if (!require.main) return;
-        const promises: Promise<unknown>[] = [];
         const handlerDir = path.join(require.main.path, 'handler');
+        let handlerPromise: Promise<unknown> = Promise.resolve();
+        let rpcPromise: Promise<unknown> = Promise.resolve();
         if (existsSync(handlerDir)) {
-            const list = await fs.readdir(handlerDir);
-            for (const fileName of list) {
-                const filePath = path.join(handlerDir, fileName);
-                promises.push(import(filePath));
-            }
+            handlerPromise = fs
+                .readdir(handlerDir)
+                .then((list) => {
+                    const promises: Promise<unknown>[] = [];
+                    for (const fileName of list) {
+                        const filePath = path.join(handlerDir, fileName);
+                        promises.push(import(filePath));
+                    }
+                    return Promise.all(promises);
+                })
+                .catch((e: unknown) => {
+                    logErr(e);
+                });
         }
         const remoteDir = path.join(require.main.path, 'remote');
         if (existsSync(remoteDir)) {
-            const list = await fs.readdir(remoteDir);
-            for (const fileName of list) {
-                promises.push(
-                    import(path.join(remoteDir, fileName)).then((m) => {
-                        for (const className in m) {
-                            const prototype = m[className].prototype;
-                            for (const key in prototype) {
-                                if (typeof prototype[key] === 'function') {
-                                    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                                    addRpcCall(`${className}.${key}`, prototype[key]);
+            rpcPromise = fs
+                .readdir(remoteDir)
+                .then((list) => {
+                    const promises: Promise<unknown>[] = [];
+                    for (const fileName of list) {
+                        promises.push(
+                            import(path.join(remoteDir, fileName)).then((m) => {
+                                for (const className in m) {
+                                    const prototype = m[className].prototype;
+                                    const propNames = Object.getOwnPropertyNames(prototype);
+                                    for (const key of propNames) {
+                                        if (key === 'constructor') continue;
+                                        if (typeof prototype[key] === 'function') {
+                                            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                                            addRpcCall(`${className}.${key}`, prototype[key]);
+                                        }
+                                    }
                                 }
-                            }
-                        }
-                    })
-                );
-            }
+                            })
+                        );
+                    }
+                    return Promise.all(promises);
+                })
+                .catch((e: unknown) => {
+                    logErr(e);
+                });
         }
-        await Promise.all(promises);
+        await Promise.all([handlerPromise, rpcPromise]);
     }
 }
