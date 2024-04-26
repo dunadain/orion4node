@@ -24,5 +24,6 @@ describe('load handlers and rpc', () => {
 
     it('should not reject to error when calling rpc', async () => {
         await expect(callRpc('Greeter.sayHello', { name: 'world' })).resolves.toEqual({ message: 'Hello, world' });
+        await expect(callRpc('Greeter.speak', { name: 'world' })).rejects.toThrowError();
     });
 });
