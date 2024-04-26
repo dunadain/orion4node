@@ -17,10 +17,19 @@ export abstract class RpcSubscriber extends SubscriberBase {
 
     protected process(msg: Msg) {
         const subject = msg.subject;
-        const arr = subject.split('.');
-        const responseKey = arr[arr.length - 1];
-        const requestKey = arr[arr.length - 2];
-        const methodKey = arr[arr.length - 4] + '.' + arr[arr.length - 3];
+        let index = subject.lastIndexOf('.');
+        let index2 = 0;
+        const responseKey = subject.substring(index + 1);
+        index2 = index;
+        index = subject.lastIndexOf('.', index - 1);
+        const requestKey = subject.substring(index + 1, index2);
+        index2 = index;
+        index = subject.lastIndexOf('.', index - 1);
+        const methodName = subject.substring(index + 1, index2);
+        index2 = index;
+        index = subject.lastIndexOf('.', index - 1);
+        const serviceKey = subject.substring(index + 1, index2);
+        const methodKey = serviceKey + '.' + methodName.charAt(0).toLowerCase() + methodName.slice(1);
         if (!this.protoRoot) {
             logger.error('protoRoot not found');
             return;
