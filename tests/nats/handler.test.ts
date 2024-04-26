@@ -17,7 +17,6 @@ import { PushSender } from '../../src/router/PushSender';
 import { StatelessRouteSubscriber } from '../../src/router/subscribers/StatelessRouteSubscriber';
 import { StatefulRouteSubscriber } from '../../src/router/subscribers/StatefulRouteSubscriber';
 import { serverSelector } from '../../src/router/ServerSelector';
-import { ProtocolMgr } from '../../src/router/ProtocolMgr';
 
 const data = {
     a: 1,
@@ -39,7 +38,6 @@ beforeAll(async () => {
     server.addComponent(NatsComponent);
     server.addComponent(Router);
     server.addComponent(PushSubscriber);
-    server.addComponent(ProtocolMgr);
 
     server2 = new Server('', 9003, 'game', id2);
     server2.addComponent(NatsComponent);
@@ -47,7 +45,6 @@ beforeAll(async () => {
     server2.addComponent(StatefulRouteSubscriber);
     server2.addComponent(FileLoader);
     server2.addComponent(PushSender);
-    server2.addComponent(ProtocolMgr);
     try {
         await server.start();
         await server2.start();
@@ -68,7 +65,6 @@ describe('communication', () => {
         server3.addComponent(StatelessRouteSubscriber);
         server3.addComponent(FileLoader);
         server3.addComponent(StatefulRouteSubscriber);
-        server3.addComponent(ProtocolMgr);
         await server3.start();
     });
 

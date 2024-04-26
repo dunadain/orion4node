@@ -5,14 +5,13 @@ import { MsgType } from '../transport/protocol/MsgProcessor';
 import { logErr } from '../logger/Logger';
 import { decodeRouterPack, encodeRouterPack } from './RouterUtils';
 import { ClientManager } from '../component/ClientManager';
-import { ProtocolMgr } from './ProtocolMgr';
+import { protoMgr } from './ProtocolMgr';
 
 /**
  * only exists in connector or gate server
  */
 export class Router extends Component {
     private _nats: NatsComponent | undefined;
-    private _protoMgr: ProtocolMgr | undefined;
 
     async start() {
         const clientMgr = this.getComponent(ClientManager);
@@ -22,7 +21,7 @@ export class Router extends Component {
             const msg = data.msg;
             const client = data.client;
             (async () => {
-                const subject = await this.protoMgr.getHandlerSubject(msg.protoId, client.uid);
+                const subject = await protoMgr.getHandlerSubject(msg.protoId, client.uid);
                 if (!subject) return;
                 const buf = encodeRouterPack(
                     {
@@ -65,13 +64,5 @@ export class Router extends Component {
             if (!this._nats) throw new Error('NatsComponent not found');
         }
         return this._nats;
-    }
-
-    get protoMgr() {
-        if (!this._protoMgr) {
-            this._protoMgr = this.getComponent(ProtocolMgr);
-            if (!this._protoMgr) throw new Error('ProtocolMgr is required!');
-        }
-        return this._protoMgr;
     }
 }

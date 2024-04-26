@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component } from '../component/Component';
 import { isUpperCase } from './RouterUtils';
 import { serverSelector } from './ServerSelector';
 
 const id2Server = new Map<number, string>();
-export class ProtocolMgr extends Component {
+class ProtocolMgr {
     async getHandlerSubject(protocolId: number, uid: string) {
         if (!id2Server.has(protocolId)) return '';
         const serverType = id2Server.get(protocolId);
@@ -26,6 +25,8 @@ export class ProtocolMgr extends Component {
         return JSON.parse(buf.toString()) as unknown;
     }
 }
+
+export const protoMgr = new ProtocolMgr();
 
 export function protocolIds(clazz: any) {
     for (const k in clazz) {
