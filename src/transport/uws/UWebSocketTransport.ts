@@ -39,7 +39,11 @@ export class UWebSocketTransport extends Component {
                 },
                 drain: (ws) => {
                     const client = this.clientMgr.getClient(ws);
-                    client?.onDrain?.call(client);
+                    try {
+                        client?.onDrain?.call(client);
+                    } catch (e) {
+                        logErr(e);
+                    }
                 },
                 close: (ws) => {
                     const client = this.clientMgr.getClient(ws);
