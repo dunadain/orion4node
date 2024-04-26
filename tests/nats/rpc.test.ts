@@ -9,7 +9,6 @@ import * as root from './proto/compiled';
 import { Root } from 'protobufjs';
 import { RpcSubscriber } from '../../src/rpc/RpcSubscriber';
 import * as path from 'node:path';
-import { Greeter } from './remote/GameRemote';
 import * as rpc from '../../src/rpc/RpcUtils';
 
 let server: Server;
