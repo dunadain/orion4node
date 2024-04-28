@@ -49,6 +49,10 @@ export class Server {
                 logErr(e);
             }
         }
+
+        process.on('SIGTERM', () => {
+            this.shutdown();
+        });
     }
 
     shutdown() {
