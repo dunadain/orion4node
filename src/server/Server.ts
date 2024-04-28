@@ -50,19 +50,36 @@ export class Server {
             }
         }
 
-        process.on('SIGTERM', () => {
-            this.shutdown();
-        });
+        process.on('SIGTERM', this.exit.bind(this));
+        process.on('SIGINT', this.exit.bind(this));
     }
 
-    shutdown() {
+    private exit() {
+        this.shutdown()
+            .then(() => {
+                process.exit(0);
+            })
+            .catch((e: unknown) => {
+                logErr(e);
+                process.exit(1);
+            });
+    }
+
+    async shutdown() {
+        const promises: Promise<unknown>[] = [];
         for (const pair of this.components) {
             const comp = pair[1];
-            try {
-                comp.dispose?.call(comp);
-            } catch (e) {
-                logErr(e);
-            }
+            if (typeof comp.dispose !== 'function') continue;
+            promises.push(
+                comp.dispose.call(comp).catch((e: unknown) => {
+                    logErr(e);
+                    return Promise.resolve(e);
+                })
+            );
+        }
+        const results = await Promise.all(promises);
+        if (results.some((r) => r instanceof Error)) {
+            throw new Error('some components failed to dispose');
         }
     }
 }

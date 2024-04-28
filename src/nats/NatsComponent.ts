@@ -113,11 +113,9 @@ export class NatsComponent extends Component {
         return exists ? (JSON.parse(await fs.readFile(natsConfigPath, 'utf8')) as ConnectionOptions) : undefined;
     }
 
-    dispose(): void {
+    async dispose() {
         if (!this._nc) return;
-        this._nc.drain().catch((reason: unknown) => {
-            logErr(reason);
-        });
+        await this._nc.drain();
     }
 }
 

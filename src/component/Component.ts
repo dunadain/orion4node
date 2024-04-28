@@ -11,7 +11,7 @@ export abstract class Component {
      * will be called after init
      */
     start?(): Promise<void>;
-    dispose?(): void;
+    dispose?(): Promise<void>;
 
     getComponent<T extends Component>(classConstructor: ComponentConstructor<T>): T | undefined {
         return this.server.getComponent(classConstructor);

@@ -25,9 +25,7 @@ export abstract class SubscriberBase extends Component {
 
     protected abstract process(msg: Msg): unknown;
 
-    dispose(): void {
-        this.sub?.drain().catch((e: unknown) => {
-            logErr(e);
-        });
+    async dispose() {
+        await this.sub?.drain();
     }
 }

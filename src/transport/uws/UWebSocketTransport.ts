@@ -57,7 +57,7 @@ export class UWebSocketTransport extends Component {
             });
     }
 
-    dispose(): void {
+    async dispose() {
         this.app.close();
     }
 
