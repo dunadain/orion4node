@@ -36,12 +36,11 @@ describe('server shut down', () => {
         await expect(server.shutdown()).rejects.toThrowError('some components failed to dispose');
         await natsComponent.nc?.drain();
     });
-    // test('shut down with SIGTERM', () => {
-    //     const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {
-    //         throw new Error('exit');
-    //     });
-    //     process.emit('SIGTERM');
-    //     server.setProcess(process);
-    //     expect(mockExit).toBeCalledWith(0);
-    // });
+    test('shut down with SIGTERM', () => {
+        const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {
+            throw new Error('exit');
+        });
+        process.emit('SIGTERM');
+        expect(mockExit).toBeCalledWith(0);
+    });
 });
