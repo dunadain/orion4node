@@ -17,7 +17,7 @@ import { Router } from '../../src/router/Router';
 import { NatsComponent } from '../../src/nats/NatsComponent';
 import { Message } from '../../src/transport/protocol/ProtocolTypeDefs';
 
-const port = 9001;
+const port = 9009;
 let server: Server;
 beforeAll(async () => {
     server = new Server('', port, 'connector', '111');

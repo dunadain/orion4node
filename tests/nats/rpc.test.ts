@@ -18,13 +18,13 @@ const id1 = '1';
 const id2 = '2';
 const id3 = '3';
 beforeAll(async () => {
-    server = new Server('', 9012, 'chat', id1);
+    server = new Server('', 9005, 'chat', id1);
     server.addComponent(NatsComponent);
     const client = server.addComponent(RpcClient);
     client.addServices(root as unknown as Root, 'game');
 
     const protoPath = path.join(__dirname, 'proto', 'compiled');
-    server2 = new Server('', 9013, 'game', id2);
+    server2 = new Server('', 9006, 'game', id2);
     server2.addComponent(NatsComponent);
     let rpcSub = server2.addComponent(StatelessRpcSubscriber);
     rpcSub.protoPath = protoPath;
@@ -32,7 +32,7 @@ beforeAll(async () => {
     rpcSub.protoPath = protoPath;
     server2.addComponent(FileLoader);
 
-    server3 = new Server('', 9014, 'game', id3);
+    server3 = new Server('', 9007, 'game', id3);
     server3.addComponent(NatsComponent);
     rpcSub = server3.addComponent(StatelessRpcSubscriber);
     rpcSub.protoPath = protoPath;
