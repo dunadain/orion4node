@@ -38,26 +38,26 @@ describe('server shut down', () => {
         await expect(server.shutdown()).rejects.toThrowError('some components failed to dispose');
         await natsComponent.nc?.drain();
     });
-});
 
-describe('kill process', () => {
-    it('should call process.exit(0)', async () => {
-        const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
-        const mockShutdown = jest.spyOn(server, 'shutdown');
-        process.emit('SIGTERM');
-        await expect(mockShutdown.mock.results[0].value).resolves.toBeUndefined();
-        expect(mockExit).toBeCalledWith(0);
-    });
+    describe('kill process', () => {
+        it('should call process.exit(0)', async () => {
+            const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+            const mockShutdown = jest.spyOn(server, 'shutdown');
+            process.emit('SIGTERM');
+            await expect(mockShutdown.mock.results[0].value).resolves.toBeUndefined();
+            expect(mockExit).toBeCalledWith(0);
+        });
 
-    it('should call process.exit(1) when there are errors in dispose', async () => {
-        const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
-        const mockShutdown = jest
-            .spyOn(server, 'shutdown')
-            .mockRejectedValue(new Error('some components failed to dispose'));
-        process.emit('SIGTERM');
-        await expect(mockShutdown.mock.results[0].value).rejects.toThrowError('some components failed to dispose');
-        expect(mockExit).toBeCalledWith(1);
-        mockShutdown.mockRestore();
-        server.shutdown();
+        it('should call process.exit(1) when there are errors in dispose', async () => {
+            const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+            const mockShutdown = jest
+                .spyOn(server, 'shutdown')
+                .mockRejectedValue(new Error('some components failed to dispose'));
+            process.emit('SIGTERM');
+            await expect(mockShutdown.mock.results[0].value).rejects.toThrowError('some components failed to dispose');
+            expect(mockExit).toBeCalledWith(1);
+            mockShutdown.mockRestore();
+            server.shutdown();
+        });
     });
 });
