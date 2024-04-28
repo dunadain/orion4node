@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { Server } from '../../src/server/Server';
 import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport';
 import { NatsComponent } from '../../src/nats/NatsComponent';
@@ -9,7 +9,7 @@ import { ClientManager } from '../../src/component/ClientManager';
 let server: Server;
 const id1 = '1';
 
-describe('server shut down sucessfully', () => {
+describe('server shut down', () => {
     beforeEach(async () => {
         server = new Server('', 9008, 'connector', id1);
         server.addComponent(UWebSocketTransport);
@@ -23,7 +23,25 @@ describe('server shut down sucessfully', () => {
             console.error(reason);
         }
     });
-    test('shut down should not reject', async () => {
-        expect(server.shutdown()).resolves.toBeUndefined();
+    afterEach(() => {
+        jest.clearAllMocks();
     });
+    test('shut down should not reject', async () => {
+        await expect(server.shutdown()).resolves.toBeUndefined();
+    });
+    test('shut down should reject', async () => {
+        const natsComponent = server.getComponent(NatsComponent);
+        if (!natsComponent) return;
+        jest.spyOn(natsComponent, 'dispose').mockRejectedValue(new Error('nats error'));
+        await expect(server.shutdown()).rejects.toThrowError('some components failed to dispose');
+        await natsComponent.nc?.drain();
+    });
+    // test('shut down with SIGTERM', () => {
+    //     const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => {
+    //         throw new Error('exit');
+    //     });
+    //     process.emit('SIGTERM');
+    //     server.setProcess(process);
+    //     expect(mockExit).toBeCalledWith(0);
+    // });
 });

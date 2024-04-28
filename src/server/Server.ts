@@ -50,11 +50,14 @@ export class Server {
             }
         }
 
-        process.on('SIGTERM', this.exit.bind(this));
-        process.on('SIGINT', this.exit.bind(this));
+        process.on('SIGTERM', this.exit);
+        process.on('SIGINT', this.exit);
     }
 
-    private exit() {
+    /**
+     * have to be tested under k8s
+     */
+    private exit = () => {
         this.shutdown()
             .then(() => {
                 process.exit(0);
@@ -63,9 +66,11 @@ export class Server {
                 logErr(e);
                 process.exit(1);
             });
-    }
+    };
 
     async shutdown() {
+        process.off('SIGTERM', this.exit);
+        process.off('SIGINT', this.exit);
         const promises: Promise<unknown>[] = [];
         for (const pair of this.components) {
             const comp = pair[1];
