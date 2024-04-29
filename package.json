@@ -4,6 +4,7 @@
     "type": "commonjs",
     "description": "node game server framework",
     "main": "./dist/src/index.js",
+    "types": "./src/index",
     "scripts": {
         "test": "jest",
         "test2": "jest --runInBand"
