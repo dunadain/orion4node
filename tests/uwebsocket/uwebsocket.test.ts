@@ -4,7 +4,7 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, jest, test } from '@jest/globals';
 import { Server } from '../../src/server/Server';
 import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport';
-import { type MessageEvent, WebSocket } from 'ws';
+import { MessageEvent, WebSocket } from 'ws';
 import { ClientManager } from '../../src/component/ClientManager';
 import * as packUtil from '../../src/transport/protocol/PacketProcessor';
 import { ClientState } from '../../src/transport/SocketClient';
@@ -15,7 +15,7 @@ import { createConnection } from '../utils/testUtils';
 import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
 import { Router } from '../../src/router/Router';
 import { NatsComponent } from '../../src/nats/NatsComponent';
-import type { Message } from '../../src/transport/protocol/ProtocolTypeDefs';
+import { Message } from '../../src/transport/protocol/ProtocolTypeDefs';
 
 const port = 9009;
 let server: Server;

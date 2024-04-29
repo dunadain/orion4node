@@ -1,4 +1,4 @@
-import { type MessageEvent, WebSocket } from 'ws';
+import { MessageEvent, WebSocket } from 'ws';
 import * as packUtil from '../../src/transport/protocol/PacketProcessor';
 import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
 
