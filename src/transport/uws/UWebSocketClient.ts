@@ -15,7 +15,7 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     socket!: WebSocket<unknown>;
     state = ClientState.Default;
 
-    private buffer: ArrayBuffer[] = [];
+    private buffer: Buffer[] = [];
     private helperArr: { type: packUtils.PackType; body: Buffer | undefined }[] = [];
     private handlers = new Map<packUtils.PackType, PkgHandler>();
 
