@@ -1,5 +1,5 @@
 import { EventEmitter } from 'node:events';
-import { ComponentConstructor } from '../TypeDef';
+import { ComponentConstructor } from '../utils/TypeDef';
 import { Component } from '../component/Component';
 import { logErr } from '../logger/Logger';
 

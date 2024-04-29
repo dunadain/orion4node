@@ -1,6 +1,6 @@
 import { Component } from '../component/Component';
 import { NatsComponent } from '../nats/NatsComponent';
-import { Constructor } from '../TypeDef';
+import { Constructor } from '../utils/TypeDef';
 import { Message, Method, RPCImplCallback, Root, Service, rpc } from 'protobufjs';
 
 interface MetaData {
