@@ -1,4 +1,4 @@
-import { ComponentConstructor } from '../utils/TypeDef';
+import { ComponentConstructor } from '../interfaces/defines';
 import { Server } from '../server/Server';
 
 /**
