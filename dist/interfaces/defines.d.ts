@@ -1,0 +1,3 @@
+export declare type ComponentConstructor<T> = new (...args: any[]) => T;
+export declare type AbstractedConstructor<T = unknown> = abstract new (...args: any[]) => T;
+export declare type Constructor<T> = new (...args: any[]) => T;
