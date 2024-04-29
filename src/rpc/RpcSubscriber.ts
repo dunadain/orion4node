@@ -1,4 +1,4 @@
-import type { Msg } from 'nats';
+import { Msg } from 'nats';
 import { SubscriberBase } from '../router/subscribers/SubscriberBase';
 import { callRpc } from './RpcUtils';
 import { logger } from '../logger/Logger';

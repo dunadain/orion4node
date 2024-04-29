@@ -1,4 +1,4 @@
-import type { Message } from '../transport/protocol/ProtocolTypeDefs';
+import { Message } from '../transport/protocol/ProtocolTypeDefs';
 import { Component } from '../component/Component';
 import { NatsComponent } from '../nats/NatsComponent';
 import { MsgType } from '../transport/protocol/MsgProcessor';

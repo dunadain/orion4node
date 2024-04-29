@@ -1,4 +1,4 @@
-import type { Msg, Subscription, SubscriptionOptions } from 'nats';
+import { Msg, Subscription, SubscriptionOptions } from 'nats';
 import { Component } from '../../component/Component';
 import { NatsComponent } from '../../nats/NatsComponent';
 import { logErr } from '../../logger/Logger';

@@ -1,4 +1,4 @@
-import type { NatsConnection } from 'nats';
+import { NatsConnection } from 'nats';
 import { Component } from '../component/Component';
 import { NatsComponent } from '../nats/NatsComponent';
 import { encodeRouterPack } from './RouterUtils';

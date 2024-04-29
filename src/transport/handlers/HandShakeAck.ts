@@ -1,6 +1,6 @@
-import { ClientState, type SocketClient } from '../SocketClient';
+import { ClientState, SocketClient } from '../SocketClient';
 import { PackType, encode } from '../protocol/PacketProcessor';
-import type { PkgHandler } from './PacketHandler';
+import { PkgHandler } from './PacketHandler';
 
 export class HandShakeAck implements PkgHandler {
     constructor(private client: SocketClient<unknown>) {}

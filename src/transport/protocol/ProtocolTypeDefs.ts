@@ -1,4 +1,4 @@
-import type { SocketClient } from '../SocketClient';
+import { SocketClient } from '../SocketClient';
 import { MsgType } from './MsgProcessor';
 
 export interface Message {
