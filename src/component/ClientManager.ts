@@ -1,5 +1,5 @@
 import { logger } from '../logger/Logger';
-import { SocketClient } from '../transport/SocketClient';
+import type { SocketClient } from '../transport/SocketClient';
 import { Component } from './Component';
 
 export class ClientManager extends Component {

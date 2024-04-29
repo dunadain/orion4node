@@ -8,18 +8,19 @@
     "lib": [
       "ESNext"
     ],
-    "module": "Node16", //指定生成哪个模块系统代码
+    "module": "ESNext", //指定生成哪个模块系统代码
     "target": "ESNext",
     // "noImplicitAny": true, //在表达式和声明上有隐含的'any'类型时报错。
     // "noImplicitThis": true,
     "outDir": "./dist", //重定向输出目录。
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "moduleResolution": "Node16",
+    "moduleResolution": "Bundler",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
     "allowJs": true,
+    "verbatimModuleSyntax": true,
     "declaration": true
   },
   "include": [

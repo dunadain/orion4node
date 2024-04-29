@@ -1,6 +1,6 @@
 import { Server } from '../server/Server';
 import { copyArray } from '../transport/protocol/utils';
-import { Context } from './RouterTypeDef';
+import type { Context } from './RouterTypeDef';
 
 export function encodeRouterPack(contextInfo: unknown, body?: Buffer) {
     const str = JSON.stringify(contextInfo);

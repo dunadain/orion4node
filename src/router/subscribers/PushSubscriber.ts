@@ -1,4 +1,4 @@
-import { Msg } from 'nats';
+import type { Msg } from 'nats';
 import { decodeRouterPack } from '../RouterUtils';
 import { ClientManager } from '../../component/ClientManager';
 import { MsgType } from '../../transport/protocol/MsgProcessor';

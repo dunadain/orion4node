@@ -1,7 +1,7 @@
 import { Component } from '../component/Component';
 import { NatsComponent } from '../nats/NatsComponent';
-import { Constructor } from '../interfaces/defines';
-import { Message, Method, RPCImplCallback, Root, Service, rpc } from 'protobufjs';
+import type { Constructor } from '../interfaces/defines';
+import type { Message, Method, RPCImplCallback, Root, Service, rpc } from 'protobufjs';
 
 interface MetaData {
     serverType: string;

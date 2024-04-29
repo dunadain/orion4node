@@ -1,11 +1,11 @@
 import { netConfig } from '../../config/NetConfig';
 import { logger } from '../../logger/Logger';
-import { SocketClient } from '../SocketClient';
+import type { SocketClient } from '../SocketClient';
 import { PackType, encode } from '../protocol/PacketProcessor';
-import { PkgHandler } from './PacketHandler';
+import type { PkgHandler } from './PacketHandler';
 
 export class HeartBeat implements PkgHandler {
-    private timeout: NodeJS.Timeout;
+    private timeout: unknown;
     constructor(private client: SocketClient<unknown>) {
         // if the handshake isn't finished in netConfig.hearbeatTimeout * 2 miliseconds, consider the client is unreachable
         this.timeout = setTimeout(this.timoutAction, netConfig.heartbeatTimeout * 2);
@@ -13,7 +13,7 @@ export class HeartBeat implements PkgHandler {
 
     handle() {
         this.client.sendBuffer(encode(PackType.HEARTBEAT));
-        clearTimeout(this.timeout);
+        clearTimeout(this.timeout as number);
         this.timeout = setTimeout(this.timoutAction, netConfig.heartbeatTimeout);
     }
 
@@ -23,6 +23,6 @@ export class HeartBeat implements PkgHandler {
     };
 
     dispose() {
-        clearTimeout(this.timeout);
+        clearTimeout(this.timeout as number);
     }
 }

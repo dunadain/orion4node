@@ -1,9 +1,9 @@
 import { ErrorCode } from '../../config/ErrorCode';
 import { netConfig } from '../../config/NetConfig';
 import { logger } from '../../logger/Logger';
-import { ClientState, SocketClient } from '../SocketClient';
+import { ClientState, type SocketClient } from '../SocketClient';
 import { PackType, encode } from '../protocol/PacketProcessor';
-import { PkgHandler } from './PacketHandler';
+import type { PkgHandler } from './PacketHandler';
 interface HandShakeInfo {
     sys: { ver: string; protoVer?: number } | undefined;
     user: unknown;

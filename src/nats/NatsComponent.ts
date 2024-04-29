@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import {
-    ConnectionOptions,
+    type ConnectionOptions,
     DebugEvents,
     ErrorCode,
     Events,
-    NatsConnection,
+    type NatsConnection,
     NatsError,
-    Payload,
-    PublishOptions,
-    RequestOptions,
+    type Payload,
+    type PublishOptions,
+    type RequestOptions,
     connect,
 } from 'nats';
 import { Component } from '../component/Component';
@@ -120,6 +120,8 @@ export class NatsComponent extends Component {
 }
 
 export function natsOptionGetter(target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    Object.defineProperty(NatsComponent.prototype, 'getConnectionOption', { value: descriptor.value });
+    Object.defineProperty(NatsComponent.prototype, 'getConnectionOption', {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        value: descriptor.value,
+    });
 }

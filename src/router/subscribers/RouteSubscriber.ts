@@ -1,4 +1,4 @@
-import { Msg } from 'nats';
+import type { Msg } from 'nats';
 import { logErr } from '../../logger/Logger';
 import { decodeRouterPack, encodeRouterPack, handle } from '../RouterUtils';
 import { SubscriberBase } from './SubscriberBase';
