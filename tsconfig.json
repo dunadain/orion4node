@@ -12,8 +12,6 @@
     "target": "ESNext",
     "noImplicitAny": true, //在表达式和声明上有隐含的'any'类型时报错。
     "noImplicitThis": true,
-    "inlineSourceMap": false,
-    "sourceMap": true,
     "outDir": "./dist", //重定向输出目录。
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -21,10 +19,11 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "allowJs": true
+    "allowJs": true,
+    "declaration": true
   },
   "include": [
-    "./**/*"
+    "./src/*"
   ],
   "exclude": [
     "./dist/**/*.*",
