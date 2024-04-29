@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "type": "commonjs",
     "description": "node game server framework",
-    "main": "./dist/index.js",
+    "main": "./dist/src/index.js",
     "scripts": {
         "test": "jest",
         "test2": "jest --runInBand"
