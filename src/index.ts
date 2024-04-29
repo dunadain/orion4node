@@ -9,6 +9,7 @@ export { logger, logErr } from './logger/Logger';
 
 export * from './nats/NatsComponent';
 
+export * from './router/Router';
 export * from './router/ProtocolMgr';
 export * from './router/PushSender';
 export * from './router/RouterTypeDef';

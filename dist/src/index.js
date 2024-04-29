@@ -24,6 +24,7 @@ var Logger_1 = require("./logger/Logger");
 Object.defineProperty(exports, "logger", { enumerable: true, get: function () { return Logger_1.logger; } });
 Object.defineProperty(exports, "logErr", { enumerable: true, get: function () { return Logger_1.logErr; } });
 __exportStar(require("./nats/NatsComponent"), exports);
+__exportStar(require("./router/Router"), exports);
 __exportStar(require("./router/ProtocolMgr"), exports);
 __exportStar(require("./router/PushSender"), exports);
 __exportStar(require("./router/RouterTypeDef"), exports);
