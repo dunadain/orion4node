@@ -1,4 +1,4 @@
-import { App, DISABLED, TemplatedApp } from 'uWebSockets.js';
+import { App, DISABLED, type TemplatedApp } from 'uWebSockets.js';
 import { Component } from '../../component/Component';
 import { logErr, logger } from '../../logger/Logger';
 import { ClientManager } from '../../component/ClientManager';

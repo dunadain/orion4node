@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import { Server } from '../src/server/Server';
 import { ClientManager } from '../src/component/ClientManager';
-import { SocketClient } from '../src/transport/SocketClient';
+import type { SocketClient } from '../src/transport/SocketClient';
 
 let server: Server;
 let mgr: ClientManager;

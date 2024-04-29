@@ -1,4 +1,4 @@
-import { WebSocket } from 'uWebSockets.js';
+import type { WebSocket } from 'uWebSockets.js';
 import { ClientState, type SocketClient } from '../SocketClient';
 import * as packUtils from '../protocol/PacketProcessor';
 import * as msgUtils from '../protocol/MsgProcessor';

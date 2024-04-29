@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Context } from '../../../src/router/RouterTypeDef';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import type { Context } from '../../../src/router/RouterTypeDef';
 import { protocol } from '../../../src/router/RouterUtils';
 import { Server } from '../../../src/server/Server';
 import { Proto } from '../../utils/Proto';

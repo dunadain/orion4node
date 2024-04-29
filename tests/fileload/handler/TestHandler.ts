@@ -1,4 +1,4 @@
-import { Context } from '../../../src/router/RouterTypeDef';
+import type { Context } from '../../../src/router/RouterTypeDef';
 import { protocol } from '../../../src/router/RouterUtils';
 import { Server } from '../../../src/server/Server';
 import { Proto } from '../../utils/Proto';

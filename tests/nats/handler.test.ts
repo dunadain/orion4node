@@ -7,7 +7,7 @@ import { NatsComponent } from '../../src/nats/NatsComponent';
 import { Router } from '../../src/router/Router';
 import { PushSubscriber } from '../../src/router/subscribers/PushSubscriber';
 import { FileLoader } from '../../src/server/FileLoader';
-import { MessageEvent, WebSocket } from 'ws';
+import { type MessageEvent, WebSocket } from 'ws';
 import { createConnection, decodeClientData } from '../utils/testUtils';
 import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
 import * as packUtil from '../../src/transport/protocol/PacketProcessor';
