@@ -12,6 +12,8 @@ export class RpcClient extends Component {
     private _nats: NatsComponent | undefined;
     private map = new Map<string, unknown>();
 
+    private empty = new Uint8Array(0);
+
     private rpcImpl(
         metaData: MetaData,
         method: Method | rpc.ServiceMethod<Message, Message>,
@@ -38,7 +40,7 @@ export class RpcClient extends Component {
             '}';
         if (method1.responseType === 'google.protobuf.Empty') {
             this.nats.publish(subject, requestData);
-            callback(null, Buffer.from(''));
+            callback(null, this.empty);
         } else
             this.nats
                 .tryRequest(subject, requestData, { timeout: 1000 })
