@@ -52,7 +52,7 @@ export class UWebSocketTransport extends Component {
                 },
             })
             .listen(host, this.server.port, (token) => {
-                if (token) logger.info(`Listening on ${host}:${String(this.server.port)}`);
+                if (token) logger.info(`${this.server.name} is listening on ${host}:${String(this.server.port)}`);
                 else logger.error(`Server ${this.server.addr} failed to listen`);
             });
     }
