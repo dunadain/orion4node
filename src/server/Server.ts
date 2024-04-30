@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
 import { ComponentConstructor } from '../interfaces/defines';
 import { Component } from '../component/Component';
-import { logErr } from '../logger/Logger';
+import { logErr, logger } from '../logger/Logger';
 
 export class Server {
     readonly eventEmitter = new EventEmitter();
@@ -60,10 +60,12 @@ export class Server {
     private exit = () => {
         this.shutdown()
             .then(() => {
+                logger.info(`${this.name} is about to die peacefully...`);
                 process.exit(0);
             })
             .catch((e: unknown) => {
                 logErr(e);
+                logErr(`${this.name} was killed`);
                 process.exit(1);
             });
     };
