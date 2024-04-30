@@ -70,12 +70,6 @@ export class RpcClient extends Component {
                         const self = this as Proxy;
                         extra.serverId = self.serverId;
                         extra.publish = self.mute;
-                        if (!self.service) {
-                            if (callback) {
-                                callback(new Error('service not found'), null);
-                                return;
-                            } else return Promise.reject(new Error('service not found'));
-                        }
 
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
                         const result = (self.service as any)[methodName](request, callback) as unknown;
@@ -95,7 +89,7 @@ export class RpcClient extends Component {
 }
 
 class Proxy {
-    service: rpc.Service | undefined;
+    service!: rpc.Service;
     serverId = '';
     mute = false;
     to(svId: string) {
