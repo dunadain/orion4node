@@ -55,7 +55,7 @@ class UWebSocketTransport extends Component_1.Component {
         })
             .listen(host, this.server.port, (token) => {
             if (token)
-                Logger_1.logger.info(`Listening on ${host}:${String(this.server.port)}`);
+                Logger_1.logger.info(`${this.server.name} is listening on ${host}:${String(this.server.port)}`);
             else
                 Logger_1.logger.error(`Server ${this.server.addr} failed to listen`);
         });

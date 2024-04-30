@@ -4,4 +4,5 @@ export declare class Greeter {
     }): Promise<{
         message: string;
     }>;
+    bar(): Promise<{}>;
 }

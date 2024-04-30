@@ -5,6 +5,7 @@ import { Root } from 'protobufjs';
 export declare class RpcClient extends Component {
     private _nats;
     private map;
+    private empty;
     private rpcImpl;
     get nats(): NatsComponent;
     addServices(root: Root, serverType: string): void;
@@ -14,6 +15,5 @@ type RemoteProxy<F> = {
     [P in keyof F]: F[P];
 } & {
     to(svId: string): RemoteProxy<F>;
-    publish(): RemoteProxy<F>;
 };
 export {};

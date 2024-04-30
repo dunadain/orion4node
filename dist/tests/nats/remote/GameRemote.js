@@ -5,5 +5,8 @@ class Greeter {
     async sayHello(req) {
         return { message: `Hello, ${req.name}` };
     }
+    async bar() {
+        return {};
+    }
 }
 exports.Greeter = Greeter;

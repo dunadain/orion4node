@@ -64,6 +64,10 @@ const id3 = '3';
             message: 'Hello, world',
         });
         (0, globals_1.expect)(mockP).toBeCalledTimes(1);
+        await (0, globals_1.expect)(client.getService(root.Greeter).sayHello({ name: 'world' })).resolves.toEqual({
+            message: 'Hello, world',
+        });
+        (0, globals_1.expect)(mockP).toBeCalledTimes(2);
     });
     (0, globals_1.test)('stateful rpc call', async () => {
         const client = server.getComponent(RpcClient_1.RpcClient);
@@ -89,15 +93,25 @@ const id3 = '3';
         const mockPub = globals_1.jest.spyOn(nats, 'publish');
         const mockReq = globals_1.jest.spyOn(nats, 'request');
         const mockCallRpc = globals_1.jest.spyOn(rpc, 'callRpc');
-        client.getService(root.Greeter).publish().sayHello({ name: 'world' });
+        client.getService(root.Greeter).bar({});
         (0, globals_1.expect)(mockPub).toBeCalledTimes(1);
         (0, globals_1.expect)(mockReq).not.toBeCalled();
         return new Promise((resolve) => {
             setTimeout(() => {
                 (0, globals_1.expect)(mockCallRpc).toBeCalledTimes(1);
-                (0, globals_1.expect)(mockCallRpc.mock.results[0].value).resolves.toEqual({ message: 'Hello, world' });
+                (0, globals_1.expect)(mockCallRpc.mock.results[0].value).resolves.toEqual({});
                 resolve();
             }, 100);
         });
+    });
+    (0, globals_1.test)('rpc fail', async () => {
+        const client = server.getComponent(RpcClient_1.RpcClient);
+        if (!client)
+            return;
+        const nats = server.getComponent(NatsComponent_1.NatsComponent);
+        if (!nats)
+            return;
+        globals_1.jest.spyOn(nats, 'tryRequest').mockRejectedValue(new Error('timeout'));
+        await (0, globals_1.expect)(client.getService(root.Greeter).to(id2).sayHello({ name: 'world' })).rejects.toThrow('timeout');
     });
 });
