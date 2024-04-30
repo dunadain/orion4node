@@ -1,7 +1,7 @@
 import { Msg } from 'nats';
 import { SubscriberBase } from '../router/subscribers/SubscriberBase';
 import { callRpc } from './RpcUtils';
-import { logger } from '../logger/Logger';
+import { logErr, logger } from '../logger/Logger';
 import { Root } from 'protobufjs';
 
 /**
@@ -47,7 +47,7 @@ export abstract class RpcSubscriber extends SubscriberBase {
                 }
             })
             .catch((err: unknown) => {
-                logger.error(err);
+                logErr(err);
             });
     }
 }
