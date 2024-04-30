@@ -106,4 +106,13 @@ describe('rpc tests', () => {
             }, 100);
         });
     });
+
+    test('rpc fail', async () => {
+        const client = server.getComponent(RpcClient);
+        if (!client) return;
+        const nats = server.getComponent(NatsComponent);
+        if (!nats) return;
+        jest.spyOn(nats, 'tryRequest').mockRejectedValue(new Error('timeout'));
+        await expect(client.getService(root.Greeter).to(id2).sayHello({ name: 'world' })).rejects.toThrow('timeout');
+    });
 });
