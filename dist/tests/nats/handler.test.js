@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 const globals_1 = require("@jest/globals");
@@ -33,10 +10,10 @@ const Router_1 = require("../../src/router/Router");
 const PushSubscriber_1 = require("../../src/router/subscribers/PushSubscriber");
 const FileLoader_1 = require("../../src/server/FileLoader");
 const testUtils_1 = require("../utils/testUtils");
-const msgUtil = __importStar(require("../../src/transport/protocol/MsgProcessor"));
-const packUtil = __importStar(require("../../src/transport/protocol/PacketProcessor"));
+const msgUtil = require("../../src/transport/protocol/MsgProcessor");
+const packUtil = require("../../src/transport/protocol/PacketProcessor");
 const Proto_1 = require("../utils/Proto");
-const routerUtils = __importStar(require("../../src/router/RouterUtils"));
+const routerUtils = require("../../src/router/RouterUtils");
 const PushSender_1 = require("../../src/router/PushSender");
 const StatelessRouteSubscriber_1 = require("../../src/router/subscribers/StatelessRouteSubscriber");
 const StatefulRouteSubscriber_1 = require("../../src/router/subscribers/StatefulRouteSubscriber");

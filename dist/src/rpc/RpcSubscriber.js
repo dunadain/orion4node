@@ -12,7 +12,7 @@ class RpcSubscriber extends SubscriberBase_1.SubscriberBase {
     protoPath = '';
     protoRoot;
     async init() {
-        this.protoRoot = (await import(this.protoPath));
+        this.protoRoot = (await Promise.resolve(`${this.protoPath}`).then(s => require(s)));
     }
     process(msg) {
         const subject = msg.subject;

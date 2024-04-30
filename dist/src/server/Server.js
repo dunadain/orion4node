@@ -60,10 +60,12 @@ class Server {
     exit = () => {
         this.shutdown()
             .then(() => {
+            Logger_1.logger.info(`${this.name} is about to die peacefully...`);
             process.exit(0);
         })
             .catch((e) => {
             (0, Logger_1.logErr)(e);
+            (0, Logger_1.logErr)(`${this.name} was killed`);
             process.exit(1);
         });
     };
