@@ -63,8 +63,7 @@ export class Server {
                 logger.info(`${this.name} is about to die peacefully...`);
                 process.exit(0);
             })
-            .catch((e: unknown) => {
-                logErr(e);
+            .catch(() => {
                 logErr(`${this.name} was killed`);
                 process.exit(1);
             });
