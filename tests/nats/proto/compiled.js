@@ -10,6 +10,10 @@ var $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $pr
       SayHello: {
         requestType: "HelloRequest",
         responseType: "HelloReply"
+      },
+      Bar: {
+        requestType: "google.protobuf.Empty",
+        responseType: "google.protobuf.Empty"
       }
     }
   },
@@ -50,6 +54,17 @@ var $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $pr
       message: {
         type: "string",
         id: 1
+      }
+    }
+  },
+  google: {
+    nested: {
+      protobuf: {
+        nested: {
+          Empty: {
+            fields: {}
+          }
+        }
       }
     }
   }

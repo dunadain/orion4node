@@ -67,6 +67,10 @@ describe('rpc tests', () => {
             message: 'Hello, world',
         });
         expect(mockP).toBeCalledTimes(1);
+        await expect(client.getService(root.Greeter).sayHello({ name: 'world' })).resolves.toEqual({
+            message: 'Hello, world',
+        });
+        expect(mockP).toBeCalledTimes(2);
     });
 
     test('stateful rpc call', async () => {
@@ -91,13 +95,13 @@ describe('rpc tests', () => {
         const mockPub = jest.spyOn(nats, 'publish');
         const mockReq = jest.spyOn(nats, 'request');
         const mockCallRpc = jest.spyOn(rpc, 'callRpc');
-        client.getService(root.Greeter).publish().sayHello({ name: 'world' });
+        client.getService(root.Greeter).bar({});
         expect(mockPub).toBeCalledTimes(1);
         expect(mockReq).not.toBeCalled();
         return new Promise<void>((resolve) => {
             setTimeout(() => {
                 expect(mockCallRpc).toBeCalledTimes(1);
-                expect(mockCallRpc.mock.results[0].value).resolves.toEqual({ message: 'Hello, world' });
+                expect(mockCallRpc.mock.results[0].value).resolves.toEqual({});
                 resolve();
             }, 100);
         });

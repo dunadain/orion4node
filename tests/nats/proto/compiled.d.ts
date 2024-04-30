@@ -33,6 +33,20 @@ export class Greeter extends $protobuf.rpc.Service {
      * @returns Promise
      */
     public sayHello(request: IHelloRequest): Promise<HelloReply>;
+
+    /**
+     * Calls Bar.
+     * @param request Empty message or plain object
+     * @param callback Node-style callback called with the error, if any, and Empty
+     */
+    public bar(request: google.protobuf.IEmpty, callback: Greeter.BarCallback): void;
+
+    /**
+     * Calls Bar.
+     * @param request Empty message or plain object
+     * @returns Promise
+     */
+    public bar(request: google.protobuf.IEmpty): Promise<google.protobuf.Empty>;
 }
 
 export namespace Greeter {
@@ -43,6 +57,13 @@ export namespace Greeter {
      * @param [response] HelloReply
      */
     type SayHelloCallback = (error: (Error|null), response?: HelloReply) => void;
+
+    /**
+     * Callback as used by {@link Greeter#bar}.
+     * @param error Error, if any
+     * @param [response] Empty
+     */
+    type BarCallback = (error: (Error|null), response?: google.protobuf.Empty) => void;
 }
 
 /** Properties of a HelloRequest. */
@@ -476,4 +497,103 @@ export class AttackReply implements IAttackReply {
      * @returns The default type url
      */
     public static getTypeUrl(typeUrlPrefix?: string): string;
+}
+
+/** Namespace google. */
+export namespace google {
+
+    /** Namespace protobuf. */
+    namespace protobuf {
+
+        /** Properties of an Empty. */
+        interface IEmpty {
+        }
+
+        /** Represents an Empty. */
+        class Empty implements IEmpty {
+
+            /**
+             * Constructs a new Empty.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IEmpty);
+
+            /**
+             * Creates a new Empty instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Empty instance
+             */
+            public static create(properties?: google.protobuf.IEmpty): google.protobuf.Empty;
+
+            /**
+             * Encodes the specified Empty message. Does not implicitly {@link google.protobuf.Empty.verify|verify} messages.
+             * @param message Empty message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IEmpty, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Empty message, length delimited. Does not implicitly {@link google.protobuf.Empty.verify|verify} messages.
+             * @param message Empty message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IEmpty, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an Empty message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Empty
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.Empty;
+
+            /**
+             * Decodes an Empty message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Empty
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.Empty;
+
+            /**
+             * Verifies an Empty message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an Empty message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Empty
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.Empty;
+
+            /**
+             * Creates a plain object from an Empty message. Also converts values to other types if specified.
+             * @param message Empty
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.Empty, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Empty to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Empty
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+    }
 }

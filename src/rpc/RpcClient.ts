@@ -6,7 +6,6 @@ import { Message, Method, RPCImplCallback, Root, Service, rpc } from 'protobufjs
 interface MetaData {
     serverType: string;
     serverId: string;
-    publish: boolean;
 }
 
 export class RpcClient extends Component {
@@ -24,12 +23,22 @@ export class RpcClient extends Component {
             callback(new Error('service not found'), null);
             return;
         }
-        const subject = `rpc.${metaData.serverId ? String(metaData.serverId) : metaData.serverType}.${
-            method1.parent.name
-        }.${method1.name}.${method1.requestType}.${method1.responseType}`;
-        if (metaData.publish) {
+        // rpc.game/uuid.lobby.LobbyService.CreateRoom.{CreateRoomRequest}.{CreateRoomResponse}
+        const subject =
+            'rpc.' +
+            (metaData.serverId ? String(metaData.serverId) : metaData.serverType) +
+            '.' +
+            method1.parent.name +
+            '.' +
+            method1.name +
+            '.{' +
+            method1.requestType +
+            '}.{' +
+            method1.responseType +
+            '}';
+        if (method1.responseType === 'google.protobuf.Empty') {
             this.nats.publish(subject, requestData);
-            callback(null, null);
+            callback(null, Buffer.from(''));
         } else
             this.nats
                 .tryRequest(subject, requestData, { timeout: 1000 })
@@ -69,12 +78,10 @@ export class RpcClient extends Component {
                     value: function (request: unknown, callback?: (err: Error | null, res?: unknown) => void) {
                         const self = this as Proxy;
                         extra.serverId = self.serverId;
-                        extra.publish = self.mute;
 
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
                         const result = (self.service as any)[methodName](request, callback) as unknown;
                         self.serverId = '';
-                        self.mute = false;
                         return result;
                     },
                 });
@@ -91,18 +98,8 @@ export class RpcClient extends Component {
 class Proxy {
     service!: rpc.Service;
     serverId = '';
-    mute = false;
     to(svId: string) {
         this.serverId = svId;
-        return this;
-    }
-
-    /**
-     * do not need feedback
-     * @returns
-     */
-    publish() {
-        this.mute = true;
         return this;
     }
 }
@@ -111,5 +108,4 @@ type RemoteProxy<F> = {
     [P in keyof F]: F[P];
 } & {
     to(svId: string): RemoteProxy<F>;
-    publish(): RemoteProxy<F>;
 };

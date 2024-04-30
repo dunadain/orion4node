@@ -17,15 +17,15 @@ export abstract class RpcSubscriber extends SubscriberBase {
 
     protected process(msg: Msg) {
         const subject = msg.subject;
-        let index = subject.lastIndexOf('.');
+        let index = subject.lastIndexOf('{');
         let index2 = 0;
-        const responseKey = subject.substring(index + 1);
+        const responseKey = subject.substring(index + 1, subject.length - 1);
         index2 = index;
-        index = subject.lastIndexOf('.', index - 1);
-        const requestKey = subject.substring(index + 1, index2);
+        index = subject.lastIndexOf('{', index - 1);
+        const requestKey = subject.substring(index + 1, index2 - 2);
         index2 = index;
-        index = subject.lastIndexOf('.', index - 1);
-        const methodName = subject.substring(index + 1, index2);
+        index = subject.lastIndexOf('.', index - 2);
+        const methodName = subject.substring(index + 1, index2 - 1);
         index2 = index;
         index = subject.lastIndexOf('.', index - 1);
         const serviceKey = subject.substring(index + 1, index2);
