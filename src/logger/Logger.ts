@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { createLogger, format, transports } from 'winston';
+import { Logger, createLogger, format, transports } from 'winston';
 import * as DailyRotateFile from 'winston-daily-rotate-file';
+const { combine, timestamp, label, printf } = format;
 
 // const logger = createLogger({
 //     level: 'debug',
@@ -10,61 +11,68 @@ import * as DailyRotateFile from 'winston-daily-rotate-file';
 //         new transports.File({ filename: './logs/combined.log' }),
 //     ],
 // });
+const myFormat = printf(({ level, message, label, timestamp }) => {
+    return `${String(timestamp)} [${String(label)}] ${level}: ${String(message)}`;
+});
 const isProduction = process.env.NODE_ENV === 'production';
 
-const errOption = {
-    level: 'error',
-    dirname: 'logs',
-    filename: 'error-%DATE%.log',
-    maxSize: '5m',
-    maxFiles: '90d',
-    format: format.combine(
-        format.timestamp({
-            format() {
-                return new Date().toLocaleString();
-            },
-        }),
-        format.simple()
-    ),
-};
-
-const logger = createLogger({
-    transports: [
-        new DailyRotateFile({
-            level: isProduction ? 'info' : 'debug',
-            dirname: 'logs',
-            filename: 'combined-%DATE%.log',
-            maxSize: '10m',
-            maxFiles: '60d',
-            // datePattern: "YYYY-MM-DD-HH-mm",
-            format: format.combine(
-                format.timestamp({
-                    format() {
-                        return new Date().toLocaleString();
-                    },
-                }),
-                format.simple()
-            ),
-        }),
-        new DailyRotateFile(errOption),
-    ],
-    handleExceptions: true,
-    exceptionHandlers: [new DailyRotateFile(errOption)],
-});
-
-if (!isProduction) {
-    logger.add(
-        new transports.Console({
-            level: 'debug',
-            format: format.combine(format.colorize({ all: true }), format.simple()),
-            handleExceptions: true,
-        })
-    );
+function getErrOpt(serverName: string) {
+    return {
+        level: 'error',
+        dirname: 'logs',
+        filename: 'error-%DATE%.log',
+        maxSize: '5m',
+        maxFiles: '90d',
+        format: combine(
+            label({ label: serverName }),
+            timestamp({
+                format: 'YYYY-MM-DD HH:mm:ss',
+            }),
+            myFormat
+        ),
+    };
 }
+
+let logger: Logger;
 
 function logErr(e: unknown) {
     if (typeof e === 'string') logger.error(e);
     else if (e instanceof Error) logger.error(e.stack);
 }
 
-export { logger, logErr };
+function initLogger(serverName: string) {
+    logger = createLogger({
+        transports: [
+            new DailyRotateFile({
+                level: isProduction ? 'info' : 'debug',
+                dirname: 'logs',
+                filename: 'combined-%DATE%.log',
+                maxSize: '10m',
+                maxFiles: '60d',
+                // datePattern: "YYYY-MM-DD-HH-mm",
+                format: combine(
+                    label({ label: serverName }),
+                    timestamp({
+                        format: 'YYYY-MM-DD HH:mm:ss',
+                    }),
+                    myFormat
+                ),
+            }),
+            new DailyRotateFile(getErrOpt(serverName)),
+        ],
+        handleExceptions: true,
+        exceptionHandlers: [new DailyRotateFile(getErrOpt(serverName))],
+    });
+
+    if (!isProduction) {
+        logger.add(
+            new transports.Console({
+                level: 'debug',
+                format: combine(format.colorize({ all: true }), format.simple()),
+                handleExceptions: true,
+            })
+        );
+    }
+}
+
+export { logger, logErr, initLogger };

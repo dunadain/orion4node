@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
 import { ComponentConstructor } from '../interfaces/defines';
 import { Component } from '../component/Component';
-import { logErr, logger } from '../logger/Logger';
+import { initLogger, logErr, logger } from '../logger/Logger';
 
 export class Server {
     readonly eventEmitter = new EventEmitter();
@@ -11,7 +11,9 @@ export class Server {
         public readonly port: number,
         public readonly serverType: string,
         public readonly uuid: string
-    ) {}
+    ) {
+        initLogger(this.name);
+    }
 
     get name() {
         return `${this.serverType}-${this.uuid}`;
