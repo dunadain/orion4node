@@ -15,6 +15,7 @@ class Server {
         this.port = port;
         this.serverType = serverType;
         this.uuid = uuid;
+        (0, Logger_1.initLogger)(this.name);
     }
     get name() {
         return `${this.serverType}-${this.uuid}`;

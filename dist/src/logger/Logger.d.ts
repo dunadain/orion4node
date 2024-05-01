@@ -1,3 +1,5 @@
-declare const logger: import("winston").Logger;
+import { Logger } from 'winston';
+declare let logger: Logger;
 declare function logErr(e: unknown): void;
-export { logger, logErr };
+declare function initLogger(serverName: string): void;
+export { logger, logErr, initLogger };
