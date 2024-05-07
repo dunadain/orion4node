@@ -1,11 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { MsgBodyDecoder, MsgBodyEncoder } from '../interfaces/defines';
 import { isUpperCase } from './RouterUtils';
 import { serverSelector } from './ServerSelector';
 
 const id2Server = new Map<number, string>();
 class ProtocolMgr {
+    private encoder: MsgBodyEncoder = {
+        encode(body: unknown) {
+            return Buffer.from(JSON.stringify(body));
+        },
+    };
+    private decoder: MsgBodyDecoder = {
+        decode(buf: Buffer) {
+            return JSON.parse(buf.toString()) as unknown;
+        },
+    };
     async getHandlerSubject(protocolId: number, uid: string) {
         if (!id2Server.has(protocolId)) return '';
         const serverType = id2Server.get(protocolId);
@@ -17,12 +28,20 @@ class ProtocolMgr {
         return 'handler.' + serverType;
     }
 
-    encodeMsgBody(body: unknown, protoId?: number) {
-        return Buffer.from(JSON.stringify(body));
+    encodeMsgBody(body: unknown, protoId: number) {
+        return this.encoder.encode(body, protoId);
     }
 
-    decodeMsgBody(buf: Buffer, protoId?: number) {
-        return JSON.parse(buf.toString()) as unknown;
+    decodeMsgBody(buf: Buffer, protoId: number) {
+        return this.decoder.decode(buf, protoId);
+    }
+
+    setEncoder(encoder: MsgBodyEncoder) {
+        this.encoder = encoder;
+    }
+
+    setDecoder(decoder: MsgBodyDecoder) {
+        this.decoder = decoder;
     }
 }
 
