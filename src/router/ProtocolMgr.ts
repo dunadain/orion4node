@@ -47,11 +47,13 @@ class ProtocolMgr {
 
 export const protoMgr = new ProtocolMgr();
 
-export function protocolIds(clazz: any) {
+export function register(clazz: any) {
     for (const k in clazz) {
-        const id = clazz[k] as number;
-        if (id2Server.has(id)) throw new Error(`protocol id:${String(id)} is duplicated!`);
-        id2Server.set(id, getServer(k));
+        if (typeof clazz[k] === 'number') {
+            const id = clazz[k] as number;
+            if (id2Server.has(id)) throw new Error(`protocol id:${String(id)} is duplicated!`);
+            id2Server.set(id, getServer(k));
+        }
     }
 }
 

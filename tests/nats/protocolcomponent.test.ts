@@ -1,20 +1,20 @@
 import { describe, expect, it, test } from '@jest/globals';
-import { protoMgr, protocolIds } from '../../src/router/ProtocolMgr';
+import { protoMgr, register } from '../../src/router/ProtocolMgr';
 
 describe('subject creation', () => {
     test('subject should have the form handler.servertype', async () => {
-        @protocolIds
-        class Proto {
-            static readonly GameLogin = 0;
-            static readonly ChatSend = 1;
+        enum Proto {
+            GameLogin = 0,
+            ChatSend = 1,
         }
+        register(Proto);
         expect(await protoMgr.getHandlerSubject(Proto.GameLogin, '')).toBe('handler.game');
         expect(await protoMgr.getHandlerSubject(Proto.ChatSend, '')).toBe('handler.chat');
     });
     it('should throw error if protocol id is duplicated', () => {
         expect(() => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            protocolIds({ GameLogin2: 0 });
+            register({ GameLogin2: 0 });
         }).toThrowError('protocol id:0 is duplicated!');
     });
 });
