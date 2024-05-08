@@ -1,13 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.protocolIds = exports.protoMgr = void 0;
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+exports.register = exports.protoMgr = void 0;
 const RouterUtils_1 = require("./RouterUtils");
 const ServerSelector_1 = require("./ServerSelector");
 const id2Server = new Map();
 class ProtocolMgr {
+    encoder = {
+        encode(body) {
+            return Buffer.from(JSON.stringify(body));
+        },
+    };
+    decoder = {
+        decode(buf) {
+            return JSON.parse(buf.toString());
+        },
+    };
     async getHandlerSubject(protocolId, uid) {
         if (!id2Server.has(protocolId))
             return '';
@@ -21,22 +28,30 @@ class ProtocolMgr {
         return 'handler.' + serverType;
     }
     encodeMsgBody(body, protoId) {
-        return Buffer.from(JSON.stringify(body));
+        return this.encoder.encode(body, protoId);
     }
     decodeMsgBody(buf, protoId) {
-        return JSON.parse(buf.toString());
+        return this.decoder.decode(buf, protoId);
+    }
+    setEncoder(encoder) {
+        this.encoder = encoder;
+    }
+    setDecoder(decoder) {
+        this.decoder = decoder;
     }
 }
 exports.protoMgr = new ProtocolMgr();
-function protocolIds(clazz) {
+function register(clazz) {
     for (const k in clazz) {
-        const id = clazz[k];
-        if (id2Server.has(id))
-            throw new Error(`protocol id:${String(id)} is duplicated!`);
-        id2Server.set(id, getServer(k));
+        if (typeof clazz[k] === 'number') {
+            const id = clazz[k];
+            if (id2Server.has(id))
+                throw new Error(`protocol id:${String(id)} is duplicated!`);
+            id2Server.set(id, getServer(k));
+        }
     }
 }
-exports.protocolIds = protocolIds;
+exports.register = register;
 function getServer(key) {
     let i = 1;
     for (; i < key.length; ++i) {
