@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logErr = exports.logger = void 0;
+exports.packUtils = exports.msgUtils = exports.logErr = exports.logger = void 0;
 __exportStar(require("./component/Component"), exports);
 __exportStar(require("./component/ClientManager"), exports);
 __exportStar(require("./config/ErrorCode"), exports);
@@ -44,4 +44,6 @@ __exportStar(require("./server/FileLoader"), exports);
 __exportStar(require("./server/Server"), exports);
 __exportStar(require("./transport/uws/UWebSocketClient"), exports);
 __exportStar(require("./transport/uws/UWebSocketTransport"), exports);
+exports.msgUtils = require("./transport/protocol/MsgProcessor");
+exports.packUtils = require("./transport/protocol/PacketProcessor");
 __exportStar(require("./utils/ArrayUtils"), exports);

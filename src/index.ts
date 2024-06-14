@@ -32,5 +32,7 @@ export * from './server/Server';
 
 export * from './transport/uws/UWebSocketClient';
 export * from './transport/uws/UWebSocketTransport';
+export * as msgUtils from './transport/protocol/MsgProcessor';
+export * as packUtils from './transport/protocol/PacketProcessor';
 
 export * from './utils/ArrayUtils';
