@@ -80,6 +80,7 @@ export function decode(buffer: Buffer, out?: { type: PackType; body: Buffer | un
         if (!isValidType(type) || length > bytes.length) {
             throw new Error('invalid data'); // return invalid type, then disconnect!
         }
+        buffer.subarray(PKG_HEAD_BYTES);
         const body = length ? Buffer.alloc(length) : undefined;
         if (body) {
             copyArray(body, 0, bytes, offset, length);
