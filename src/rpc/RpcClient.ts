@@ -26,6 +26,7 @@ export class RpcClient extends Component {
             return;
         }
         // rpc.game/uuid.Greeter.SayHello.{HelloRequest}.{HelloReply}
+        // 类型可能为google.protobuf.Empty， 所以需要{}包裹
         const subject =
             'rpc.' +
             (metaData.serverId ? String(metaData.serverId) : metaData.serverType) +
