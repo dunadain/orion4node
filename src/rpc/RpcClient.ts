@@ -25,7 +25,7 @@ export class RpcClient extends Component {
             callback(new Error('service not found'), null);
             return;
         }
-        // rpc.game/uuid.lobby.LobbyService.CreateRoom.{CreateRoomRequest}.{CreateRoomResponse}
+        // rpc.game/uuid.Greeter.SayHello.{HelloRequest}.{HelloReply}
         const subject =
             'rpc.' +
             (metaData.serverId ? String(metaData.serverId) : metaData.serverType) +
