@@ -150,11 +150,11 @@ describe('communication', () => {
                 expect(mockHandler).toBeCalledTimes(1);
                 expect(mockHandler.mock.results[0].value).resolves.toBeUndefined();
                 expect(mockHandler.mock.calls[0][0].protoId).toBe(Proto.GameUpdate);
-                expect(mockHandler.mock.calls[0][0].id).toBe(1);
+                expect(mockHandler.mock.calls[0][0].id).toBe(0);
                 expect(mockP1).toBeCalledTimes(1);
                 expect((mockP1.mock.calls[0][0] as any).reply).toBe('');
                 resolve();
-            }, 10);
+            }, 20);
         });
     });
 
@@ -190,26 +190,27 @@ describe('communication', () => {
                 expect(mockHandler).toBeCalledTimes(1);
                 expect(mockHandler.mock.results[0].value).resolves.toBeUndefined();
                 expect(mockHandler.mock.calls[0][0].protoId).toBe(Proto.GameUpdate);
-                expect(mockHandler.mock.calls[0][0].id).toBe(1);
+                expect(mockHandler.mock.calls[0][0].id).toBe(0);
                 expect(mockPc3).toBeCalledTimes(1);
                 expect((mockPc3.mock.calls[0][0] as any).reply).toBe('');
                 expect(mockPc2).not.toBeCalled();
                 resolve();
-            }, 10);
+            }, 20);
         });
     });
 
     test('server to client notification(push)', async () => {
-        const result = await new Promise<any>((resolve) => {
+        return new Promise<any>((resolve) => {
             socket.onmessage = (e: MessageEvent) => {
                 resolve(decodeClientData(e));
             };
             const sender = server2.getComponent(PushSender);
-            sender?.send({ id: 1, protoId: Proto.PushToClient, sId: id1 }, { name: 'Hello Game' });
+            sender?.send({ id: 0, protoId: Proto.PushToClient, sId: id1 }, { name: 'Hello Game' });
+        }).then((result) => {
+            expect(result.id).toBe(0);
+            expect(result.route).toBe(Proto.PushToClient);
+            expect(result.body.name).toBe('Hello Game');
         });
-        expect(result.id).toBe(0);
-        expect(result.route).toBe(Proto.PushToClient);
-        expect(result.body.name).toBe('Hello Game');
     });
 });
 

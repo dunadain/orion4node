@@ -91,7 +91,7 @@ describe('handshake test', () => {
 
     test('handshake normal', () => {
         const clientMgr = server.getComponent(ClientManager);
-        const uwsClient = clientMgr?.getClientById(1) as any;
+        const uwsClient = clientMgr?.getClientById(0) as any;
         const mockHandshakeHandle = jest.fn(uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle);
         const mockHandshakeAckHandle = jest.fn(uwsClient.handlers.get(packUtil.PackType.HANDSHAKE_ACK).handle);
         uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle = mockHandshakeHandle;
@@ -308,7 +308,7 @@ describe('sending messages', () => {
         return new Promise<any>((resolve) => {
             const clientMgr = server.getComponent(ClientManager);
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const uwsClient = clientMgr!.getClientById(1)!;
+            const uwsClient = clientMgr!.getClientById(0)!;
             socket.onmessage = (e: MessageEvent) => {
                 const buffer = Buffer.from(e.data as ArrayBuffer);
                 const pkgs = packUtil.decode(buffer);

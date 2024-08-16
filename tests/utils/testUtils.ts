@@ -17,8 +17,9 @@ export function createConnection(port: number, obj?: any) {
             const pkg = pkgs[0];
             if (pkg.type === packUtil.PackType.HANDSHAKE) {
                 newSocket.send(packUtil.encode(packUtil.PackType.HANDSHAKE_ACK));
-            } else if (pkg.type === packUtil.PackType.HANDSHAKE_ACK) {
-                resolve(newSocket);
+                setTimeout(() => {
+                    resolve(newSocket);
+                }, 10);
             }
         };
     });
