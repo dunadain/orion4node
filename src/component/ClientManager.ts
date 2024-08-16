@@ -84,6 +84,6 @@ export class ClientManager extends Component {
     }
 
     getSessionId(uid: string) {
-        return this.bindedClientMap.get(uid) ?? 0;
+        return this.bindedClientMap.get(uid) ?? -1;
     }
 }
