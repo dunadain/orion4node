@@ -25,7 +25,7 @@ export class Router extends Component {
                 if (!subject) return;
                 const buf = encodeRouterPack(
                     {
-                        id: client.id,
+                        clientId: client.id,
                         protoId: msg.protoId,
                         uid: client.uid,
                         sId: this.server.uuid,
@@ -39,7 +39,7 @@ export class Router extends Component {
                             .then((replyu8a) => {
                                 const rBuf = Buffer.from(replyu8a);
                                 const response = decodeRouterPack(rBuf);
-                                const client = clientMgr.getClientById(response.context.id);
+                                const client = clientMgr.getClientById(response.context.clientId);
                                 client?.sendMsg(MsgType.RESPONSE, msg.protoId, response.body, msg.id);
                             })
                             .catch((e: unknown) => {

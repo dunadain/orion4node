@@ -5,7 +5,7 @@ export interface Context {
     /**
      * The ID of client.
      */
-    id: number;
+    clientId: number;
     /**
      * The ID of the protocol.
      */
@@ -13,9 +13,13 @@ export interface Context {
     /**
      * user id
      */
-    uid?: string;
+    uid: string;
     /**
      * server id
      */
-    sId?: string;
+    sId: string;
+    /**
+     * request id
+     */
+    reqId: number;
 }

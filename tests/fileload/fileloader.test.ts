@@ -19,7 +19,7 @@ describe('load handlers and rpc', () => {
     });
 
     it('should have handlers in RouteUtils', async () => {
-        await expect(handle({ id: 1, protoId: Proto.GameLogin }, undefined, {} as Server)).resolves.toBe(1000);
+        await expect(handle({ clientId: 1, protoId: Proto.GameLogin }, undefined, {} as Server)).resolves.toBe(1000);
     });
 
     it('should not reject to error when calling rpc', async () => {

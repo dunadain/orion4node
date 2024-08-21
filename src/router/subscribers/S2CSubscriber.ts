@@ -17,7 +17,7 @@ export class S2CSubscriber extends SubscriberBase {
 
     protected process(msg: Msg) {
         const data = decodeRouterPack(Buffer.from(msg.data));
-        const client = this.clientMgr.getClientById(data.context.id);
+        const client = this.clientMgr.getClientById(data.context.clientId);
         client?.sendMsg(MsgType.PUSH, data.context.protoId, data.body);
     }
 

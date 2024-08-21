@@ -2,24 +2,26 @@ import { Server } from '../server/Server';
 import { copyArray } from '../transport/protocol/utils';
 import { Context } from './RouterTypeDef';
 
-export function encodeRouterPack(contextInfo: unknown, body?: Buffer) {
-    const str = JSON.stringify(contextInfo);
-    const contextBuf = Buffer.from(str);
-    let len = 2; // context buffer length
-    len += contextBuf.length; // context buffer
-    if (body) {
-        len += 4; // body length;
-        len += body.length; // body
-    }
-    const buf = Buffer.alloc(len);
-    let offset = buf.writeUInt16BE(contextBuf.length);
-    copyArray(buf, offset, contextBuf, 0, contextBuf.length);
-    if (body) {
-        offset += contextBuf.length;
-        offset = buf.writeUInt32BE(body.length, offset);
-        copyArray(buf, offset, body, 0, body.length);
-    }
-    return buf;
+export function encodeRouterPack(contextInfo: Context, body?: Buffer) {
+    const uidBuf = Buffer.from(contextInfo.uid);
+    const buf = Buffer.alloc(4 + 2 + uidBuf.length + 4 + (body ? body.length : 0));
+    // const str = JSON.stringify(contextInfo);
+    // const contextBuf = Buffer.from(str);
+    // let len = 2; // context buffer length
+    // len += contextBuf.length; // context buffer
+    // if (body) {
+    //     len += 4; // body length;
+    //     len += body.length; // body
+    // }
+    // const buf = Buffer.alloc(len);
+    // let offset = buf.writeUInt16BE(contextBuf.length);
+    // copyArray(buf, offset, contextBuf, 0, contextBuf.length);
+    // if (body) {
+    //     offset += contextBuf.length;
+    //     offset = buf.writeUInt32BE(body.length, offset);
+    //     copyArray(buf, offset, body, 0, body.length);
+    // }
+    // return buf;
 }
 
 export function decodeRouterPack(buffer: Buffer) {

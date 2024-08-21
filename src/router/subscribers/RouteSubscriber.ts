@@ -16,7 +16,7 @@ export abstract class RouteSubscriber extends SubscriberBase {
                 if (msg.reply) {
                     msg.respond(
                         encodeRouterPack(
-                            { id: data.context.id },
+                            { clientId: data.context.clientId },
                             result ? protoMgr.encodeMsgBody(result, data.context.protoId) : undefined
                         )
                     );
