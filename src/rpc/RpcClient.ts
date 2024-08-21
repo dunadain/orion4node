@@ -84,7 +84,7 @@ export class RpcClient extends Component {
 
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
                         const result = (self.service as any)[methodName](request, callback) as unknown;
-                        self.serverId = -1;
+                        self.serverId = 0;
                         return result;
                     },
                 });
@@ -100,7 +100,7 @@ export class RpcClient extends Component {
 
 class Proxy {
     service!: rpc.Service;
-    serverId = -1;
+    serverId = 0;
     to(svId: number) {
         this.serverId = svId;
         return this;
