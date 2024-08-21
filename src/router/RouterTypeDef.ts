@@ -17,7 +17,7 @@ export interface Context {
     /**
      * server id
      */
-    sId: string;
+    sId: number;
     /**
      * request id
      */

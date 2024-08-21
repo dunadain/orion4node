@@ -7,7 +7,7 @@ import { S2CSubscriber } from '../../src/router/subscribers/S2CSubscriber';
 import { ClientManager } from '../../src/component/ClientManager';
 
 let server: Server;
-const id1 = '1';
+const id1 = 1;
 
 beforeEach(async () => {
     server = new Server('', 9008, 'connector', id1);

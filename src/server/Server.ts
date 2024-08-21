@@ -10,13 +10,13 @@ export class Server {
         public readonly addr: string,
         public readonly port: number,
         public readonly serverType: string,
-        public readonly uuid: string
+        public readonly uuid: number
     ) {
         initLogger(this.name);
     }
 
     get name() {
-        return `${this.serverType}-${this.uuid}`;
+        return `${this.serverType}-${String(this.uuid)}`;
     }
     /**
      * get component

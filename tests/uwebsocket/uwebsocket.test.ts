@@ -20,7 +20,7 @@ import { Message } from '../../src/transport/protocol/ProtocolTypeDefs';
 const port = 9009;
 let server: Server;
 beforeAll(async () => {
-    server = new Server('', port, 'connector', '111');
+    server = new Server('', port, 'connector', 111);
     server.addComponent(UWebSocketTransport);
     server.addComponent(ClientManager);
     server.addComponent(NatsComponent);

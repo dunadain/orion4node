@@ -14,9 +14,9 @@ import * as rpc from '../../src/rpc/RpcUtils';
 let server: Server;
 let server2: Server;
 let server3: Server;
-const id1 = '1';
-const id2 = '2';
-const id3 = '3';
+const id1 = 1;
+const id2 = 2;
+const id3 = 3;
 beforeAll(async () => {
     server = new Server('', 9005, 'chat', id1);
     server.addComponent(NatsComponent);

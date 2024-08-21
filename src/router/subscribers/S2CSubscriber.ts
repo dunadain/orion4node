@@ -12,7 +12,7 @@ export class S2CSubscriber extends SubscriberBase {
     private _clientMgr: ClientManager | undefined;
 
     async init() {
-        this.subject = `push.${this.server.uuid}`;
+        this.subject = `${this.server.uuid.toString()}.>`;
     }
 
     protected process(msg: Msg) {

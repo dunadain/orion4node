@@ -9,14 +9,20 @@ export abstract class RouteSubscriber extends SubscriberBase {
         const data = decodeRouterPack(Buffer.from(msg.data));
         handle(
             data.context,
-            data.body ? protoMgr.decodeMsgBody(data.body, data.context.protoId) : undefined,
+            data.body.length > 0 ? protoMgr.decodeMsgBody(data.body, data.context.protoId) : undefined,
             this.server
         )
             .then((result) => {
                 if (msg.reply) {
                     msg.respond(
                         encodeRouterPack(
-                            { clientId: data.context.clientId },
+                            {
+                                clientId: data.context.clientId,
+                                protoId: data.context.protoId,
+                                uid: '',
+                                sId: this.server.uuid,
+                                reqId: data.context.reqId,
+                            },
                             result ? protoMgr.encodeMsgBody(result, data.context.protoId) : undefined
                         )
                     );

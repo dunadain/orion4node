@@ -28,9 +28,9 @@ const data = {
 let server: Server;
 let server2: Server;
 let server3: Server;
-const id1 = '1';
-const id2 = '2';
-const id3 = '3';
+const id1 = 1;
+const id2 = 2;
+const id3 = 3;
 beforeAll(async () => {
     server = new Server('', 9002, 'connector', id1);
     server.addComponent(UWebSocketTransport);
@@ -205,7 +205,16 @@ describe('communication', () => {
                 resolve(decodeClientData(e));
             };
             const sender = server2.getComponent(PushSender);
-            sender?.send({ id: 0, protoId: Proto.PushToClient, sId: id1 }, { name: 'Hello Game' });
+            sender?.send(
+                {
+                    clientId: 0,
+                    protoId: Proto.PushToClient,
+                    sId: id1,
+                    uid: '',
+                    reqId: 0,
+                },
+                { name: 'Hello Game' }
+            );
         }).then((result) => {
             expect(result.id).toBe(0);
             expect(result.route).toBe(Proto.PushToClient);

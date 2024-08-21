@@ -3,6 +3,7 @@ import { Component } from '../component/Component';
 import { NatsComponent } from '../nats/NatsComponent';
 import { encodeRouterPack } from './RouterUtils';
 import { protoMgr } from './ProtocolMgr';
+import { Context } from './RouterTypeDef';
 
 export class PushSender extends Component {
     private _nc: NatsConnection | undefined;
@@ -16,16 +17,9 @@ export class PushSender extends Component {
      *   - sId: The server ID.
      * @param msg - The message to be sent.
      */
-    send(
-        context: {
-            id: number;
-            protoId: number;
-            sId: string;
-        },
-        msg: unknown
-    ) {
+    send(context: Context, msg: unknown) {
         const buf = encodeRouterPack(context, msg ? protoMgr.encodeMsgBody(msg, context.protoId) : undefined);
-        this.nc.publish(`push.${context.sId}`, buf);
+        this.nc.publish(`${context.sId.toString()}.push`, buf);
     }
 
     get nc() {
