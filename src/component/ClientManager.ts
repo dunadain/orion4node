@@ -13,7 +13,7 @@ export class ClientManager extends Component {
 
     addClient<T>(client: SocketClient<T>) {
         client.id = this.idGenerator++;
-        if (this.idGenerator == 4294967200) this.idGenerator = 0;
+        if (this.idGenerator == 0xffffffff) this.idGenerator = 0;
         this.map.set(client.socket, client);
         this.id2Client.set(client.id, client);
     }
