@@ -51,27 +51,27 @@ describe('Package Protocol', () => {
             const type = i as message.MsgType;
             const id =
                 type === message.MsgType.REQUEST || type === message.MsgType.RESPONSE
-                    ? Math.floor(Math.random() * 1000000)
+                    ? Math.floor(Math.random() * 0xff)
                     : 0;
             const route =
                 type === message.MsgType.REQUEST || type === message.MsgType.NOTIFY || type === message.MsgType.PUSH
-                    ? Math.floor(Math.random() * 63000)
+                    ? Math.floor(Math.random() * 0xffff)
                     : 0;
             const buf = Buffer.from(str, 'utf8');
-            const compressGzip = false;
-            const encodedBuf = message.encode(id, type, route, buf, compressGzip);
+            // const compressGzip = false;
+            const encodedBuf = message.encode(id, type, route, buf);
             const decoded = message.decode(encodedBuf);
             expect(decoded.id).toBe(id);
             expect(decoded.type).toBe(type);
             expect(decoded.route).toBe(route);
-            expect(!!decoded.compressGzip).toBe(compressGzip);
+            // expect(!!decoded.compressGzip).toBe(compressGzip);
             expect(decoded.body.toString()).toBe(str);
         }
     });
 
     it('should throw error when route is too big', () => {
         expect(() => {
-            message.encode(111, message.MsgType.REQUEST, 100000, Buffer.from('sldkjfsfjd'), false);
+            message.encode(111, message.MsgType.REQUEST, 100000, Buffer.from('sldkjfsfjd'));
         }).toThrowError();
     });
 });

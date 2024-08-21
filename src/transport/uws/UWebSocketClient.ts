@@ -52,7 +52,7 @@ export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
 
     sendMsg(type: msgUtils.MsgType, route: number, msg: Buffer | undefined, reqId = 0): void {
         if (ClientState.Ready !== this.state) return;
-        const msgBody = msgUtils.encode(reqId, type, route, msg, false);
+        const msgBody = msgUtils.encode(reqId, type, route, msg);
         this.sendBuffer(packUtils.encode(packUtils.PackType.DATA, msgBody));
     }
 
