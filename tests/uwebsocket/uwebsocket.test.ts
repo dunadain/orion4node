@@ -270,7 +270,7 @@ describe('sending messages', () => {
             c: true,
             dsldksdjfk: '$$####asfdjal',
         };
-        const reqId = 2344;
+        const reqId = 234;
         const route = 52;
         return new Promise<any>((resolve) => {
             server.eventEmitter.removeAllListeners();
@@ -297,7 +297,7 @@ describe('sending messages', () => {
     });
 
     test('server sending messages', () => {
-        const reqId = 2332;
+        const reqId = 0xff;
         const route = 7899;
         const data = {
             a: 1,

@@ -10,6 +10,6 @@ describe('server selector', () => {
             'route not found for serverType:connector'
         );
         expect(serverSelector.hasRoute('game')).toBe(true);
-        expect(serverSelector.selectServer('1', 'game')).resolves.toBe('33');
+        expect(serverSelector.selectServer('1', 'game')).resolves.toBe(33);
     });
 });
