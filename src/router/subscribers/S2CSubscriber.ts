@@ -8,7 +8,7 @@ import { SubscriberBase } from './SubscriberBase';
  * only exist on connector/gate servers to listen for push events
  * and send msgs to clients
  */
-export class PushSubscriber extends SubscriberBase {
+export class S2CSubscriber extends SubscriberBase {
     private _clientMgr: ClientManager | undefined;
 
     async init() {

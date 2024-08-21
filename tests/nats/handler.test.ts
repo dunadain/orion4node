@@ -5,7 +5,7 @@ import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport
 import { ClientManager } from '../../src/component/ClientManager';
 import { NatsComponent } from '../../src/nats/NatsComponent';
 import { Router } from '../../src/router/Router';
-import { PushSubscriber } from '../../src/router/subscribers/PushSubscriber';
+import { S2CSubscriber } from '../../src/router/subscribers/S2CSubscriber';
 import { FileLoader } from '../../src/server/FileLoader';
 import { MessageEvent, WebSocket } from 'ws';
 import { createConnection, decodeClientData } from '../utils/testUtils';
@@ -37,7 +37,7 @@ beforeAll(async () => {
     server.addComponent(ClientManager);
     server.addComponent(NatsComponent);
     server.addComponent(Router);
-    server.addComponent(PushSubscriber);
+    server.addComponent(S2CSubscriber);
 
     server2 = new Server('', 9003, 'game', id2);
     server2.addComponent(NatsComponent);

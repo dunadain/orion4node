@@ -3,7 +3,7 @@ import { Server } from '../../src/server/Server';
 import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport';
 import { NatsComponent } from '../../src/nats/NatsComponent';
 import { Router } from '../../src/router/Router';
-import { PushSubscriber } from '../../src/router/subscribers/PushSubscriber';
+import { S2CSubscriber } from '../../src/router/subscribers/S2CSubscriber';
 import { ClientManager } from '../../src/component/ClientManager';
 
 let server: Server;
@@ -15,7 +15,7 @@ beforeEach(async () => {
     server.addComponent(ClientManager);
     server.addComponent(NatsComponent);
     server.addComponent(Router);
-    server.addComponent(PushSubscriber);
+    server.addComponent(S2CSubscriber);
     try {
         await server.start();
     } catch (reason) {
