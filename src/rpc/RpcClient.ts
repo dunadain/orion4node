@@ -5,7 +5,7 @@ import { Message, Method, RPCImplCallback, Root, Service, rpc } from 'protobufjs
 
 interface MetaData {
     serverType: string;
-    serverId: string;
+    serverId: number;
 }
 
 export class RpcClient extends Component {
@@ -69,7 +69,7 @@ export class RpcClient extends Component {
             const serviceClazz = clazz as Service;
             const extra = {
                 serverType: serverType,
-                serverId: '',
+                serverId: -1,
                 publish: false,
             };
             const service = serviceClazz.create(this.rpcImpl.bind(this, extra), false, false);
@@ -84,7 +84,7 @@ export class RpcClient extends Component {
 
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
                         const result = (self.service as any)[methodName](request, callback) as unknown;
-                        self.serverId = '';
+                        self.serverId = -1;
                         return result;
                     },
                 });
@@ -100,8 +100,8 @@ export class RpcClient extends Component {
 
 class Proxy {
     service!: rpc.Service;
-    serverId = '';
-    to(svId: string) {
+    serverId = -1;
+    to(svId: number) {
         this.serverId = svId;
         return this;
     }
@@ -110,5 +110,5 @@ class Proxy {
 type RemoteProxy<F> = {
     [P in keyof F]: F[P];
 } & {
-    to(svId: string): RemoteProxy<F>;
+    to(svId: number): RemoteProxy<F>;
 };
