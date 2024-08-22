@@ -49,10 +49,10 @@ export function createTcpConnection(port: number, host: string) {
             const uidBuf = Buffer.from('myuuid');
             const buf = Buffer.alloc(5 + uidBuf.length);
             let offset = 0;
-            buf.writeUInt8(uidBuf.length, offset++);
+            buf.writeUInt8(uidBuf.length, offset++); // uid length
             copyArray(buf, offset, uidBuf, 0, uidBuf.length);
             offset += uidBuf.length;
-            buf.writeUInt8(1, offset++);
+            buf.writeUint32BE(1, offset++); // client version
             const handshakePact = packUtil.encode(packUtil.PackType.HANDSHAKE, buf);
             client.write(handshakePact);
         });
