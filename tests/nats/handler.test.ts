@@ -202,7 +202,7 @@ describe('communication', () => {
     test('server to client notification(push)', async () => {
         return new Promise<any>((resolve) => {
             socket.onmessage = (e: MessageEvent) => {
-                resolve(decodeClientData(e));
+                resolve(decodeClientData(Buffer.from(e.data as ArrayBuffer)));
             };
             const sender = server2.getComponent(PushSender);
             sender?.send(
@@ -232,7 +232,7 @@ async function testReq(socket: WebSocket, reqId: number) {
     );
     const result: { id: number; route: number; body: any } = await new Promise<any>((resolve) => {
         socket.onmessage = (e: MessageEvent) => {
-            resolve(decodeClientData(e));
+            resolve(decodeClientData(Buffer.from(e.data as ArrayBuffer)));
         };
         const pkg = packUtil.encode(packUtil.PackType.DATA, encodedMsg);
         socket.send(pkg);

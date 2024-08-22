@@ -15,8 +15,8 @@ const MSG_ROUTE_CODE_BYTES = 2;
 
 export enum MsgType {
     REQUEST,
-    NOTIFY,
     RESPONSE,
+    NOTIFY,
     PUSH,
 }
 
