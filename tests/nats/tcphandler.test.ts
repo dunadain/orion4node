@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, jest, test } from '@jest/globals';
 import * as net from 'net';
 import {
     FileLoader,
@@ -12,6 +12,7 @@ import {
 } from '../../src';
 import { createTcpConnection, decodeClientData } from '../utils/testUtils';
 import { Proto } from '../utils/Proto';
+import * as routerUtils from '../../src/router/RouterUtils';
 
 const data = {
     a: 1,
@@ -42,11 +43,18 @@ afterAll(() => {
 
 describe('tcp communication', () => {
     test('should send and receive data', async () => {
+        const mockP = jest.spyOn(StatelessRouteSubscriber.prototype as any, 'process');
+        const mockHandler = jest.spyOn(routerUtils, 'handle');
         const client = await createTcpConnection(9001, '127.0.0.1');
         const reqId = 32;
         const result = await testReq(client, reqId);
         expect(result.id).toBe(reqId);
         expect(result.body.name).toBe('Hello Game');
+        expect(mockP).toBeCalledTimes(1);
+        expect(mockHandler).toBeCalledTimes(1);
+
+        client.end();
+        jest.clearAllMocks();
     });
 });
 

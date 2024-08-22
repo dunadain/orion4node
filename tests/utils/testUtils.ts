@@ -66,13 +66,5 @@ export function createTcpConnection(port: number, host: string) {
                 }, 10);
             }
         });
-
-        client.on('end', () => {
-            console.log('disconnected from server');
-        });
-
-        client.on('error', (err) => {
-            console.error('TCP connection error:', err);
-        });
     });
 }
