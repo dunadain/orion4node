@@ -43,7 +43,7 @@ export function decodeClientData(e: Buffer) {
     }
 }
 
-export function createTcpConnection(port: number, host: string) {
+export function createTcpConnection(port: number, host: string, clientVersion = 1) {
     return new Promise<net.Socket>((resolve) => {
         const client = net.createConnection({ port, host }, () => {
             const uidBuf = Buffer.from('myuuid');
@@ -52,7 +52,7 @@ export function createTcpConnection(port: number, host: string) {
             buf.writeUInt8(uidBuf.length, offset++); // uid length
             copyArray(buf, offset, uidBuf, 0, uidBuf.length);
             offset += uidBuf.length;
-            buf.writeUint32BE(1, offset++); // client version
+            buf.writeUint32BE(clientVersion, offset++); // client version
             const handshakePact = packUtil.encode(packUtil.PackType.HANDSHAKE, buf);
             client.write(handshakePact);
         });
