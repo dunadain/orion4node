@@ -1,15 +1,13 @@
 /// <reference types="node" />
 import { EventEmitter } from 'node:events';
-import { ComponentConstructor } from '../interfaces/defines';
-import { Component } from '../component/Component';
+import type { ComponentConstructor } from '../interfaces/defines';
+import type { Component } from '../component/Component';
 export declare class Server {
-    readonly addr: string;
-    readonly port: number;
     readonly serverType: string;
-    readonly uuid: string;
+    readonly uuid: number;
     readonly eventEmitter: EventEmitter<[never]>;
     private components;
-    constructor(addr: string, port: number, serverType: string, uuid: string);
+    constructor(serverType: string, uuid: number);
     get name(): string;
     /**
      * get component

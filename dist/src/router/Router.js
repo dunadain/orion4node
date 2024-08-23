@@ -25,10 +25,11 @@ class Router extends Component_1.Component {
                 if (!subject)
                     return;
                 const buf = (0, RouterUtils_1.encodeRouterPack)({
-                    id: client.id,
+                    clientId: client.id,
                     protoId: msg.protoId,
                     uid: client.uid,
                     sId: this.server.uuid,
+                    reqId: msg.id,
                 }, msg.body);
                 switch (msg.type) {
                     case MsgProcessor_1.MsgType.REQUEST:
@@ -37,7 +38,7 @@ class Router extends Component_1.Component {
                             .then((replyu8a) => {
                             const rBuf = Buffer.from(replyu8a);
                             const response = (0, RouterUtils_1.decodeRouterPack)(rBuf);
-                            const client = clientMgr.getClientById(response.context.id);
+                            const client = clientMgr.getClientById(response.context.clientId);
                             client?.sendMsg(MsgProcessor_1.MsgType.RESPONSE, msg.protoId, response.body, msg.id);
                         })
                             .catch((e) => {

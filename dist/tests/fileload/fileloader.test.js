@@ -17,7 +17,7 @@ const RpcUtils_1 = require("../../src/rpc/RpcUtils");
         (0, globals_1.expect)(m.TestHandler.prototype.handle).not.toBeUndefined();
     });
     (0, globals_1.it)('should have handlers in RouteUtils', async () => {
-        await (0, globals_1.expect)((0, RouterUtils_1.handle)({ id: 1, protoId: Proto_1.Proto.GameLogin }, undefined, {})).resolves.toBe(1000);
+        await (0, globals_1.expect)((0, RouterUtils_1.handle)({ clientId: 1, protoId: Proto_1.Proto.GameLogin, reqId: 1, sId: 1, uid: '2k3' }, undefined, {})).resolves.toBe(1000);
     });
     (0, globals_1.it)('should not reject to error when calling rpc', async () => {
         await (0, globals_1.expect)((0, RpcUtils_1.callRpc)('Greeter.sayHello', { name: 'world' })).resolves.toEqual({ message: 'Hello, world' });

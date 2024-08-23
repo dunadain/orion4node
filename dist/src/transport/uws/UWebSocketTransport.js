@@ -7,6 +7,8 @@ const Logger_1 = require("../../logger/Logger");
 const ClientManager_1 = require("../../component/ClientManager");
 const UWebSocketClient_1 = require("./UWebSocketClient");
 class UWebSocketTransport extends Component_1.Component {
+    addr = '';
+    port = 0;
     app;
     _clientMgr;
     constructor(server) {
@@ -14,7 +16,7 @@ class UWebSocketTransport extends Component_1.Component {
         this.app = (0, uWebSockets_js_1.App)();
     }
     async init() {
-        const host = this.server.addr ? this.server.addr : 'localhost';
+        const host = this.addr ? this.addr : 'localhost';
         this.app
             .ws('/*', {
             sendPingsAutomatically: false,
@@ -53,11 +55,11 @@ class UWebSocketTransport extends Component_1.Component {
                 this.clientMgr.removeClient(ws);
             },
         })
-            .listen(host, this.server.port, (token) => {
+            .listen(host, this.port, (token) => {
             if (token)
-                Logger_1.logger.info(`${this.server.name} is listening on ${host}:${String(this.server.port)}`);
+                Logger_1.logger.info(`${this.server.name} is listening on ${host}:${String(this.port)}`);
             else
-                Logger_1.logger.error(`Server ${this.server.addr} failed to listen`);
+                Logger_1.logger.error(`Server ${this.addr} failed to listen`);
         });
     }
     async dispose() {

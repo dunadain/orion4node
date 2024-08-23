@@ -1,6 +1,5 @@
 export declare enum ErrorCode {
-    Ok = 0,
-    InvalidPkgType = 1,
-    InvaildHandShakeInfo = 500,
-    OutdatedClient = 501
+    InvaildHandShakeInfo = 1,
+    OutdatedClient = 2,
+    InvalidUID = 3
 }

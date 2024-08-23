@@ -1,5 +1,6 @@
 import { NatsConnection } from 'nats';
 import { Component } from '../component/Component';
+import { Context } from './RouterTypeDef';
 export declare class PushSender extends Component {
     private _nc;
     /**
@@ -11,10 +12,6 @@ export declare class PushSender extends Component {
      *   - sId: The server ID.
      * @param msg - The message to be sent.
      */
-    send(context: {
-        id: number;
-        protoId: number;
-        sId: string;
-    }, msg: unknown): void;
+    send(context: Context, msg: unknown): void;
     get nc(): NatsConnection;
 }

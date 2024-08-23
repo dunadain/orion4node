@@ -13,7 +13,8 @@ class RpcClient extends Component_1.Component {
             callback(new Error('service not found'), null);
             return;
         }
-        // rpc.game/uuid.lobby.LobbyService.CreateRoom.{CreateRoomRequest}.{CreateRoomResponse}
+        // rpc.game/uuid.Greeter.SayHello.{HelloRequest}.{HelloReply}
+        // 类型可能为google.protobuf.Empty， 所以需要{}包裹
         const subject = 'rpc.' +
             (metaData.serverId ? String(metaData.serverId) : metaData.serverType) +
             '.' +
@@ -56,7 +57,7 @@ class RpcClient extends Component_1.Component {
             const serviceClazz = clazz;
             const extra = {
                 serverType: serverType,
-                serverId: '',
+                serverId: -1,
                 publish: false,
             };
             const service = serviceClazz.create(this.rpcImpl.bind(this, extra), false, false);
@@ -70,7 +71,7 @@ class RpcClient extends Component_1.Component {
                         extra.serverId = self.serverId;
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
                         const result = self.service[methodName](request, callback);
-                        self.serverId = '';
+                        self.serverId = 0;
                         return result;
                     },
                 });
@@ -85,7 +86,7 @@ class RpcClient extends Component_1.Component {
 exports.RpcClient = RpcClient;
 class Proxy {
     service;
-    serverId = '';
+    serverId = 0;
     to(svId) {
         this.serverId = svId;
         return this;

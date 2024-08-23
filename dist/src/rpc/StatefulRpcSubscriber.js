@@ -8,7 +8,7 @@ const RpcSubscriber_1 = require("./RpcSubscriber");
 class StatefulRpcSubscriber extends RpcSubscriber_1.RpcSubscriber {
     async init() {
         await super.init();
-        this.subject = `rpc.${this.server.uuid}.>`; // example: rpc.{uuid}.{remotehandler}.method.request.response
+        this.subject = `rpc.${this.server.uuid.toString()}.>`; // example: rpc.{uuid}.{remotehandler}.method.request.response
     }
 }
 exports.StatefulRpcSubscriber = StatefulRpcSubscriber;

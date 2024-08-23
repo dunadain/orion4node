@@ -20,8 +20,11 @@ const NatsComponent_1 = require("../../src/nats/NatsComponent");
 const port = 9009;
 let server;
 (0, globals_1.beforeAll)(async () => {
-    server = new Server_1.Server('', port, 'connector', '111');
+    server = new Server_1.Server('connector', 111);
     server.addComponent(UWebSocketTransport_1.UWebSocketTransport);
+    const transport = server.getComponent(UWebSocketTransport_1.UWebSocketTransport);
+    if (transport)
+        transport.port = port;
     server.addComponent(ClientManager_1.ClientManager);
     server.addComponent(NatsComponent_1.NatsComponent);
     server.addComponent(Router_1.Router);
@@ -86,10 +89,11 @@ let server;
     });
     (0, globals_1.test)('handshake normal', () => {
         const clientMgr = server.getComponent(ClientManager_1.ClientManager);
-        const uwsClient = clientMgr?.getClientById(1);
+        const uwsClient = clientMgr?.getClientById(0);
         const mockHandshakeHandle = globals_1.jest.fn(uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle);
         const mockHandshakeAckHandle = globals_1.jest.fn(uwsClient.handlers.get(packUtil.PackType.HANDSHAKE_ACK).handle);
-        uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle = mockHandshakeHandle;
+        uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle =
+            mockHandshakeHandle;
         // eslint-disable-next-line @typescript-eslint/unbound-method
         const mockWsSend = globals_1.jest.fn(socket.send);
         socket.send = mockWsSend;
@@ -251,7 +255,7 @@ function testHandshakeErr(handshakeMsg, errCode, socket) {
             c: true,
             dsldksdjfk: '$$####asfdjal',
         };
-        const reqId = 2344;
+        const reqId = 234;
         const route = 52;
         return new Promise((resolve) => {
             server.eventEmitter.removeAllListeners();
@@ -271,7 +275,7 @@ function testHandshakeErr(handshakeMsg, errCode, socket) {
         });
     });
     (0, globals_1.test)('server sending messages', () => {
-        const reqId = 2332;
+        const reqId = 0xff;
         const route = 7899;
         const data = {
             a: 1,
@@ -282,7 +286,7 @@ function testHandshakeErr(handshakeMsg, errCode, socket) {
         return new Promise((resolve) => {
             const clientMgr = server.getComponent(ClientManager_1.ClientManager);
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const uwsClient = clientMgr.getClientById(1);
+            const uwsClient = clientMgr.getClientById(0);
             socket.onmessage = (e) => {
                 const buffer = Buffer.from(e.data);
                 const pkgs = packUtil.decode(buffer);

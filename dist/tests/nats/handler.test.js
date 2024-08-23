@@ -7,7 +7,7 @@ const UWebSocketTransport_1 = require("../../src/transport/uws/UWebSocketTranspo
 const ClientManager_1 = require("../../src/component/ClientManager");
 const NatsComponent_1 = require("../../src/nats/NatsComponent");
 const Router_1 = require("../../src/router/Router");
-const PushSubscriber_1 = require("../../src/router/subscribers/PushSubscriber");
+const S2CSubscriber_1 = require("../../src/router/subscribers/S2CSubscriber");
 const FileLoader_1 = require("../../src/server/FileLoader");
 const testUtils_1 = require("../utils/testUtils");
 const msgUtil = require("../../src/transport/protocol/MsgProcessor");
@@ -27,17 +27,20 @@ const data = {
 let server;
 let server2;
 let server3;
-const id1 = '1';
-const id2 = '2';
-const id3 = '3';
+const id1 = 1;
+const id2 = 2;
+const id3 = 3;
 (0, globals_1.beforeAll)(async () => {
-    server = new Server_1.Server('', 9002, 'connector', id1);
+    server = new Server_1.Server('connector', id1);
     server.addComponent(UWebSocketTransport_1.UWebSocketTransport);
+    const transport = server.getComponent(UWebSocketTransport_1.UWebSocketTransport);
+    if (transport)
+        transport.port = 9002;
     server.addComponent(ClientManager_1.ClientManager);
     server.addComponent(NatsComponent_1.NatsComponent);
     server.addComponent(Router_1.Router);
-    server.addComponent(PushSubscriber_1.PushSubscriber);
-    server2 = new Server_1.Server('', 9003, 'game', id2);
+    server.addComponent(S2CSubscriber_1.S2CSubscriber);
+    server2 = new Server_1.Server('game', id2);
     server2.addComponent(NatsComponent_1.NatsComponent);
     server2.addComponent(StatelessRouteSubscriber_1.StatelessRouteSubscriber);
     server2.addComponent(StatefulRouteSubscriber_1.StatefulRouteSubscriber);
@@ -57,7 +60,7 @@ const id3 = '3';
 });
 (0, globals_1.describe)('communication', () => {
     (0, globals_1.beforeAll)(async () => {
-        server3 = new Server_1.Server('', 9004, 'game', id3);
+        server3 = new Server_1.Server('game', id3);
         server3.addComponent(NatsComponent_1.NatsComponent);
         server3.addComponent(StatelessRouteSubscriber_1.StatelessRouteSubscriber);
         server3.addComponent(FileLoader_1.FileLoader);
@@ -145,11 +148,11 @@ const id3 = '3';
                 (0, globals_1.expect)(mockHandler).toBeCalledTimes(1);
                 (0, globals_1.expect)(mockHandler.mock.results[0].value).resolves.toBeUndefined();
                 (0, globals_1.expect)(mockHandler.mock.calls[0][0].protoId).toBe(Proto_1.Proto.GameUpdate);
-                (0, globals_1.expect)(mockHandler.mock.calls[0][0].id).toBe(1);
+                (0, globals_1.expect)(mockHandler.mock.calls[0][0].clientId).toBe(0);
                 (0, globals_1.expect)(mockP1).toBeCalledTimes(1);
                 (0, globals_1.expect)(mockP1.mock.calls[0][0].reply).toBe('');
                 resolve();
-            }, 10);
+            }, 20);
         });
     });
     (0, globals_1.test)('stateful client to server notification', () => {
@@ -182,32 +185,39 @@ const id3 = '3';
                 (0, globals_1.expect)(mockHandler).toBeCalledTimes(1);
                 (0, globals_1.expect)(mockHandler.mock.results[0].value).resolves.toBeUndefined();
                 (0, globals_1.expect)(mockHandler.mock.calls[0][0].protoId).toBe(Proto_1.Proto.GameUpdate);
-                (0, globals_1.expect)(mockHandler.mock.calls[0][0].id).toBe(1);
+                (0, globals_1.expect)(mockHandler.mock.calls[0][0].clientId).toBe(0);
                 (0, globals_1.expect)(mockPc3).toBeCalledTimes(1);
                 (0, globals_1.expect)(mockPc3.mock.calls[0][0].reply).toBe('');
                 (0, globals_1.expect)(mockPc2).not.toBeCalled();
                 resolve();
-            }, 10);
+            }, 20);
         });
     });
     (0, globals_1.test)('server to client notification(push)', async () => {
-        const result = await new Promise((resolve) => {
+        return new Promise((resolve) => {
             socket.onmessage = (e) => {
-                resolve((0, testUtils_1.decodeClientData)(e));
+                resolve((0, testUtils_1.decodeClientData)(Buffer.from(e.data)));
             };
             const sender = server2.getComponent(PushSender_1.PushSender);
-            sender?.send({ id: 1, protoId: Proto_1.Proto.PushToClient, sId: id1 }, { name: 'Hello Game' });
+            sender?.send({
+                clientId: 0,
+                protoId: Proto_1.Proto.PushToClient,
+                sId: id1,
+                uid: '',
+                reqId: 0,
+            }, { name: 'Hello Game' });
+        }).then((result) => {
+            (0, globals_1.expect)(result.id).toBe(0);
+            (0, globals_1.expect)(result.route).toBe(Proto_1.Proto.PushToClient);
+            (0, globals_1.expect)(result.body.name).toBe('Hello Game');
         });
-        (0, globals_1.expect)(result.id).toBe(0);
-        (0, globals_1.expect)(result.route).toBe(Proto_1.Proto.PushToClient);
-        (0, globals_1.expect)(result.body.name).toBe('Hello Game');
     });
 });
 async function testReq(socket, reqId) {
     const encodedMsg = msgUtil.encode(reqId, msgUtil.MsgType.REQUEST, Proto_1.Proto.GameLogin, Buffer.from(JSON.stringify(data), 'utf8'));
     const result = await new Promise((resolve) => {
         socket.onmessage = (e) => {
-            resolve((0, testUtils_1.decodeClientData)(e));
+            resolve((0, testUtils_1.decodeClientData)(Buffer.from(e.data)));
         };
         const pkg = packUtil.encode(packUtil.PackType.DATA, encodedMsg);
         socket.send(pkg);

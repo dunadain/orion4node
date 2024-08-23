@@ -1,7 +1,9 @@
 import { Component } from '../../component/Component';
 import { ClientManager } from '../../component/ClientManager';
-import { Server } from '../../server/Server';
+import type { Server } from '../../server/Server';
 export declare class UWebSocketTransport extends Component {
+    addr: string;
+    port: number;
     private app;
     private _clientMgr;
     constructor(server: Server);

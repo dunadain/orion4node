@@ -1,8 +1,8 @@
 /// <reference types="node" />
 export declare enum MsgType {
     REQUEST = 0,
-    NOTIFY = 1,
-    RESPONSE = 2,
+    RESPONSE = 1,
+    NOTIFY = 2,
     PUSH = 3
 }
 /**
@@ -15,7 +15,7 @@ export declare enum MsgType {
  * @param  compressGzip always false
  * @return {Buffer}               encode result
  */
-export declare function encode(id: number, type: MsgType, route: number, msg?: Buffer, compressGzip?: boolean): Buffer;
+export declare function encode(id: number, type: MsgType, route: number, msg?: Buffer): Buffer;
 /**
  * Message protocol decode.
  *
@@ -24,8 +24,7 @@ export declare function encode(id: number, type: MsgType, route: number, msg?: B
  */
 export declare function decode(buffer: Buffer): {
     id: number;
-    type: MsgType;
+    type: number;
     route: number;
     body: Buffer;
-    compressGzip: number;
 };

@@ -18,7 +18,7 @@ class PushSender extends Component_1.Component {
      */
     send(context, msg) {
         const buf = (0, RouterUtils_1.encodeRouterPack)(context, msg ? ProtocolMgr_1.protoMgr.encodeMsgBody(msg, context.protoId) : undefined);
-        this.nc.publish(`push.${context.sId}`, buf);
+        this.nc.publish(`${context.sId.toString()}.push`, buf);
     }
     get nc() {
         if (!this._nc) {

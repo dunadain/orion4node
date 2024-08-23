@@ -81,6 +81,7 @@ function decode(buffer, out) {
         if (!isValidType(type) || length > bytes.length) {
             throw new Error('invalid data'); // return invalid type, then disconnect!
         }
+        buffer.subarray(PKG_HEAD_BYTES);
         const body = length ? Buffer.alloc(length) : undefined;
         if (body) {
             (0, utils_1.copyArray)(body, 0, bytes, offset, length);

@@ -31,7 +31,7 @@ __exportStar(require("./router/RouterTypeDef"), exports);
 __exportStar(require("./router/RouterUtils"), exports);
 __exportStar(require("./router/ServerSelector"), exports);
 __exportStar(require("./router/subscribers/SubscriberBase"), exports);
-__exportStar(require("./router/subscribers/PushSubscriber"), exports);
+__exportStar(require("./router/subscribers/S2CSubscriber"), exports);
 __exportStar(require("./router/subscribers/RouteSubscriber"), exports);
 __exportStar(require("./router/subscribers/StatefulRouteSubscriber"), exports);
 __exportStar(require("./router/subscribers/StatelessRouteSubscriber"), exports);

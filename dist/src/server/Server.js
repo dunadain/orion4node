@@ -4,21 +4,17 @@ exports.Server = void 0;
 const node_events_1 = require("node:events");
 const Logger_1 = require("../logger/Logger");
 class Server {
-    addr;
-    port;
     serverType;
     uuid;
     eventEmitter = new node_events_1.EventEmitter();
     components = new Map();
-    constructor(addr, port, serverType, uuid) {
-        this.addr = addr;
-        this.port = port;
+    constructor(serverType, uuid) {
         this.serverType = serverType;
         this.uuid = uuid;
         (0, Logger_1.initLogger)(this.name);
     }
     get name() {
-        return `${this.serverType}-${this.uuid}`;
+        return `${this.serverType}-${String(this.uuid)}`;
     }
     /**
      * get component

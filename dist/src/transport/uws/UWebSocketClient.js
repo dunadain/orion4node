@@ -48,7 +48,7 @@ class UWebSocketClient {
     sendMsg(type, route, msg, reqId = 0) {
         if (SocketClient_1.ClientState.Ready !== this.state)
             return;
-        const msgBody = msgUtils.encode(reqId, type, route, msg, false);
+        const msgBody = msgUtils.encode(reqId, type, route, msg);
         this.sendBuffer(packUtils.encode(packUtils.PackType.DATA, msgBody));
     }
     onMessage(dataRcv) {

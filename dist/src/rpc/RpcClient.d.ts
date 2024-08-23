@@ -14,6 +14,6 @@ export declare class RpcClient extends Component {
 type RemoteProxy<F> = {
     [P in keyof F]: F[P];
 } & {
-    to(svId: string): RemoteProxy<F>;
+    to(svId: number): RemoteProxy<F>;
 };
 export {};

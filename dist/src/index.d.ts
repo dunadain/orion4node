@@ -12,7 +12,7 @@ export * from './router/RouterTypeDef';
 export * from './router/RouterUtils';
 export * from './router/ServerSelector';
 export * from './router/subscribers/SubscriberBase';
-export * from './router/subscribers/PushSubscriber';
+export * from './router/subscribers/S2CSubscriber';
 export * from './router/subscribers/RouteSubscriber';
 export * from './router/subscribers/StatefulRouteSubscriber';
 export * from './router/subscribers/StatelessRouteSubscriber';

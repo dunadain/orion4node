@@ -23,7 +23,7 @@ class ProtocolMgr {
             return '';
         if (ServerSelector_1.serverSelector.hasRoute(serverType)) {
             const serverId = await ServerSelector_1.serverSelector.selectServer(uid, serverType);
-            return 'handler.' + serverId;
+            return 'handler.' + serverId.toString();
         }
         return 'handler.' + serverType;
     }
