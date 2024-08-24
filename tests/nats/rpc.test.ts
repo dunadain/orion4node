@@ -28,7 +28,8 @@ beforeAll(async () => {
 	server = new Server('chat', id1);
 	server.addComponent(NatsComponent);
 	const client = server.addComponent(RpcClient);
-	client.addServices(root as unknown as Root, 'game');
+	const pkgRoot = (root as unknown as Root).lookup('');
+	client.addServices(pkgRoot, 'game');
 
 	server2 = new Server('game', id2);
 	server2.addComponent(NatsComponent);

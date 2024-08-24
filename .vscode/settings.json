@@ -5,7 +5,8 @@
     "files.autoSave": "onFocusChange",
     "typescript.referencesCodeLens.enabled": true,
     "editor.codeActionsOnSave": {
-        "source.fixAll": "always"
+        "source.fixAll": "always",
+        "source.removeUnusedImports": "always"
     },
     "[typescript]": {
         "editor.defaultFormatter": "biomejs.biome"
