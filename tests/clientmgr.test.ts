@@ -29,47 +29,47 @@ describe('ClientManager Crud functions', () => {
 		mgr.addClient(fakeClient);
 		expect((mgr as any).map.size).toBe(1);
 		expect((mgr as any).id2Client.size).toBe(1);
-		expect(fakeClient.id).toBe(0);
+		expect(fakeClient.id).toBe(1);
 		mgr.addClient(fakeClient2);
 		expect((mgr as any).map.size).toBe(2);
 		expect((mgr as any).id2Client.size).toBe(2);
-		expect(fakeClient2.id).toBe(1);
+		expect(fakeClient2.id).toBe(2);
 		expect((mgr as any).bindedClientMap.size).toBe(0);
 	});
 
 	test('bind', () => {
-		mgr.bind(0, 'a');
+		mgr.bind(1, 'a');
 		expect((mgr as any).map.size).toBe(2);
 		expect((mgr as any).id2Client.size).toBe(2);
 		expect((mgr as any).bindedClientMap.size).toBe(1);
 		expect(mgr.hasClientFor('a')).toBeTruthy();
 		expect(mgr.hasClientFor('b')).toBeFalsy();
 
-		mgr.bind(1, 'a');
+		mgr.bind(2, 'a');
 		expect((mgr as any).bindedClientMap.size).toBe(1);
 		expect(mgr.hasClientFor('b')).toBeFalsy();
-		expect(mgr.getClientById(1)?.uid).toBe('');
-		expect(mgr.getClientById(0)?.uid).toBe('a');
-
-		mgr.bind(0, 'b');
-		expect((mgr as any).bindedClientMap.size).toBe(1);
-		expect(mgr.hasClientFor('b')).toBeFalsy();
-		expect(mgr.getClientById(1)?.uid).toBe('');
-		expect(mgr.getClientById(0)?.uid).toBe('a');
+		expect(mgr.getClientById(2)?.uid).toBe('');
+		expect(mgr.getClientById(1)?.uid).toBe('a');
 
 		mgr.bind(1, 'b');
+		expect((mgr as any).bindedClientMap.size).toBe(1);
+		expect(mgr.hasClientFor('b')).toBeFalsy();
+		expect(mgr.getClientById(2)?.uid).toBe('');
+		expect(mgr.getClientById(1)?.uid).toBe('a');
+
+		mgr.bind(2, 'b');
 		expect((mgr as any).bindedClientMap.size).toBe(2);
 		expect(mgr.hasClientFor('b')).toBeTruthy();
 	});
 
 	test('fetch', () => {
 		expect(mgr.getClient(fakeNativeSocket)).not.toBeUndefined();
-		expect(mgr.getClientById(1)).not.toBeUndefined();
+		expect(mgr.getClientById(2)).not.toBeUndefined();
 	});
 
 	test('get session id', () => {
 		expect(mgr.getSessionId('a')).toBeGreaterThanOrEqual(0);
-		expect(mgr.getSessionId('wekrj')).toBe(-1);
+		expect(mgr.getSessionId('wekrj')).toBe(0);
 	});
 
 	test('remove', () => {
@@ -79,7 +79,7 @@ describe('ClientManager Crud functions', () => {
 		expect((mgr as any).bindedClientMap.size).toBe(1);
 		expect(mgr.hasClientFor('a')).toBeFalsy();
 		expect(mgr.hasClientFor('b')).toBeTruthy();
-		mgr.removeClient(1);
+		mgr.removeClient(2);
 		expect((mgr as any).map.size).toBe(0);
 		expect((mgr as any).id2Client.size).toBe(0);
 		expect((mgr as any).bindedClientMap.size).toBe(0);

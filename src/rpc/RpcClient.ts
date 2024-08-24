@@ -79,7 +79,7 @@ export class RpcClient extends Component {
 			const serviceClazz = clazz as Service;
 			const extra = {
 				serverType: serverType,
-				serverId: -1,
+				serverId: 0,
 				publish: false,
 			};
 			const service = serviceClazz.create(

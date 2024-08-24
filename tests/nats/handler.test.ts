@@ -164,7 +164,7 @@ describe('communication', () => {
 				expect(mockHandler).toBeCalledTimes(1);
 				expect(mockHandler.mock.results[0].value).resolves.toBeUndefined();
 				expect(mockHandler.mock.calls[0][0].protoId).toBe(Proto.GameUpdate);
-				expect(mockHandler.mock.calls[0][0].clientId).toBe(0);
+				expect(mockHandler.mock.calls[0][0].clientId).toBe(1);
 				expect(mockP1).toBeCalledTimes(1);
 				expect((mockP1.mock.calls[0][0] as any).reply).toBe('');
 				resolve();
@@ -204,7 +204,7 @@ describe('communication', () => {
 				expect(mockHandler).toBeCalledTimes(1);
 				expect(mockHandler.mock.results[0].value).resolves.toBeUndefined();
 				expect(mockHandler.mock.calls[0][0].protoId).toBe(Proto.GameUpdate);
-				expect(mockHandler.mock.calls[0][0].clientId).toBe(0);
+				expect(mockHandler.mock.calls[0][0].clientId).toBe(1);
 				expect(mockPc3).toBeCalledTimes(1);
 				expect((mockPc3.mock.calls[0][0] as any).reply).toBe('');
 				expect(mockPc2).not.toBeCalled();
@@ -221,7 +221,7 @@ describe('communication', () => {
 			const sender = server2.getComponent(PushSender);
 			sender?.send(
 				{
-					clientId: 0,
+					clientId: 1,
 					protoId: Proto.PushToClient,
 					sId: id1,
 					uid: '',
