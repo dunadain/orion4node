@@ -16,7 +16,6 @@ import { StatefulRpcSubscriber } from '../../src/rpc/StatefulRpcSubscriber';
 import * as root from './proto/compiled';
 import type { Root } from 'protobufjs';
 import { RpcSubscriber } from '../../src/rpc/RpcSubscriber';
-import * as path from 'node:path';
 import * as rpc from '../../src/rpc/RpcUtils';
 
 let server: Server;
@@ -31,21 +30,20 @@ beforeAll(async () => {
 	const client = server.addComponent(RpcClient);
 	client.addServices(root as unknown as Root, 'game');
 
-	const protoPath = path.join(__dirname, 'proto', 'compiled');
 	server2 = new Server('game', id2);
 	server2.addComponent(NatsComponent);
 	let rpcSub = server2.addComponent(StatelessRpcSubscriber);
-	rpcSub.protoPath = protoPath;
+	rpcSub.protoRoot = root as unknown as Root;
 	rpcSub = server2.addComponent(StatefulRpcSubscriber);
-	rpcSub.protoPath = protoPath;
+	rpcSub.protoRoot = root as unknown as Root;
 	server2.addComponent(FileLoader);
 
 	server3 = new Server('game', id3);
 	server3.addComponent(NatsComponent);
 	rpcSub = server3.addComponent(StatelessRpcSubscriber);
-	rpcSub.protoPath = protoPath;
+	rpcSub.protoRoot = root as unknown as Root;
 	rpcSub = server3.addComponent(StatefulRpcSubscriber);
-	rpcSub.protoPath = protoPath;
+	rpcSub.protoRoot = root as unknown as Root;
 	server3.addComponent(FileLoader);
 
 	try {
