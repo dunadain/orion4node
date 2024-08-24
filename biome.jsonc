@@ -9,7 +9,12 @@
         }
     },
     "linter": {
-        "enabled": false
+        "enabled": false,
+        "rules": {
+            "style": {
+                "useEnumInitializers": "off"
+            }
+        }
     },
     "organizeImports": {
         "enabled": true

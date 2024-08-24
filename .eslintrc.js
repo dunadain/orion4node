@@ -19,6 +19,7 @@ module.exports = {
 	rules: {
 		'@typescript-eslint/no-extraneous-class': 'off',
 		'@typescript-eslint/require-await': 'off',
+		'@typescript-eslint/prefer-enum-initializers': 'off',
 		quotes: [
 			'error',
 			'single',
