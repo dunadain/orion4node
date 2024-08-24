@@ -17,6 +17,7 @@ module.exports = {
 	},
 	plugins: ['@typescript-eslint'],
 	rules: {
+		'no-mixed-spaces-and-tabs': 'off',
 		'@typescript-eslint/no-extraneous-class': 'off',
 		'@typescript-eslint/require-await': 'off',
 		'@typescript-eslint/prefer-enum-initializers': 'off',
