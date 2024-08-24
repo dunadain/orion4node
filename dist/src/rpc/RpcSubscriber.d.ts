@@ -1,12 +1,11 @@
-import { Msg } from 'nats';
+import type { Msg } from 'nats';
 import { SubscriberBase } from '../router/subscribers/SubscriberBase';
+import type { Root } from 'protobufjs';
 /**
  * listen for rpc events
  * don't store any state in the server
  */
 export declare abstract class RpcSubscriber extends SubscriberBase {
-    protoPath: string;
-    private protoRoot;
-    init(): Promise<void>;
+    protoRoot: Root | undefined;
     protected process(msg: Msg): void;
 }

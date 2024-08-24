@@ -1,4 +1,4 @@
-import { SocketClient } from '../transport/SocketClient';
+import type { SocketClient } from '../transport/SocketClient';
 import { Component } from './Component';
 export declare class ClientManager extends Component {
     private map;

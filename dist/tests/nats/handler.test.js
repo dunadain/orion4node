@@ -148,7 +148,7 @@ const id3 = 3;
                 (0, globals_1.expect)(mockHandler).toBeCalledTimes(1);
                 (0, globals_1.expect)(mockHandler.mock.results[0].value).resolves.toBeUndefined();
                 (0, globals_1.expect)(mockHandler.mock.calls[0][0].protoId).toBe(Proto_1.Proto.GameUpdate);
-                (0, globals_1.expect)(mockHandler.mock.calls[0][0].clientId).toBe(0);
+                (0, globals_1.expect)(mockHandler.mock.calls[0][0].clientId).toBe(1);
                 (0, globals_1.expect)(mockP1).toBeCalledTimes(1);
                 (0, globals_1.expect)(mockP1.mock.calls[0][0].reply).toBe('');
                 resolve();
@@ -185,7 +185,7 @@ const id3 = 3;
                 (0, globals_1.expect)(mockHandler).toBeCalledTimes(1);
                 (0, globals_1.expect)(mockHandler.mock.results[0].value).resolves.toBeUndefined();
                 (0, globals_1.expect)(mockHandler.mock.calls[0][0].protoId).toBe(Proto_1.Proto.GameUpdate);
-                (0, globals_1.expect)(mockHandler.mock.calls[0][0].clientId).toBe(0);
+                (0, globals_1.expect)(mockHandler.mock.calls[0][0].clientId).toBe(1);
                 (0, globals_1.expect)(mockPc3).toBeCalledTimes(1);
                 (0, globals_1.expect)(mockPc3.mock.calls[0][0].reply).toBe('');
                 (0, globals_1.expect)(mockPc2).not.toBeCalled();
@@ -200,7 +200,7 @@ const id3 = 3;
             };
             const sender = server2.getComponent(PushSender_1.PushSender);
             sender?.send({
-                clientId: 0,
+                clientId: 1,
                 protoId: Proto_1.Proto.PushToClient,
                 sId: id1,
                 uid: '',

@@ -9,11 +9,10 @@ const Logger_1 = require("../logger/Logger");
  * don't store any state in the server
  */
 class RpcSubscriber extends SubscriberBase_1.SubscriberBase {
-    protoPath = '';
     protoRoot;
-    async init() {
-        this.protoRoot = (await Promise.resolve(`${this.protoPath}`).then(s => require(s)));
-    }
+    // async init() {
+    // 	this.protoRoot = (await import(this.protoPath)) as Root;
+    // }
     process(msg) {
         const subject = msg.subject;
         let index = subject.lastIndexOf('{');
@@ -28,7 +27,10 @@ class RpcSubscriber extends SubscriberBase_1.SubscriberBase {
         index2 = index;
         index = subject.lastIndexOf('.', index - 1);
         const serviceKey = subject.substring(index + 1, index2);
-        const methodKey = serviceKey + '.' + methodName.charAt(0).toLowerCase() + methodName.slice(1);
+        const methodKey = serviceKey +
+            '.' +
+            methodName.charAt(0).toLowerCase() +
+            methodName.slice(1);
         if (!this.protoRoot) {
             Logger_1.logger.error('protoRoot not found');
             return;

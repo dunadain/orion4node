@@ -48,16 +48,20 @@ class RpcClient extends Component_1.Component {
         }
         return this._nats;
     }
-    addServices(root, serverType) {
-        for (const k in root.nested) {
-            const clazz = root.nested[k];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    addServices(packageRoot, serverType) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        for (const k in packageRoot.nested) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+            const clazz = packageRoot.nested[k];
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             const constructor = clazz.constructor;
             if (constructor.className !== 'Service')
                 continue;
             const serviceClazz = clazz;
             const extra = {
                 serverType: serverType,
-                serverId: -1,
+                serverId: 0,
                 publish: false,
             };
             const service = serviceClazz.create(this.rpcImpl.bind(this, extra), false, false);
@@ -76,6 +80,7 @@ class RpcClient extends Component_1.Component {
                     },
                 });
             }
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
             this.map.set(clazz.name, proxy);
         }
     }

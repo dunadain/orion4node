@@ -12,7 +12,7 @@ class ClientManager extends Component_1.Component {
     bindedClientMap = new Map();
     idGenerator = 0;
     addClient(client) {
-        client.id = this.idGenerator++;
+        client.id = ++this.idGenerator;
         if (this.idGenerator == 0xffffffff)
             this.idGenerator = 0;
         this.map.set(client.socket, client);
@@ -83,7 +83,7 @@ class ClientManager extends Component_1.Component {
         return this.bindedClientMap.has(uid);
     }
     getSessionId(uid) {
-        return this.bindedClientMap.get(uid) ?? -1;
+        return this.bindedClientMap.get(uid) ?? 0;
     }
 }
 exports.ClientManager = ClientManager;

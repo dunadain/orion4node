@@ -89,7 +89,7 @@ let server;
     });
     (0, globals_1.test)('handshake normal', () => {
         const clientMgr = server.getComponent(ClientManager_1.ClientManager);
-        const uwsClient = clientMgr?.getClientById(0);
+        const uwsClient = clientMgr?.getClientById(1);
         const mockHandshakeHandle = globals_1.jest.fn(uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle);
         const mockHandshakeAckHandle = globals_1.jest.fn(uwsClient.handlers.get(packUtil.PackType.HANDSHAKE_ACK).handle);
         uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle =
@@ -286,7 +286,7 @@ function testHandshakeErr(handshakeMsg, errCode, socket) {
         return new Promise((resolve) => {
             const clientMgr = server.getComponent(ClientManager_1.ClientManager);
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const uwsClient = clientMgr.getClientById(0);
+            const uwsClient = clientMgr.getClientById(1);
             socket.onmessage = (e) => {
                 const buffer = Buffer.from(e.data);
                 const pkgs = packUtil.decode(buffer);
