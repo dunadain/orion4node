@@ -15,8 +15,8 @@ const packUtil = require("../../src/transport/protocol/PacketProcessor");
 const Proto_1 = require("../utils/Proto");
 const routerUtils = require("../../src/router/RouterUtils");
 const PushSender_1 = require("../../src/router/PushSender");
-const StatelessRouteSubscriber_1 = require("../../src/router/subscribers/StatelessRouteSubscriber");
-const StatefulRouteSubscriber_1 = require("../../src/router/subscribers/StatefulRouteSubscriber");
+const StatelessHandlerSubscriber_1 = require("../../src/router/subscribers/StatelessHandlerSubscriber");
+const StatefulHandlerSubscriber_1 = require("../../src/router/subscribers/StatefulHandlerSubscriber");
 const ServerSelector_1 = require("../../src/router/ServerSelector");
 const data = {
     a: 1,
@@ -42,8 +42,8 @@ const id3 = 3;
     server.addComponent(S2CSubscriber_1.S2CSubscriber);
     server2 = new Server_1.Server('game', id2);
     server2.addComponent(NatsComponent_1.NatsComponent);
-    server2.addComponent(StatelessRouteSubscriber_1.StatelessRouteSubscriber);
-    server2.addComponent(StatefulRouteSubscriber_1.StatefulRouteSubscriber);
+    server2.addComponent(StatelessHandlerSubscriber_1.StatelessHandlerSubscriber);
+    server2.addComponent(StatefulHandlerSubscriber_1.StatefulHandlerSubscriber);
     server2.addComponent(FileLoader_1.FileLoader);
     server2.addComponent(PushSender_1.PushSender);
     try {
@@ -62,9 +62,9 @@ const id3 = 3;
     (0, globals_1.beforeAll)(async () => {
         server3 = new Server_1.Server('game', id3);
         server3.addComponent(NatsComponent_1.NatsComponent);
-        server3.addComponent(StatelessRouteSubscriber_1.StatelessRouteSubscriber);
+        server3.addComponent(StatelessHandlerSubscriber_1.StatelessHandlerSubscriber);
         server3.addComponent(FileLoader_1.FileLoader);
-        server3.addComponent(StatefulRouteSubscriber_1.StatefulRouteSubscriber);
+        server3.addComponent(StatefulHandlerSubscriber_1.StatefulHandlerSubscriber);
         await server3.start();
     });
     (0, globals_1.afterAll)(() => {
@@ -83,7 +83,7 @@ const id3 = 3;
     });
     (0, globals_1.test)('req/resp', async () => {
         // the two StatelessRouteSubscribers have the same prototype
-        const mockP = globals_1.jest.spyOn(StatelessRouteSubscriber_1.StatelessRouteSubscriber.prototype, 'process');
+        const mockP = globals_1.jest.spyOn(StatelessHandlerSubscriber_1.StatelessHandlerSubscriber.prototype, 'process');
         const mockHandler = globals_1.jest.spyOn(routerUtils, 'handle');
         const nc = server.getComponent(NatsComponent_1.NatsComponent)?.nc;
         if (!nc)
@@ -98,13 +98,13 @@ const id3 = 3;
         (0, globals_1.expect)(mockRequest).toBeCalledTimes(1);
     });
     (0, globals_1.test)('stateful req/resp', async () => {
-        let rsb = server2.getComponent(StatefulRouteSubscriber_1.StatefulRouteSubscriber);
+        let rsb = server2.getComponent(StatefulHandlerSubscriber_1.StatefulHandlerSubscriber);
         if (!rsb)
             return;
         // the two StatelessRouteSubscribers have the same prototype
         const mockPc2 = globals_1.jest.fn(Object.getPrototypeOf(rsb).process);
         rsb.process = mockPc2;
-        rsb = server3.getComponent(StatefulRouteSubscriber_1.StatefulRouteSubscriber);
+        rsb = server3.getComponent(StatefulHandlerSubscriber_1.StatefulHandlerSubscriber);
         if (!rsb)
             return;
         const mockPc3 = globals_1.jest.fn(Object.getPrototypeOf(rsb).process);
@@ -134,7 +134,7 @@ const id3 = 3;
             return;
         const mockPublish = globals_1.jest.spyOn(nc, 'publish');
         const mockHandler = globals_1.jest.spyOn(routerUtils, 'handle');
-        const rsb = server2.getComponent(StatelessRouteSubscriber_1.StatelessRouteSubscriber);
+        const rsb = server2.getComponent(StatelessHandlerSubscriber_1.StatelessHandlerSubscriber);
         if (!rsb)
             return;
         const mockP1 = globals_1.jest.spyOn(Object.getPrototypeOf(rsb), 'process');
@@ -165,12 +165,12 @@ const id3 = 3;
             return;
         const mockPublish = globals_1.jest.spyOn(nc, 'publish');
         const mockHandler = globals_1.jest.spyOn(routerUtils, 'handle');
-        let rsb = server2.getComponent(StatefulRouteSubscriber_1.StatefulRouteSubscriber);
+        let rsb = server2.getComponent(StatefulHandlerSubscriber_1.StatefulHandlerSubscriber);
         if (!rsb)
             return;
         const mockPc2 = globals_1.jest.fn(Object.getPrototypeOf(rsb).process);
         rsb.process = mockPc2;
-        rsb = server3.getComponent(StatefulRouteSubscriber_1.StatefulRouteSubscriber);
+        rsb = server3.getComponent(StatefulHandlerSubscriber_1.StatefulHandlerSubscriber);
         if (!rsb)
             return;
         const mockPc3 = globals_1.jest.fn(Object.getPrototypeOf(rsb).process);

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RpcSubscriber = void 0;
+exports.RpcServerBase = void 0;
 const SubscriberBase_1 = require("../router/subscribers/SubscriberBase");
 const RpcUtils_1 = require("./RpcUtils");
 const Logger_1 = require("../logger/Logger");
@@ -8,7 +8,7 @@ const Logger_1 = require("../logger/Logger");
  * listen for rpc events
  * don't store any state in the server
  */
-class RpcSubscriber extends SubscriberBase_1.SubscriberBase {
+class RpcServerBase extends SubscriberBase_1.SubscriberBase {
     protoRoot;
     // async init() {
     // 	this.protoRoot = (await import(this.protoPath)) as Root;
@@ -54,4 +54,4 @@ class RpcSubscriber extends SubscriberBase_1.SubscriberBase {
         });
     }
 }
-exports.RpcSubscriber = RpcSubscriber;
+exports.RpcServerBase = RpcServerBase;

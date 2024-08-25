@@ -18,8 +18,8 @@ const id2 = 2;
 (0, globals_1.beforeAll)(async () => {
     server2 = new src_1.Server('game', id2);
     server2.addComponent(src_1.NatsComponent);
-    server2.addComponent(src_1.StatelessRouteSubscriber);
-    server2.addComponent(src_1.StatefulRouteSubscriber);
+    server2.addComponent(src_1.StatelessHandlerSubscriber);
+    server2.addComponent(src_1.StatefulHandlerSubscriber);
     server2.addComponent(src_1.FileLoader);
     server2.addComponent(src_1.PushSender);
     try {
@@ -42,7 +42,7 @@ const id2 = 2;
         globals_1.jest.clearAllMocks();
     });
     (0, globals_1.test)('should send and receive data', async () => {
-        const mockP = globals_1.jest.spyOn(src_1.StatelessRouteSubscriber.prototype, 'process');
+        const mockP = globals_1.jest.spyOn(src_1.StatelessHandlerSubscriber.prototype, 'process');
         const mockHandler = globals_1.jest.spyOn(routerUtils, 'handle');
         const reqId = 32;
         const result = await testReq(client, reqId);

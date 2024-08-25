@@ -4,11 +4,11 @@ const globals_1 = require("@jest/globals");
 const Server_1 = require("../../src/server/Server");
 const NatsComponent_1 = require("../../src/nats/NatsComponent");
 const RpcClient_1 = require("../../src/rpc/RpcClient");
-const StatelessRpcSubscriber_1 = require("../../src/rpc/StatelessRpcSubscriber");
+const StatelessRpcServer_1 = require("../../src/rpc/StatelessRpcServer");
 const FileLoader_1 = require("../../src/server/FileLoader");
-const StatefulRpcSubscriber_1 = require("../../src/rpc/StatefulRpcSubscriber");
+const StatefulRpcServer_1 = require("../../src/rpc/StatefulRpcServer");
 const root = require("./proto/compiled");
-const RpcSubscriber_1 = require("../../src/rpc/RpcSubscriber");
+const RpcServerBase_1 = require("../../src/rpc/RpcServerBase");
 const rpc = require("../../src/rpc/RpcUtils");
 let server;
 let server2;
@@ -24,16 +24,16 @@ const id3 = 3;
     client.addServices(pkgRoot, 'game');
     server2 = new Server_1.Server('game', id2);
     server2.addComponent(NatsComponent_1.NatsComponent);
-    let rpcSub = server2.addComponent(StatelessRpcSubscriber_1.StatelessRpcSubscriber);
+    let rpcSub = server2.addComponent(StatelessRpcServer_1.StatelessRpcServer);
     rpcSub.protoRoot = root;
-    rpcSub = server2.addComponent(StatefulRpcSubscriber_1.StatefulRpcSubscriber);
+    rpcSub = server2.addComponent(StatefulRpcServer_1.StatefulRpcServer);
     rpcSub.protoRoot = root;
     server2.addComponent(FileLoader_1.FileLoader);
     server3 = new Server_1.Server('game', id3);
     server3.addComponent(NatsComponent_1.NatsComponent);
-    rpcSub = server3.addComponent(StatelessRpcSubscriber_1.StatelessRpcSubscriber);
+    rpcSub = server3.addComponent(StatelessRpcServer_1.StatelessRpcServer);
     rpcSub.protoRoot = root;
-    rpcSub = server3.addComponent(StatefulRpcSubscriber_1.StatefulRpcSubscriber);
+    rpcSub = server3.addComponent(StatefulRpcServer_1.StatefulRpcServer);
     rpcSub.protoRoot = root;
     server3.addComponent(FileLoader_1.FileLoader);
     try {
@@ -58,7 +58,7 @@ const id3 = 3;
         const client = server.getComponent(RpcClient_1.RpcClient);
         if (!client)
             return;
-        const mockP = globals_1.jest.spyOn(RpcSubscriber_1.RpcSubscriber.prototype, 'process');
+        const mockP = globals_1.jest.spyOn(RpcServerBase_1.RpcServerBase.prototype, 'process');
         await (0, globals_1.expect)(client.getService(root.Greeter).sayHello({ name: 'world' })).resolves.toEqual({
             message: 'Hello, world',
         });
@@ -72,10 +72,10 @@ const id3 = 3;
         const client = server.getComponent(RpcClient_1.RpcClient);
         if (!client)
             return;
-        const mockP1 = globals_1.jest.fn(RpcSubscriber_1.RpcSubscriber.prototype.process);
-        server2.getComponent(StatefulRpcSubscriber_1.StatefulRpcSubscriber).process = mockP1;
-        const mockP2 = globals_1.jest.fn(RpcSubscriber_1.RpcSubscriber.prototype.process);
-        server3.getComponent(StatefulRpcSubscriber_1.StatefulRpcSubscriber).process = mockP2;
+        const mockP1 = globals_1.jest.fn(RpcServerBase_1.RpcServerBase.prototype.process);
+        server2.getComponent(StatefulRpcServer_1.StatefulRpcServer).process = mockP1;
+        const mockP2 = globals_1.jest.fn(RpcServerBase_1.RpcServerBase.prototype.process);
+        server3.getComponent(StatefulRpcServer_1.StatefulRpcServer).process = mockP2;
         await (0, globals_1.expect)(client.getService(root.Greeter).to(id2).sayHello({ name: 'world' })).resolves.toEqual({
             message: 'Hello, world',
         });

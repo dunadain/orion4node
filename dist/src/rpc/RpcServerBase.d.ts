@@ -5,7 +5,7 @@ import type { Root } from 'protobufjs';
  * listen for rpc events
  * don't store any state in the server
  */
-export declare abstract class RpcSubscriber extends SubscriberBase {
+export declare abstract class RpcServerBase extends SubscriberBase {
     protoRoot: Root | undefined;
     protected process(msg: Msg): void;
 }
