@@ -22,10 +22,10 @@ export * from './router/subscribers/StatefulRouteSubscriber';
 export * from './router/subscribers/StatelessRouteSubscriber';
 
 export * from './rpc/RpcClient';
-export * from './rpc/RpcSubscriber';
+export * from './rpc/RpcServerBase';
 export * from './rpc/RpcUtils';
-export * from './rpc/StatefulRpcSubscriber';
-export * from './rpc/StatelessRpcSubscriber';
+export * from './rpc/StatefulRpcServer';
+export * from './rpc/StatelessRpcServer';
 
 export * from './server/FileLoader';
 export * from './server/Server';

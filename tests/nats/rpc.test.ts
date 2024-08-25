@@ -10,12 +10,12 @@ import {
 import { Server } from '../../src/server/Server';
 import { NatsComponent } from '../../src/nats/NatsComponent';
 import { RpcClient } from '../../src/rpc/RpcClient';
-import { StatelessRpcSubscriber } from '../../src/rpc/StatelessRpcSubscriber';
+import { StatelessRpcServer } from '../../src/rpc/StatelessRpcServer';
 import { FileLoader } from '../../src/server/FileLoader';
-import { StatefulRpcSubscriber } from '../../src/rpc/StatefulRpcSubscriber';
+import { StatefulRpcServer } from '../../src/rpc/StatefulRpcServer';
 import * as root from './proto/compiled';
 import type { Root } from 'protobufjs';
-import { RpcSubscriber } from '../../src/rpc/RpcSubscriber';
+import { RpcServerBase } from '../../src/rpc/RpcServerBase';
 import * as rpc from '../../src/rpc/RpcUtils';
 
 let server: Server;
@@ -33,17 +33,17 @@ beforeAll(async () => {
 
 	server2 = new Server('game', id2);
 	server2.addComponent(NatsComponent);
-	let rpcSub = server2.addComponent(StatelessRpcSubscriber);
+	let rpcSub = server2.addComponent(StatelessRpcServer);
 	rpcSub.protoRoot = root as unknown as Root;
-	rpcSub = server2.addComponent(StatefulRpcSubscriber);
+	rpcSub = server2.addComponent(StatefulRpcServer);
 	rpcSub.protoRoot = root as unknown as Root;
 	server2.addComponent(FileLoader);
 
 	server3 = new Server('game', id3);
 	server3.addComponent(NatsComponent);
-	rpcSub = server3.addComponent(StatelessRpcSubscriber);
+	rpcSub = server3.addComponent(StatelessRpcServer);
 	rpcSub.protoRoot = root as unknown as Root;
-	rpcSub = server3.addComponent(StatefulRpcSubscriber);
+	rpcSub = server3.addComponent(StatefulRpcServer);
 	rpcSub.protoRoot = root as unknown as Root;
 	server3.addComponent(FileLoader);
 
@@ -69,7 +69,7 @@ describe('rpc tests', () => {
 	test('stateless rpc call', async () => {
 		const client = server.getComponent(RpcClient);
 		if (!client) return;
-		const mockP = jest.spyOn(RpcSubscriber.prototype as any, 'process');
+		const mockP = jest.spyOn(RpcServerBase.prototype as any, 'process');
 		await expect(
 			client.getService(root.Greeter).sayHello({ name: 'world' }),
 		).resolves.toEqual({
@@ -87,10 +87,10 @@ describe('rpc tests', () => {
 	test('stateful rpc call', async () => {
 		const client = server.getComponent(RpcClient);
 		if (!client) return;
-		const mockP1 = jest.fn((RpcSubscriber.prototype as any).process);
-		(server2.getComponent(StatefulRpcSubscriber) as any).process = mockP1;
-		const mockP2 = jest.fn((RpcSubscriber.prototype as any).process);
-		(server3.getComponent(StatefulRpcSubscriber) as any).process = mockP2;
+		const mockP1 = jest.fn((RpcServerBase.prototype as any).process);
+		(server2.getComponent(StatefulRpcServer) as any).process = mockP1;
+		const mockP2 = jest.fn((RpcServerBase.prototype as any).process);
+		(server3.getComponent(StatefulRpcServer) as any).process = mockP2;
 		await expect(
 			client.getService(root.Greeter).to(id2).sayHello({ name: 'world' }),
 		).resolves.toEqual({
