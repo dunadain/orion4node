@@ -16,8 +16,8 @@ import {
 	packUtils,
 	PushSender,
 	Server,
-	StatefulRouteSubscriber,
-	StatelessRouteSubscriber,
+	StatefulHandlerSubscriber,
+	StatelessHandlerSubscriber,
 } from '../../src';
 import { createTcpConnection, decodeClientData } from '../utils/testUtils';
 import { Proto } from '../utils/Proto';
@@ -36,8 +36,8 @@ const id2 = 2;
 beforeAll(async () => {
 	server2 = new Server('game', id2);
 	server2.addComponent(NatsComponent);
-	server2.addComponent(StatelessRouteSubscriber);
-	server2.addComponent(StatefulRouteSubscriber);
+	server2.addComponent(StatelessHandlerSubscriber);
+	server2.addComponent(StatefulHandlerSubscriber);
 	server2.addComponent(FileLoader);
 	server2.addComponent(PushSender);
 	try {
@@ -62,7 +62,7 @@ describe('tcp communication', () => {
 	});
 	test('should send and receive data', async () => {
 		const mockP = jest.spyOn(
-			StatelessRouteSubscriber.prototype as any,
+			StatelessHandlerSubscriber.prototype as any,
 			'process',
 		);
 		const mockHandler = jest.spyOn(routerUtils, 'handle');

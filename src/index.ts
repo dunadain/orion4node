@@ -18,8 +18,8 @@ export * from './router/ServerSelector';
 export * from './router/subscribers/SubscriberBase';
 export * from './router/subscribers/S2CSubscriber';
 export * from './router/subscribers/RouteSubscriber';
-export * from './router/subscribers/StatefulRouteSubscriber';
-export * from './router/subscribers/StatelessRouteSubscriber';
+export * from './router/subscribers/StatefulHandlerSubscriber';
+export * from './router/subscribers/StatelessHandlerSubscriber';
 
 export * from './rpc/RpcClient';
 export * from './rpc/RpcServerBase';

@@ -23,8 +23,8 @@ import * as packUtil from '../../src/transport/protocol/PacketProcessor';
 import { Proto } from '../utils/Proto';
 import * as routerUtils from '../../src/router/RouterUtils';
 import { PushSender } from '../../src/router/PushSender';
-import { StatelessRouteSubscriber } from '../../src/router/subscribers/StatelessRouteSubscriber';
-import { StatefulRouteSubscriber } from '../../src/router/subscribers/StatefulRouteSubscriber';
+import { StatelessHandlerSubscriber } from '../../src/router/subscribers/StatelessHandlerSubscriber';
+import { StatefulHandlerSubscriber } from '../../src/router/subscribers/StatefulHandlerSubscriber';
 import { serverSelector } from '../../src/router/ServerSelector';
 
 const data = {
@@ -52,8 +52,8 @@ beforeAll(async () => {
 
 	server2 = new Server('game', id2);
 	server2.addComponent(NatsComponent);
-	server2.addComponent(StatelessRouteSubscriber);
-	server2.addComponent(StatefulRouteSubscriber);
+	server2.addComponent(StatelessHandlerSubscriber);
+	server2.addComponent(StatefulHandlerSubscriber);
 	server2.addComponent(FileLoader);
 	server2.addComponent(PushSender);
 	try {
@@ -73,9 +73,9 @@ describe('communication', () => {
 	beforeAll(async () => {
 		server3 = new Server('game', id3);
 		server3.addComponent(NatsComponent);
-		server3.addComponent(StatelessRouteSubscriber);
+		server3.addComponent(StatelessHandlerSubscriber);
 		server3.addComponent(FileLoader);
-		server3.addComponent(StatefulRouteSubscriber);
+		server3.addComponent(StatefulHandlerSubscriber);
 		await server3.start();
 	});
 
@@ -96,7 +96,7 @@ describe('communication', () => {
 	test('req/resp', async () => {
 		// the two StatelessRouteSubscribers have the same prototype
 		const mockP = jest.spyOn(
-			StatelessRouteSubscriber.prototype as any,
+			StatelessHandlerSubscriber.prototype as any,
 			'process',
 		);
 		const mockHandler = jest.spyOn(routerUtils, 'handle');
@@ -113,12 +113,12 @@ describe('communication', () => {
 	});
 
 	test('stateful req/resp', async () => {
-		let rsb = server2.getComponent(StatefulRouteSubscriber);
+		let rsb = server2.getComponent(StatefulHandlerSubscriber);
 		if (!rsb) return;
 		// the two StatelessRouteSubscribers have the same prototype
 		const mockPc2 = jest.fn(Object.getPrototypeOf(rsb).process);
 		(rsb as any).process = mockPc2;
-		rsb = server3.getComponent(StatefulRouteSubscriber);
+		rsb = server3.getComponent(StatefulHandlerSubscriber);
 		if (!rsb) return;
 		const mockPc3 = jest.fn(Object.getPrototypeOf(rsb).process);
 		(rsb as any).process = mockPc3;
@@ -146,7 +146,7 @@ describe('communication', () => {
 		if (!nc) return;
 		const mockPublish = jest.spyOn(nc, 'publish');
 		const mockHandler = jest.spyOn(routerUtils, 'handle');
-		const rsb = server2.getComponent(StatelessRouteSubscriber);
+		const rsb = server2.getComponent(StatelessHandlerSubscriber);
 		if (!rsb) return;
 		const mockP1 = jest.spyOn(Object.getPrototypeOf(rsb), 'process');
 		const reqId = 0;
@@ -181,11 +181,11 @@ describe('communication', () => {
 		if (!nc) return;
 		const mockPublish = jest.spyOn(nc, 'publish');
 		const mockHandler = jest.spyOn(routerUtils, 'handle');
-		let rsb = server2.getComponent(StatefulRouteSubscriber);
+		let rsb = server2.getComponent(StatefulHandlerSubscriber);
 		if (!rsb) return;
 		const mockPc2 = jest.fn(Object.getPrototypeOf(rsb).process);
 		(rsb as any).process = mockPc2;
-		rsb = server3.getComponent(StatefulRouteSubscriber);
+		rsb = server3.getComponent(StatefulHandlerSubscriber);
 		if (!rsb) return;
 		const mockPc3 = jest.fn(Object.getPrototypeOf(rsb).process);
 		(rsb as any).process = mockPc3;
