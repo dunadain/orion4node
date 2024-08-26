@@ -23,12 +23,12 @@ class FileLoader extends Component_1.Component {
             handlerPromise = fs
                 .readdir(handlerDir)
                 .then((list) => {
-                const promises = [];
+                // const promises: Promise<unknown>[] = [];
                 for (const fileName of list) {
                     const filePath = path.join(handlerDir, fileName);
-                    promises.push(Promise.resolve(`${filePath}`).then(s => require(s)));
+                    require(filePath);
                 }
-                return Promise.all(promises);
+                // return Promise.all(promises);
             })
                 .catch((e) => {
                 (0, Logger_1.logErr)(e);
