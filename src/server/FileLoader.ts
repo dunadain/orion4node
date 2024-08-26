@@ -20,12 +20,13 @@ export class FileLoader extends Component {
 			handlerPromise = fs
 				.readdir(handlerDir)
 				.then((list) => {
-					// const promises: Promise<unknown>[] = [];
+					const promises: Promise<unknown>[] = [];
 					for (const fileName of list) {
 						const filePath = path.join(handlerDir, fileName);
-						require(filePath);
+						if (!fileName.endsWith('.js')) continue;
+						promises.push(import(filePath));
 					}
-					// return Promise.all(promises);
+					return Promise.all(promises);
 				})
 				.catch((e: unknown) => {
 					logErr(e);
@@ -38,6 +39,7 @@ export class FileLoader extends Component {
 				.then((list) => {
 					const promises: Promise<unknown>[] = [];
 					for (const fileName of list) {
+						if (!fileName.endsWith('.js')) continue;
 						promises.push(
 							import(path.join(remoteDir, fileName)).then((m) => {
 								for (const className in m) {
