@@ -10,9 +10,9 @@ import type { Root } from 'protobufjs';
  */
 export abstract class RpcServerBase extends SubscriberBase {
 	protoRoot: Root | undefined;
-	// async init() {
-	// 	this.protoRoot = (await import(this.protoPath)) as Root;
-	// }
+	setup(root:Root) {
+		this.protoRoot = root;
+	}
 
 	protected process(msg: Msg) {
 		const subject = msg.subject;
