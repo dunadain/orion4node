@@ -21,10 +21,10 @@ function getErrOpt(serverName) {
     return {
         level: 'error',
         dirname: 'logs',
-        filename: 'error-%DATE%.log',
+        filename: `${serverName}-error-%DATE%.log`,
         maxSize: '5m',
         maxFiles: '90d',
-        format: combine(label({ label: serverName }), timestamp({
+        format: combine(timestamp({
             format: 'YYYY-MM-DD HH:mm:ss',
         }), myFormat),
     };
@@ -43,11 +43,11 @@ function initLogger(serverName) {
             new DailyRotateFile({
                 level: isProduction ? 'info' : 'debug',
                 dirname: 'logs',
-                filename: 'combined-%DATE%.log',
+                filename: `${serverName}-combined-%DATE%.log`,
                 maxSize: '10m',
                 maxFiles: '60d',
                 // datePattern: "YYYY-MM-DD-HH-mm",
-                format: combine(label({ label: serverName }), timestamp({
+                format: combine(timestamp({
                     format: 'YYYY-MM-DD HH:mm:ss',
                 }), myFormat),
             }),
