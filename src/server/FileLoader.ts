@@ -23,7 +23,7 @@ export class FileLoader extends Component {
 					const promises: Promise<unknown>[] = [];
 					for (const fileName of list) {
 						const filePath = path.join(handlerDir, fileName);
-						if (!fileName.endsWith('.js')) continue;
+						if (!fileName.endsWith('.js') && !fileName.endsWith('.ts')) continue;
 						promises.push(import(filePath));
 					}
 					return Promise.all(promises);
@@ -39,7 +39,7 @@ export class FileLoader extends Component {
 				.then((list) => {
 					const promises: Promise<unknown>[] = [];
 					for (const fileName of list) {
-						if (!fileName.endsWith('.js')) continue;
+						if (!fileName.endsWith('.js') && !fileName.endsWith('.ts')) continue;
 						promises.push(
 							import(path.join(remoteDir, fileName)).then((m) => {
 								for (const className in m) {
