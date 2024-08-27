@@ -47,3 +47,4 @@ __exportStar(require("./transport/uws/UWebSocketTransport"), exports);
 exports.msgUtils = require("./transport/protocol/MsgProcessor");
 exports.packUtils = require("./transport/protocol/PacketProcessor");
 __exportStar(require("./utils/ArrayUtils"), exports);
+__exportStar(require("./interfaces/defines"), exports);

@@ -36,3 +36,4 @@ export * as msgUtils from './transport/protocol/MsgProcessor';
 export * as packUtils from './transport/protocol/PacketProcessor';
 
 export * from './utils/ArrayUtils';
+export * from './interfaces/defines';

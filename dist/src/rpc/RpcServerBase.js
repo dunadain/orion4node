@@ -10,9 +10,9 @@ const Logger_1 = require("../logger/Logger");
  */
 class RpcServerBase extends SubscriberBase_1.SubscriberBase {
     protoRoot;
-    // async init() {
-    // 	this.protoRoot = (await import(this.protoPath)) as Root;
-    // }
+    setup(root) {
+        this.protoRoot = root;
+    }
     process(msg) {
         const subject = msg.subject;
         let index = subject.lastIndexOf('{');

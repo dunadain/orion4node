@@ -7,5 +7,6 @@ import type { Root } from 'protobufjs';
  */
 export declare abstract class RpcServerBase extends SubscriberBase {
     protoRoot: Root | undefined;
+    setup(root: Root): void;
     protected process(msg: Msg): void;
 }
