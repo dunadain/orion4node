@@ -13,9 +13,9 @@ const { combine, timestamp, label, printf } = winston_1.format;
 //         new transports.File({ filename: './logs/combined.log' }),
 //     ],
 // });
-const myFormat = printf(({ level, message, label, timestamp }) => {
-    return `${String(timestamp)} [${String(label)}] ${level}: ${String(message)}`;
-});
+// const myFormat = printf(({ level, message, label, timestamp }) => {
+//     return `${String(timestamp)} [${String(label)}] ${level}: ${String(message)}`;
+// });
 const isProduction = process.env.NODE_ENV === 'production';
 function getErrOpt(serverName) {
     return {
@@ -26,7 +26,7 @@ function getErrOpt(serverName) {
         maxFiles: '90d',
         format: combine(timestamp({
             format: 'YYYY-MM-DD HH:mm:ss',
-        }), myFormat),
+        })),
     };
 }
 let logger;
@@ -49,7 +49,7 @@ function initLogger(serverName) {
                 // datePattern: "YYYY-MM-DD-HH-mm",
                 format: combine(timestamp({
                     format: 'YYYY-MM-DD HH:mm:ss',
-                }), myFormat),
+                })),
             }),
             new DailyRotateFile(getErrOpt(serverName)),
         ],
