@@ -26,7 +26,9 @@ function getErrOpt(serverName) {
         maxFiles: '90d',
         format: combine(timestamp({
             format: 'YYYY-MM-DD HH:mm:ss',
-        })),
+        }), winston_1.format.simple()
+        // myFormat
+        ),
     };
 }
 let logger;
@@ -49,7 +51,9 @@ function initLogger(serverName) {
                 // datePattern: "YYYY-MM-DD-HH-mm",
                 format: combine(timestamp({
                     format: 'YYYY-MM-DD HH:mm:ss',
-                })),
+                }), winston_1.format.simple()
+                // myFormat
+                ),
             }),
             new DailyRotateFile(getErrOpt(serverName)),
         ],

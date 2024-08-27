@@ -27,6 +27,7 @@ function getErrOpt(serverName: string) {
             timestamp({
                 format: 'YYYY-MM-DD HH:mm:ss',
             }),
+            format.simple()
             // myFormat
         ),
     };
@@ -53,6 +54,7 @@ function initLogger(serverName: string) {
                     timestamp({
                         format: 'YYYY-MM-DD HH:mm:ss',
                     }),
+                    format.simple()
                     // myFormat
                 ),
             }),
