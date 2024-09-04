@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import {
-    ConnectionOptions,
+    type ConnectionOptions,
     DebugEvents,
     ErrorCode,
     Events,
-    NatsConnection,
+    type NatsConnection,
     NatsError,
-    Payload,
-    PublishOptions,
-    RequestOptions,
+    type Payload,
+    type PublishOptions,
+    type RequestOptions,
     connect,
 } from 'nats';
-import { Component } from '../component/Component';
-import { logErr, logger } from '../logger/Logger';
+import { Component } from '../component/Component.mjs';
+import { logErr, logger } from '../logger/Logger.mjs';
 import * as fs from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { configPaths } from '../config/ConfigPaths';
+import { configPaths } from '../config/ConfigPaths.mjs';
 
 export class NatsComponent extends Component {
     private _nc: NatsConnection | undefined;

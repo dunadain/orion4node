@@ -1,7 +1,7 @@
 import type { Msg } from 'nats';
-import { SubscriberBase } from '../router/subscribers/SubscriberBase';
-import { callRpc } from './RpcUtils';
-import { logErr, logger } from '../logger/Logger';
+import { SubscriberBase } from '../router/subscribers/SubscriberBase.mjs';
+import { callRpc } from './RpcUtils.mjs';
+import { logErr, logger } from '../logger/Logger.mjs';
 import type { Root } from 'protobufjs';
 
 /**

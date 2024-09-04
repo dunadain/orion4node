@@ -1,7 +1,7 @@
-import { Msg, Subscription, SubscriptionOptions } from 'nats';
-import { Component } from '../../component/Component';
-import { NatsComponent } from '../../nats/NatsComponent';
-import { logErr } from '../../logger/Logger';
+import type { Msg, Subscription, SubscriptionOptions } from 'nats';
+import { Component } from '../../component/Component.mjs';
+import { NatsComponent } from '../../nats/NatsComponent.mjs';
+import { logErr } from '../../logger/Logger.mjs';
 
 export abstract class SubscriberBase extends Component {
     protected subject = '';

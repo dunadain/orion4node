@@ -1,14 +1,14 @@
-import { ErrorCode } from '../../config/ErrorCode';
-import { netConfig } from '../../config/NetConfig';
-import { logger } from '../../logger/Logger';
-import { ClientState, SocketClient } from '../SocketClient';
-import { PackType, encode } from '../protocol/PacketProcessor';
-import { PkgHandler } from './PacketHandler';
+import { ErrorCode } from '../../config/ErrorCode.mjs';
+import { netConfig } from '../../config/NetConfig.mjs';
+import { logger } from '../../logger/Logger.mjs';
+import { ClientState, type SocketClient } from '../SocketClient.mjs';
+import { PackType, encode } from '../protocol/PacketProcessor.mjs';
+import type { PkgHandler } from './PacketHandler.mjs';
 interface HandShakeInfo {
     sys: { ver: string; protoVer?: number } | undefined;
     user: unknown;
 }
-declare module './HandShake' {
+declare module './HandShake.mjs' {
     interface HandShake {
         checkClient?: (ver: string) => boolean; // can be injected through prototype
     }

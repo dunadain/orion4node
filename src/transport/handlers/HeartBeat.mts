@@ -1,8 +1,8 @@
-import { netConfig } from '../../config/NetConfig';
-import { logger } from '../../logger/Logger';
-import { SocketClient } from '../SocketClient';
-import { PackType, encode } from '../protocol/PacketProcessor';
-import { PkgHandler } from './PacketHandler';
+import { netConfig } from '../../config/NetConfig.mjs';
+import { logger } from '../../logger/Logger.mjs';
+import type { SocketClient } from '../SocketClient.mjs';
+import { PackType, encode } from '../protocol/PacketProcessor.mjs';
+import type { PkgHandler } from './PacketHandler.mjs';
 
 export class HeartBeat implements PkgHandler {
     private timeout: NodeJS.Timeout;

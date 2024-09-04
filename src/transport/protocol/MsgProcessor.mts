@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { copyArray } from './utils';
+import { copyArray } from './utils.mjs';
 
 const MSG_FLAG_BYTES = 1;
 const MSG_ROUTE_CODE_BYTES = 2;

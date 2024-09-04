@@ -1,8 +1,8 @@
-import { Msg } from 'nats';
-import { logErr } from '../../logger/Logger';
-import { decodeRouterPack, encodeRouterPack, handle } from '../RouterUtils';
-import { SubscriberBase } from './SubscriberBase';
-import { protoMgr } from '../ProtocolMgr';
+import type { Msg } from 'nats';
+import { logErr } from '../../logger/Logger.mjs';
+import { decodeRouterPack, encodeRouterPack, handle } from '../RouterUtils.mjs';
+import { SubscriberBase } from './SubscriberBase.mjs';
+import { protoMgr } from '../ProtocolMgr.mjs';
 
 export abstract class RouteSubscriber extends SubscriberBase {
     protected process(msg: Msg) {

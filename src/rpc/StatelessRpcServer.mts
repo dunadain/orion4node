@@ -1,4 +1,4 @@
-import { RpcServerBase } from './RpcServerBase';
+import { RpcServerBase } from './RpcServerBase.mjs';
 
 export class StatelessRpcServer extends RpcServerBase {
 	async init() {

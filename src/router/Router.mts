@@ -1,11 +1,11 @@
-import { Message } from '../transport/protocol/ProtocolTypeDefs';
-import { Component } from '../component/Component';
-import { NatsComponent } from '../nats/NatsComponent';
-import { MsgType } from '../transport/protocol/MsgProcessor';
-import { logErr } from '../logger/Logger';
-import { decodeRouterPack, encodeRouterPack } from './RouterUtils';
-import { ClientManager } from '../component/ClientManager';
-import { protoMgr } from './ProtocolMgr';
+import type { Message } from '../transport/protocol/ProtocolTypeDefs.mjs';
+import { Component } from '../component/Component.mjs';
+import { NatsComponent } from '../nats/NatsComponent.mjs';
+import { MsgType } from '../transport/protocol/MsgProcessor.mjs';
+import { logErr } from '../logger/Logger.mjs';
+import { decodeRouterPack, encodeRouterPack } from './RouterUtils.mjs';
+import { ClientManager } from '../component/ClientManager.mjs';
+import { protoMgr } from './ProtocolMgr.mjs';
 
 /**
  * only exists in connector or gate server

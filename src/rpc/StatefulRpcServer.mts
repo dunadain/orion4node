@@ -1,4 +1,4 @@
-import { RpcServerBase } from './RpcServerBase';
+import { RpcServerBase } from './RpcServerBase.mjs';
 
 /**
  * StatefulRpcServer use unique uuid to listen for rpc events

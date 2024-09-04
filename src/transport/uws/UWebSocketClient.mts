@@ -1,12 +1,12 @@
-import { WebSocket } from 'uWebSockets.js';
-import { ClientState, SocketClient } from '../SocketClient';
-import * as packUtils from '../protocol/PacketProcessor';
-import * as msgUtils from '../protocol/MsgProcessor';
-import { PkgHandler } from '../handlers/PacketHandler';
-import { HeartBeat } from '../handlers/HeartBeat';
-import { HandShake } from '../handlers/HandShake';
-import { HandShakeAck } from '../handlers/HandShakeAck';
-import { ErrorCode } from '../../config/ErrorCode';
+import type { WebSocket } from 'uWebSockets.js';
+import { ClientState, type SocketClient } from '../SocketClient.mjs';
+import * as packUtils from '../protocol/PacketProcessor.mjs';
+import * as msgUtils from '../protocol/MsgProcessor.mjs';
+import type { PkgHandler } from '../handlers/PacketHandler.mjs';
+import { HeartBeat } from '../handlers/HeartBeat.mjs';
+import { HandShake } from '../handlers/HandShake.mjs';
+import { HandShakeAck } from '../handlers/HandShakeAck.mjs';
+import { ErrorCode } from '../../config/ErrorCode.mjs';
 import { EventEmitter } from 'node:events';
 
 export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {

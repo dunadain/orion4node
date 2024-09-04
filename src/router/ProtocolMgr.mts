@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MsgBodyDecoder, MsgBodyEncoder } from '../interfaces/defines';
-import { isUpperCase } from './RouterUtils';
-import { serverSelector } from './ServerSelector';
+import type { MsgBodyDecoder, MsgBodyEncoder } from '../interfaces/defines.mjs';
+import { isUpperCase } from './RouterUtils.mjs';
+import { serverSelector } from './ServerSelector.mjs';
 
 const id2Server = new Map<number, string>();
 class ProtocolMgr {

@@ -1,9 +1,9 @@
 import { App, DISABLED, type TemplatedApp } from 'uWebSockets.js';
-import { Component } from '../../component/Component';
-import { logErr, logger } from '../../logger/Logger';
-import { ClientManager } from '../../component/ClientManager';
-import { UWebSocketClient } from './UWebSocketClient';
-import type { Server } from '../../server/Server';
+import { Component } from '../../component/Component.mjs';
+import { logErr, logger } from '../../logger/Logger.mjs';
+import { ClientManager } from '../../component/ClientManager.mjs';
+import { UWebSocketClient } from './UWebSocketClient.mjs';
+import type { Server } from '../../server/Server.mjs';
 
 export class UWebSocketTransport extends Component {
 	public addr = '';

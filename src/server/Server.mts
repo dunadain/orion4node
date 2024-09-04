@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
-import type { ComponentConstructor } from '../interfaces/defines';
-import type { Component } from '../component/Component';
-import { initLogger, logErr, logger } from '../logger/Logger';
+import type { ComponentConstructor } from '../interfaces/defines.mjs';
+import type { Component } from '../component/Component.mjs';
+import { initLogger, logErr, logger } from '../logger/Logger.mjs';
 
 export class Server {
 	readonly eventEmitter = new EventEmitter();

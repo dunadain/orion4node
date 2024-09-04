@@ -1,9 +1,9 @@
-import { NatsConnection } from 'nats';
-import { Component } from '../component/Component';
-import { NatsComponent } from '../nats/NatsComponent';
-import { encodeRouterPack } from './RouterUtils';
-import { protoMgr } from './ProtocolMgr';
-import { Context } from './RouterTypeDef';
+import type { NatsConnection } from 'nats';
+import { Component } from '../component/Component.mjs';
+import { NatsComponent } from '../nats/NatsComponent.mjs';
+import { encodeRouterPack } from './RouterUtils.mjs';
+import { protoMgr } from './ProtocolMgr.mjs';
+import type { Context } from './RouterTypeDef.mjs';
 
 export class PushSender extends Component {
     private _nc: NatsConnection | undefined;

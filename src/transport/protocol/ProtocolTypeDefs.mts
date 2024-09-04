@@ -1,5 +1,5 @@
-import { SocketClient } from '../SocketClient';
-import { MsgType } from './MsgProcessor';
+import type { SocketClient } from '../SocketClient.mjs';
+import { MsgType } from './MsgProcessor.mjs';
 
 export interface Message {
     msg: {

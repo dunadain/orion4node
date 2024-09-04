@@ -1,4 +1,4 @@
-import { copyArray } from './utils';
+import { copyArray } from './utils.mjs';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const PKG_HEAD_BYTES = 4;

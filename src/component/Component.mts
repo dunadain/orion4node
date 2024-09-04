@@ -1,5 +1,5 @@
-import { ComponentConstructor } from '../interfaces/defines';
-import { Server } from '../server/Server';
+import type { ComponentConstructor } from '../interfaces/defines.mjs';
+import { Server } from '../server/Server.mjs';
 
 /**
  * Component lift cycle: init -> start -> dispose

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Component } from '../component/Component';
+import { Component } from '../component/Component.mjs';
 import * as path from 'node:path';
 import * as fs from 'fs/promises';
 import { existsSync } from 'node:fs';
-import { addRpcCall } from '../rpc/RpcUtils';
-import { logErr } from '../logger/Logger';
+import { addRpcCall } from '../rpc/RpcUtils.mjs';
+import { logErr } from '../logger/Logger.mjs';
 
 /**
  * load handler files and rpc files

@@ -1,6 +1,6 @@
-import { Component } from '../component/Component';
-import { NatsComponent } from '../nats/NatsComponent';
-import type { Constructor } from '../interfaces/defines';
+import { Component } from '../component/Component.mjs';
+import { NatsComponent } from '../nats/NatsComponent.mjs';
+import type { Constructor } from '../interfaces/defines.mjs';
 import type {
 	Message,
 	Method,

@@ -1,6 +1,6 @@
-import { Server } from '../server/Server';
-import { copyArray } from '../transport/protocol/utils';
-import { Context } from './RouterTypeDef';
+import { Server } from '../server/Server.mjs';
+import { copyArray } from '../transport/protocol/utils.mjs';
+import type { Context } from './RouterTypeDef.mjs';
 
 export function encodeRouterPack(contextInfo: Context, body?: Buffer) {
     const uidBuf = Buffer.from(contextInfo.uid);

@@ -1,6 +1,6 @@
-import { logger } from '../logger/Logger';
-import type { SocketClient } from '../transport/SocketClient';
-import { Component } from './Component';
+import { logger } from '../logger/Logger.mjs';
+import type { SocketClient } from '../transport/SocketClient.mjs';
+import { Component } from './Component.mjs';
 
 export class ClientManager extends Component {
 	// native socket/client
