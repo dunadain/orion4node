@@ -1,4 +1,4 @@
-import { RouteSubscriber } from './RouteSubscriber';
+import { RouteSubscriber } from './RouteSubscriber.mjs';
 
 export class StatelessHandlerSubscriber extends RouteSubscriber {
 	async init() {

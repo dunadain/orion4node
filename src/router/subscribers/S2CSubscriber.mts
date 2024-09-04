@@ -1,8 +1,8 @@
-import { Msg } from 'nats';
-import { decodeRouterPack } from '../RouterUtils';
-import { ClientManager } from '../../component/ClientManager';
-import { MsgType } from '../../transport/protocol/MsgProcessor';
-import { SubscriberBase } from './SubscriberBase';
+import type { Msg } from 'nats';
+import { decodeRouterPack } from '../RouterUtils.mjs';
+import { ClientManager } from '../../component/ClientManager.mjs';
+import { MsgType } from '../../transport/protocol/MsgProcessor.mjs';
+import { SubscriberBase } from './SubscriberBase.mjs';
 
 /**
  * only exist on connector/gate servers to listen for push events
