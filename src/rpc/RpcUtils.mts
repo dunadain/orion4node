@@ -1,13 +1,16 @@
 import type { Constructor } from '../index.mjs';
 
 class RpcUtils {
-    async callRpc<T>(protoStr: string, param: T) {
+    async callRpc(protoStr: string, param: Uint8Array) {
         const rpcProto = rpcProtoMap.get(protoStr);
         if (!rpcProto) throw new Error(`rpc call ${protoStr} not found`);
-        let reqDecoded = (rpcProto.reqType as any).decode(param as Uint8Array);
+        let reqDecoded = (rpcProto.reqType as any).decode(param);
         let res = await rpcProto.call(reqDecoded);
-        let msg = (rpcProto.resType as any).create(res);
-        return (rpcProto.resType as any).encode(msg).finish();
+        const structure = rpcProto.resType as any;
+        const err = structure.verify(res);
+        if (err) throw new Error(err);
+        let msg = structure.create(res);
+        return structure.encode(msg).finish() as Uint8Array;
     }
 }
 

@@ -27,16 +27,12 @@ beforeAll(async () => {
     server2 = new Server('game', id2);
     server2.addComponent(NatsComponent);
     let rpcSub = server2.addComponent(StatelessRpcServer);
-    rpcSub.protoRoot = root as unknown as Root;
     rpcSub = server2.addComponent(StatefulRpcServer);
-    rpcSub.protoRoot = root as unknown as Root;
 
     server3 = new Server('game', id3);
     server3.addComponent(NatsComponent);
     rpcSub = server3.addComponent(StatelessRpcServer);
-    rpcSub.protoRoot = root as unknown as Root;
     rpcSub = server3.addComponent(StatefulRpcServer);
-    rpcSub.protoRoot = root as unknown as Root;
 
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
