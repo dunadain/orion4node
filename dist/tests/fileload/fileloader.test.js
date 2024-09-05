@@ -1,26 +1,42 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const globals_1 = require("@jest/globals");
-const FileLoader_1 = require("../../src/server/FileLoader");
-const path = require("node:path");
-const RouterUtils_1 = require("../../src/router/RouterUtils");
-const Proto_1 = require("../utils/Proto");
-const RpcUtils_1 = require("../../src/rpc/RpcUtils");
-(0, globals_1.describe)('load handlers and rpc', () => {
-    (0, globals_1.it)('should not throw err', async () => {
-        const fileLoader = new FileLoader_1.FileLoader({});
-        await (0, globals_1.expect)(fileLoader.init()).resolves.toBeUndefined();
+import { describe, expect, it } from '@jest/globals';
+import { Server } from '../../src/server/Server.mjs';
+import * as path from 'node:path';
+import { Proto } from '../utils/Proto.mjs';
+import { fileURLToPath } from 'node:url';
+import { loadHandlersAndRemotes, routerUtils, rpcUtils } from '../../src/index.mjs';
+import root from '../utils/protores/bundle.cjs';
+describe('load handlers and rpc', () => {
+    it('should not throw err', async () => {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+        await expect(loadHandlersAndRemotes(__dirname)).resolves.toBeUndefined();
+        await expect(import(path.join(__dirname, 'handler', 'TestHandler'))).resolves.not.toBeUndefined();
+        const m = await import(path.join(__dirname, 'handler', 'TestHandler'));
+        expect(m.TestHandler.prototype.handle).not.toBeUndefined();
+        let msg = root.HelloRequest.create({ name: 'world' });
+        let buf = root.HelloRequest.encode(msg).finish();
+        await expect(rpcUtils.callRpc('Greeter.SayHello', buf).then((data) => {
+            return root.HelloReply.decode(data);
+        })).resolves.toEqual({
+            message: 'Hello, world',
+        });
+        await expect(rpcUtils.callRpc('Greeter.Speak', buf)).rejects.toThrowError();
+        await expect(routerUtils.handle({ clientId: 1, protoId: Proto.GameLogin, reqId: 1, sId: 1, uid: '2k3' }, undefined, {})).resolves.toBe(1000);
     });
-    (0, globals_1.test)('import loaded module', async () => {
-        await (0, globals_1.expect)(Promise.resolve(`${path.join(__dirname, 'handler', 'TestHandler')}`).then(s => require(s))).resolves.not.toBeUndefined();
-        const m = await Promise.resolve(`${path.join(__dirname, 'handler', 'TestHandler')}`).then(s => require(s));
-        (0, globals_1.expect)(m.TestHandler.prototype.handle).not.toBeUndefined();
-    });
-    (0, globals_1.it)('should have handlers in RouteUtils', async () => {
-        await (0, globals_1.expect)((0, RouterUtils_1.handle)({ clientId: 1, protoId: Proto_1.Proto.GameLogin, reqId: 1, sId: 1, uid: '2k3' }, undefined, {})).resolves.toBe(1000);
-    });
-    (0, globals_1.it)('should not reject to error when calling rpc', async () => {
-        await (0, globals_1.expect)((0, RpcUtils_1.callRpc)('Greeter.sayHello', { name: 'world' })).resolves.toEqual({ message: 'Hello, world' });
-        await (0, globals_1.expect)((0, RpcUtils_1.callRpc)('Greeter.speak', { name: 'world' })).rejects.toThrowError();
-    });
+    // test('import loaded module', async () => {
+    //     const __filename = fileURLToPath(import.meta.url);
+    //     const __dirname = path.dirname(__filename);
+    //     await expect(import(path.join(__dirname, 'handler', 'TestHandler'))).resolves.not.toBeUndefined();
+    //     const m = await import(path.join(__dirname, 'handler', 'TestHandler'));
+    //     expect(m.TestHandler.prototype.handle).not.toBeUndefined();
+    // });
+    // it('should have handlers in RouteUtils', async () => {
+    //     await expect(
+    //         handle({ clientId: 1, protoId: Proto.GameLogin, reqId: 1, sId: 1, uid: '2k3' }, undefined, {} as Server)
+    //     ).resolves.toBe(1000);
+    // });
+    // it('should not reject to error when calling rpc', async () => {
+    //     await expect(callRpc('Greeter.sayHello', { name: 'world' })).resolves.toEqual({ message: 'Hello, world' });
+    //     await expect(callRpc('Greeter.speak', { name: 'world' })).rejects.toThrowError();
+    // });
 });

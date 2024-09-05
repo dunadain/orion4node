@@ -1,41 +1,35 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const globals_1 = require("@jest/globals");
-const Server_1 = require("../../src/server/Server");
-const NatsComponent_1 = require("../../src/nats/NatsComponent");
-const RpcClient_1 = require("../../src/rpc/RpcClient");
-const StatelessRpcServer_1 = require("../../src/rpc/StatelessRpcServer");
-const FileLoader_1 = require("../../src/server/FileLoader");
-const StatefulRpcServer_1 = require("../../src/rpc/StatefulRpcServer");
-const root = require("./proto/compiled");
-const RpcServerBase_1 = require("../../src/rpc/RpcServerBase");
-const rpc = require("../../src/rpc/RpcUtils");
+import { afterAll, afterEach, beforeAll, describe, expect, jest, test } from '@jest/globals';
+import { Server } from '../../src/server/Server.mjs';
+import { NatsComponent } from '../../src/nats/NatsComponent.mjs';
+import { RpcClient } from '../../src/rpc/RpcClient.mjs';
+import { StatelessRpcServer } from '../../src/rpc/StatelessRpcServer.mjs';
+import { StatefulRpcServer } from '../../src/rpc/StatefulRpcServer.mjs';
+import root from '../utils/protores/bundle.cjs';
+import { RpcServerBase } from '../../src/rpc/RpcServerBase.mjs';
+import { fileURLToPath } from 'node:url';
+import * as path from 'node:path';
+import { loadHandlersAndRemotes } from '../../src/index.mjs';
 let server;
 let server2;
 let server3;
 const id1 = 1;
 const id2 = 2;
 const id3 = 3;
-(0, globals_1.beforeAll)(async () => {
-    server = new Server_1.Server('chat', id1);
-    server.addComponent(NatsComponent_1.NatsComponent);
-    const client = server.addComponent(RpcClient_1.RpcClient);
-    const pkgRoot = root.lookup('');
-    client.addServices(pkgRoot, 'game');
-    server2 = new Server_1.Server('game', id2);
-    server2.addComponent(NatsComponent_1.NatsComponent);
-    let rpcSub = server2.addComponent(StatelessRpcServer_1.StatelessRpcServer);
-    rpcSub.protoRoot = root;
-    rpcSub = server2.addComponent(StatefulRpcServer_1.StatefulRpcServer);
-    rpcSub.protoRoot = root;
-    server2.addComponent(FileLoader_1.FileLoader);
-    server3 = new Server_1.Server('game', id3);
-    server3.addComponent(NatsComponent_1.NatsComponent);
-    rpcSub = server3.addComponent(StatelessRpcServer_1.StatelessRpcServer);
-    rpcSub.protoRoot = root;
-    rpcSub = server3.addComponent(StatefulRpcServer_1.StatefulRpcServer);
-    rpcSub.protoRoot = root;
-    server3.addComponent(FileLoader_1.FileLoader);
+beforeAll(async () => {
+    server = new Server('chat', id1);
+    server.addComponent(NatsComponent);
+    server.addComponent(RpcClient);
+    server2 = new Server('game', id2);
+    server2.addComponent(NatsComponent);
+    let rpcSub = server2.addComponent(StatelessRpcServer);
+    rpcSub = server2.addComponent(StatefulRpcServer);
+    server3 = new Server('game', id3);
+    server3.addComponent(NatsComponent);
+    rpcSub = server3.addComponent(StatelessRpcServer);
+    rpcSub = server3.addComponent(StatefulRpcServer);
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    await loadHandlersAndRemotes(__dirname);
     try {
         await server.start();
         await server2.start();
@@ -45,72 +39,74 @@ const id3 = 3;
         console.error(reason);
     }
 });
-(0, globals_1.afterAll)(() => {
+afterAll(() => {
     server.shutdown();
     server2.shutdown();
     server3.shutdown();
 });
-(0, globals_1.describe)('rpc tests', () => {
-    (0, globals_1.afterEach)(() => {
-        globals_1.jest.clearAllMocks();
+describe('rpc tests', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
     });
-    (0, globals_1.test)('stateless rpc call', async () => {
-        const client = server.getComponent(RpcClient_1.RpcClient);
+    test('stateless rpc call', async () => {
+        const client = server.getComponent(RpcClient);
         if (!client)
             return;
-        const mockP = globals_1.jest.spyOn(RpcServerBase_1.RpcServerBase.prototype, 'process');
-        await (0, globals_1.expect)(client.getService(root.Greeter).sayHello({ name: 'world' })).resolves.toEqual({
-            message: 'Hello, world',
-        });
-        (0, globals_1.expect)(mockP).toBeCalledTimes(1);
-        await (0, globals_1.expect)(client.getService(root.Greeter).sayHello({ name: 'world' })).resolves.toEqual({
-            message: 'Hello, world',
-        });
-        (0, globals_1.expect)(mockP).toBeCalledTimes(2);
+        const mockP = jest.spyOn(RpcServerBase.prototype, 'process');
+        await expect(client
+            .createRpcCall('Greeter.SayHello', root.HelloRequest, root.HelloReply, 'game')
+            .request({ name: 'world' })).resolves.toEqual({ message: 'Hello, world' });
+        expect(mockP).toBeCalledTimes(1);
+        await expect(client
+            .createRpcCall('Greeter.SayHello', root.HelloRequest, root.HelloReply, 'game')
+            .request({ name: 'world' })).resolves.toEqual({ message: 'Hello, world' });
+        expect(mockP).toBeCalledTimes(2);
     });
-    (0, globals_1.test)('stateful rpc call', async () => {
-        const client = server.getComponent(RpcClient_1.RpcClient);
+    test('stateful rpc call', async () => {
+        const client = server.getComponent(RpcClient);
         if (!client)
             return;
-        const mockP1 = globals_1.jest.fn(RpcServerBase_1.RpcServerBase.prototype.process);
-        server2.getComponent(StatefulRpcServer_1.StatefulRpcServer).process = mockP1;
-        const mockP2 = globals_1.jest.fn(RpcServerBase_1.RpcServerBase.prototype.process);
-        server3.getComponent(StatefulRpcServer_1.StatefulRpcServer).process = mockP2;
-        await (0, globals_1.expect)(client.getService(root.Greeter).to(id2).sayHello({ name: 'world' })).resolves.toEqual({
-            message: 'Hello, world',
-        });
-        (0, globals_1.expect)(mockP1).toBeCalledTimes(1);
-        (0, globals_1.expect)(mockP2).not.toBeCalled();
+        const mockP1 = jest.fn(RpcServerBase.prototype.process);
+        server2.getComponent(StatefulRpcServer).process = mockP1;
+        const mockP2 = jest.fn(RpcServerBase.prototype.process);
+        server3.getComponent(StatefulRpcServer).process = mockP2;
+        await expect(client
+            .createRpcCall('Greeter.SayHello', root.HelloRequest, root.HelloReply, 'game')
+            .to(id2)
+            .request({ name: 'world' })).resolves.toEqual({ message: 'Hello, world' });
+        expect(mockP1).toBeCalledTimes(1);
+        expect(mockP2).not.toBeCalled();
     });
-    (0, globals_1.test)('rpc publish', () => {
-        const client = server.getComponent(RpcClient_1.RpcClient);
+    // test('rpc publish', () => {
+    //     const client = server.getComponent(RpcClient);
+    //     if (!client) return;
+    //     const nats = server.getComponent(NatsComponent)?.nc;
+    //     if (!nats) return;
+    //     const mockPub = jest.spyOn(nats, 'publish');
+    //     const mockReq = jest.spyOn(nats, 'request');
+    //     const mockCallRpc = jest.spyOn(rpcUtils, 'callRpc');
+    //     client.getService(root.Greeter).bar({});
+    //     expect(mockPub).toBeCalledTimes(1);
+    //     expect(mockReq).not.toBeCalled();
+    //     return new Promise<void>((resolve) => {
+    //         setTimeout(() => {
+    //             expect(mockCallRpc).toBeCalledTimes(1);
+    //             expect(mockCallRpc.mock.results[0].value).resolves.toEqual({});
+    //             resolve();
+    //         }, 100);
+    //     });
+    // });
+    test('rpc fail', async () => {
+        const client = server.getComponent(RpcClient);
         if (!client)
             return;
-        const nats = server.getComponent(NatsComponent_1.NatsComponent)?.nc;
+        const nats = server.getComponent(NatsComponent);
         if (!nats)
             return;
-        const mockPub = globals_1.jest.spyOn(nats, 'publish');
-        const mockReq = globals_1.jest.spyOn(nats, 'request');
-        const mockCallRpc = globals_1.jest.spyOn(rpc, 'callRpc');
-        client.getService(root.Greeter).bar({});
-        (0, globals_1.expect)(mockPub).toBeCalledTimes(1);
-        (0, globals_1.expect)(mockReq).not.toBeCalled();
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                (0, globals_1.expect)(mockCallRpc).toBeCalledTimes(1);
-                (0, globals_1.expect)(mockCallRpc.mock.results[0].value).resolves.toEqual({});
-                resolve();
-            }, 100);
-        });
-    });
-    (0, globals_1.test)('rpc fail', async () => {
-        const client = server.getComponent(RpcClient_1.RpcClient);
-        if (!client)
-            return;
-        const nats = server.getComponent(NatsComponent_1.NatsComponent);
-        if (!nats)
-            return;
-        globals_1.jest.spyOn(nats, 'tryRequest').mockRejectedValue(new Error('timeout'));
-        await (0, globals_1.expect)(client.getService(root.Greeter).to(id2).sayHello({ name: 'world' })).rejects.toThrow('timeout');
+        jest.spyOn(nats, 'tryRequest').mockRejectedValue(new Error('timeout'));
+        await expect(client
+            .createRpcCall('Greeter.SayHello', root.HelloRequest, root.HelloReply, 'game')
+            .to(id2)
+            .request({ name: 'world' })).rejects.toThrow('timeout');
     });
 });

@@ -1,24 +1,22 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const globals_1 = require("@jest/globals");
-const Server_1 = require("../../src/server/Server");
-const UWebSocketTransport_1 = require("../../src/transport/uws/UWebSocketTransport");
-const NatsComponent_1 = require("../../src/nats/NatsComponent");
-const Router_1 = require("../../src/router/Router");
-const S2CSubscriber_1 = require("../../src/router/subscribers/S2CSubscriber");
-const ClientManager_1 = require("../../src/component/ClientManager");
+import { afterEach, beforeEach, describe, expect, it, jest, test, } from '@jest/globals';
+import { Server } from '../../src/server/Server.mjs';
+import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport.mjs';
+import { NatsComponent } from '../../src/nats/NatsComponent.mjs';
+import { Router } from '../../src/router/Router.mjs';
+import { S2CSubscriber } from '../../src/router/subscribers/S2CSubscriber.mjs';
+import { ClientManager } from '../../src/component/ClientManager.mjs';
 let server;
 const id1 = 1;
-(0, globals_1.beforeEach)(async () => {
-    server = new Server_1.Server('connector', id1);
-    server.addComponent(UWebSocketTransport_1.UWebSocketTransport);
-    const transport = server.getComponent(UWebSocketTransport_1.UWebSocketTransport);
+beforeEach(async () => {
+    server = new Server('connector', id1);
+    server.addComponent(UWebSocketTransport);
+    const transport = server.getComponent(UWebSocketTransport);
     if (transport)
         transport.port = 9008;
-    server.addComponent(ClientManager_1.ClientManager);
-    server.addComponent(NatsComponent_1.NatsComponent);
-    server.addComponent(Router_1.Router);
-    server.addComponent(S2CSubscriber_1.S2CSubscriber);
+    server.addComponent(ClientManager);
+    server.addComponent(NatsComponent);
+    server.addComponent(Router);
+    server.addComponent(S2CSubscriber);
     try {
         await server.start();
     }
@@ -26,44 +24,44 @@ const id1 = 1;
         console.error(reason);
     }
 });
-(0, globals_1.afterEach)(() => {
-    globals_1.jest.restoreAllMocks();
-    globals_1.jest.clearAllMocks();
+afterEach(() => {
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
 });
-(0, globals_1.describe)('server shut down', () => {
-    (0, globals_1.test)('shut down should not reject', async () => {
-        await (0, globals_1.expect)(server.shutdown()).resolves.toBeUndefined();
+describe('server shut down', () => {
+    test('shut down should not reject', async () => {
+        await expect(server.shutdown()).resolves.toBeUndefined();
     });
-    (0, globals_1.test)('shut down should reject', async () => {
-        const natsComponent = server.getComponent(NatsComponent_1.NatsComponent);
+    test('shut down should reject', async () => {
+        const natsComponent = server.getComponent(NatsComponent);
         if (!natsComponent)
             return;
-        globals_1.jest
+        jest
             .spyOn(natsComponent, 'dispose')
             .mockRejectedValue(new Error('nats error'));
-        await (0, globals_1.expect)(server.shutdown()).rejects.toThrowError('some components failed to dispose');
+        await expect(server.shutdown()).rejects.toThrowError('some components failed to dispose');
         await natsComponent.nc?.drain();
     });
-    (0, globals_1.describe)('kill process', () => {
-        (0, globals_1.it)('should call process.exit(0)', async () => {
-            const mockExit = globals_1.jest
+    describe('kill process', () => {
+        it('should call process.exit(0)', async () => {
+            const mockExit = jest
                 .spyOn(process, 'exit')
                 .mockImplementation(() => undefined);
-            const mockShutdown = globals_1.jest.spyOn(server, 'shutdown');
+            const mockShutdown = jest.spyOn(server, 'shutdown');
             process.emit('SIGTERM');
-            await (0, globals_1.expect)(mockShutdown.mock.results[0].value).resolves.toBeUndefined();
-            (0, globals_1.expect)(mockExit).toBeCalledWith(0);
+            await expect(mockShutdown.mock.results[0].value).resolves.toBeUndefined();
+            expect(mockExit).toBeCalledWith(0);
         });
-        (0, globals_1.it)('should call process.exit(1) when there are errors in dispose', async () => {
-            const mockExit = globals_1.jest
+        it('should call process.exit(1) when there are errors in dispose', async () => {
+            const mockExit = jest
                 .spyOn(process, 'exit')
                 .mockImplementation(() => undefined);
-            const mockShutdown = globals_1.jest
+            const mockShutdown = jest
                 .spyOn(server, 'shutdown')
                 .mockRejectedValue(new Error('some components failed to dispose'));
             process.emit('SIGTERM');
-            await (0, globals_1.expect)(mockShutdown.mock.results[0].value).rejects.toThrowError('some components failed to dispose');
-            (0, globals_1.expect)(mockExit).toBeCalledWith(1);
+            await expect(mockShutdown.mock.results[0].value).rejects.toThrowError('some components failed to dispose');
+            expect(mockExit).toBeCalledWith(1);
             mockShutdown.mockRestore();
             server.shutdown();
         });

@@ -1,33 +1,31 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-const globals_1 = require("@jest/globals");
-const Server_1 = require("../../src/server/Server");
-const UWebSocketTransport_1 = require("../../src/transport/uws/UWebSocketTransport");
-const ws_1 = require("ws");
-const ClientManager_1 = require("../../src/component/ClientManager");
-const packUtil = require("../../src/transport/protocol/PacketProcessor");
-const SocketClient_1 = require("../../src/transport/SocketClient");
-const ErrorCode_1 = require("../../src/config/ErrorCode");
-const HandShake_1 = require("../../src/transport/handlers/HandShake");
-const NetConfig_1 = require("../../src/config/NetConfig");
-const testUtils_1 = require("../utils/testUtils");
-const msgUtil = require("../../src/transport/protocol/MsgProcessor");
-const Router_1 = require("../../src/router/Router");
-const NatsComponent_1 = require("../../src/nats/NatsComponent");
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, jest, test, } from '@jest/globals';
+import { Server } from '../../src/server/Server.mjs';
+import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport.mjs';
+import { WebSocket } from 'ws';
+import { ClientManager } from '../../src/component/ClientManager.mjs';
+import * as packUtil from '../../src/transport/protocol/PacketProcessor.mjs';
+import { ClientState } from '../../src/transport/SocketClient.mjs';
+import { ErrorCode } from '../../src/config/ErrorCode.mjs';
+import { HandShake } from '../../src/transport/handlers/HandShake.mjs';
+import { netConfig } from '../../src/config/NetConfig.mjs';
+import { createConnection } from '../utils/testUtils.mjs';
+import * as msgUtil from '../../src/transport/protocol/MsgProcessor.mjs';
+import { Router } from '../../src/router/Router.mjs';
+import { NatsComponent } from '../../src/nats/NatsComponent.mjs';
 const port = 9009;
 let server;
-(0, globals_1.beforeAll)(async () => {
-    server = new Server_1.Server('connector', 111);
-    server.addComponent(UWebSocketTransport_1.UWebSocketTransport);
-    const transport = server.getComponent(UWebSocketTransport_1.UWebSocketTransport);
+beforeAll(async () => {
+    server = new Server('connector', 111);
+    server.addComponent(UWebSocketTransport);
+    const transport = server.getComponent(UWebSocketTransport);
     if (transport)
         transport.port = port;
-    server.addComponent(ClientManager_1.ClientManager);
-    server.addComponent(NatsComponent_1.NatsComponent);
-    server.addComponent(Router_1.Router);
+    server.addComponent(ClientManager);
+    server.addComponent(NatsComponent);
+    server.addComponent(Router);
     try {
         await server.start();
     }
@@ -35,70 +33,70 @@ let server;
         console.error(reason);
     }
 });
-(0, globals_1.afterAll)(() => {
+afterAll(() => {
     server.shutdown();
 });
-(0, globals_1.describe)('connection test', () => {
-    (0, globals_1.test)('server connect', () => {
+describe('connection test', () => {
+    test('server connect', () => {
         let socket;
         return new Promise((resolve) => {
-            socket = new ws_1.WebSocket(`ws://localhost:${port.toString()}`);
-            const mockOpen = globals_1.jest.fn(() => {
+            socket = new WebSocket(`ws://localhost:${port.toString()}`);
+            const mockOpen = jest.fn(() => {
                 resolve(mockOpen);
             });
             socket.onopen = mockOpen;
         }).then((mockOpen) => {
-            (0, globals_1.expect)(mockOpen.mock.calls).toHaveLength(1);
-            const clientMgr = server.getComponent(ClientManager_1.ClientManager);
-            (0, globals_1.expect)(clientMgr.map.size).toBe(1);
+            expect(mockOpen.mock.calls).toHaveLength(1);
+            const clientMgr = server.getComponent(ClientManager);
+            expect(clientMgr.map.size).toBe(1);
             socket.close();
         });
     });
-    (0, globals_1.test)('multiple connections', async () => {
+    test('multiple connections', async () => {
         const p = [];
         for (let i = 0; i < 10; ++i) {
-            p.push((0, testUtils_1.createConnection)(port));
+            p.push(createConnection(port));
         }
         const arr = await Promise.all(p);
-        const clientMgr = server.getComponent(ClientManager_1.ClientManager);
-        (0, globals_1.expect)(clientMgr.id2Client.size).toBe(10);
-        (0, globals_1.expect)(clientMgr.map.size).toBe(10);
-        (0, globals_1.expect)(clientMgr.idGenerator).toBe(10);
+        const clientMgr = server.getComponent(ClientManager);
+        expect(clientMgr.id2Client.size).toBe(10);
+        expect(clientMgr.map.size).toBe(10);
+        expect(clientMgr.idGenerator).toBe(10);
         clientMgr.id2Client.forEach((client) => {
-            (0, globals_1.expect)(client.state).toBe(SocketClient_1.ClientState.Ready);
+            expect(client.state).toBe(ClientState.Ready);
         });
         for (const ws of arr) {
             ws.close();
         }
     });
 });
-(0, globals_1.describe)('handshake test', () => {
+describe('handshake test', () => {
     let socket;
-    (0, globals_1.beforeEach)(() => {
+    beforeEach(() => {
         return new Promise((resolve) => {
-            socket = new ws_1.WebSocket(`ws://localhost:${port.toString()}`);
+            socket = new WebSocket(`ws://localhost:${port.toString()}`);
             socket.onopen = () => {
                 resolve();
             };
         });
     });
-    (0, globals_1.afterEach)(() => {
-        delete HandShake_1.HandShake.prototype.checkClient;
+    afterEach(() => {
+        delete HandShake.prototype.checkClient;
         socket.close();
         socket = undefined;
     });
-    (0, globals_1.test)('handshake normal', () => {
-        const clientMgr = server.getComponent(ClientManager_1.ClientManager);
+    test('handshake normal', () => {
+        const clientMgr = server.getComponent(ClientManager);
         const uwsClient = clientMgr?.getClientById(1);
-        const mockHandshakeHandle = globals_1.jest.fn(uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle);
-        const mockHandshakeAckHandle = globals_1.jest.fn(uwsClient.handlers.get(packUtil.PackType.HANDSHAKE_ACK).handle);
+        const mockHandshakeHandle = jest.fn(uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle);
+        const mockHandshakeAckHandle = jest.fn(uwsClient.handlers.get(packUtil.PackType.HANDSHAKE_ACK).handle);
         uwsClient.handlers.get(packUtil.PackType.HANDSHAKE).handle =
             mockHandshakeHandle;
         // eslint-disable-next-line @typescript-eslint/unbound-method
-        const mockWsSend = globals_1.jest.fn(socket.send);
+        const mockWsSend = jest.fn(socket.send);
         socket.send = mockWsSend;
         const packs = [];
-        const mockOnMsg = globals_1.jest.fn((e) => {
+        const mockOnMsg = jest.fn((e) => {
             const buffer = Buffer.from(e.data);
             const pkgs = packUtil.decode(buffer);
             for (const pkg of pkgs) {
@@ -113,85 +111,85 @@ let server;
             else if (pkgs[0].type === packUtil.PackType.ERROR) {
                 if (pkgs[0].body) {
                     const obj = JSON.parse(pkgs[0].body.toString());
-                    (0, globals_1.expect)(obj.code).not.toBeNaN();
-                    (0, globals_1.expect)(obj.msg).not.toBeUndefined();
+                    expect(obj.code).not.toBeNaN();
+                    expect(obj.msg).not.toBeUndefined();
                 }
             }
         });
         return new Promise((resolve) => {
             const handler = uwsClient.handlers.get(packUtil.PackType.HANDSHAKE_ACK);
             handler.handle = () => {
-                (0, globals_1.expect)(uwsClient.state).toBe(SocketClient_1.ClientState.WaitForAck);
+                expect(uwsClient.state).toBe(ClientState.WaitForAck);
                 mockHandshakeAckHandle.bind(handler)();
-                (0, globals_1.expect)(uwsClient.state).toBe(SocketClient_1.ClientState.Ready);
+                expect(uwsClient.state).toBe(ClientState.Ready);
                 resolve();
             };
             socket.onmessage = mockOnMsg;
             socket.send(packUtil.encode(packUtil.PackType.HANDSHAKE, Buffer.from(JSON.stringify({ sys: { ver: '1.0.0' } }))));
         }).then(() => {
-            (0, globals_1.expect)(mockHandshakeAckHandle.mock.calls).toHaveLength(1);
-            (0, globals_1.expect)(packs[0].type).toBe(packUtil.PackType.HANDSHAKE);
-            (0, globals_1.expect)(packs[0].body.sys.heartbeat).not.toBeNaN();
-            (0, globals_1.expect)(mockHandshakeHandle).toHaveBeenCalledTimes(1);
-            (0, globals_1.expect)(mockHandshakeAckHandle).toHaveBeenCalledTimes(1);
-            (0, globals_1.expect)(mockWsSend).toBeCalledTimes(2);
+            expect(mockHandshakeAckHandle.mock.calls).toHaveLength(1);
+            expect(packs[0].type).toBe(packUtil.PackType.HANDSHAKE);
+            expect(packs[0].body.sys.heartbeat).not.toBeNaN();
+            expect(mockHandshakeHandle).toHaveBeenCalledTimes(1);
+            expect(mockHandshakeAckHandle).toHaveBeenCalledTimes(1);
+            expect(mockWsSend).toBeCalledTimes(2);
         });
     });
-    (0, globals_1.it)('s message should contain sys', () => {
-        return testHandshakeErr({}, ErrorCode_1.ErrorCode.InvaildHandShakeInfo, socket);
+    it('s message should contain sys', () => {
+        return testHandshakeErr({}, ErrorCode.InvaildHandShakeInfo, socket);
     });
-    (0, globals_1.test)('handshake info parsing error', () => {
-        return testHandshakeErr({}, ErrorCode_1.ErrorCode.InvaildHandShakeInfo, socket);
+    test('handshake info parsing error', () => {
+        return testHandshakeErr({}, ErrorCode.InvaildHandShakeInfo, socket);
     });
-    (0, globals_1.test)('outdated client', () => {
-        HandShake_1.HandShake.prototype.checkClient = (ver) => {
+    test('outdated client', () => {
+        HandShake.prototype.checkClient = (ver) => {
             return ver > '1.1.0';
         };
-        return testHandshakeErr({ sys: { ver: '1.0.0' } }, ErrorCode_1.ErrorCode.OutdatedClient, socket);
+        return testHandshakeErr({ sys: { ver: '1.0.0' } }, ErrorCode.OutdatedClient, socket);
     });
 });
-(0, globals_1.describe)('heartbeat test', () => {
+describe('heartbeat test', () => {
     let socket;
-    (0, globals_1.beforeEach)(() => {
-        const clientMgr = server.getComponent(ClientManager_1.ClientManager);
+    beforeEach(() => {
+        const clientMgr = server.getComponent(ClientManager);
         clientMgr.id2Client.clear();
         clientMgr.map.clear();
         clientMgr.idGenerator = 0;
-        NetConfig_1.netConfig.heartbeatTimeout = 500;
-        NetConfig_1.netConfig.heartbeatInterval = 300;
+        netConfig.heartbeatTimeout = 500;
+        netConfig.heartbeatInterval = 300;
         return new Promise((resolve) => {
-            socket = new ws_1.WebSocket(`ws://localhost:${port.toString()}`);
+            socket = new WebSocket(`ws://localhost:${port.toString()}`);
             socket.onopen = () => {
                 resolve();
             };
         });
     });
-    (0, globals_1.afterEach)(() => {
+    afterEach(() => {
         socket.close();
-        NetConfig_1.netConfig.heartbeatTimeout = 40000;
-        NetConfig_1.netConfig.heartbeatInterval = 20000;
+        netConfig.heartbeatTimeout = 40000;
+        netConfig.heartbeatInterval = 20000;
         socket = undefined;
     });
-    (0, globals_1.test)('handshake timeout', () => {
-        const clientMgr = server.getComponent(ClientManager_1.ClientManager);
-        (0, globals_1.expect)(clientMgr.id2Client.size).toBe(1);
-        (0, globals_1.expect)(clientMgr.map.size).toBe(1);
-        (0, globals_1.expect)(clientMgr.idGenerator).toBe(1);
+    test('handshake timeout', () => {
+        const clientMgr = server.getComponent(ClientManager);
+        expect(clientMgr.id2Client.size).toBe(1);
+        expect(clientMgr.map.size).toBe(1);
+        expect(clientMgr.idGenerator).toBe(1);
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve();
-            }, NetConfig_1.netConfig.heartbeatTimeout * 2);
+            }, netConfig.heartbeatTimeout * 2);
         }).then(() => {
-            (0, globals_1.expect)(clientMgr.id2Client.size).toBe(0);
-            (0, globals_1.expect)(clientMgr.map.size).toBe(0);
-            (0, globals_1.expect)(clientMgr.idGenerator).toBe(0);
+            expect(clientMgr.id2Client.size).toBe(0);
+            expect(clientMgr.map.size).toBe(0);
+            expect(clientMgr.idGenerator).toBe(0);
         });
     });
-    (0, globals_1.test)('heartbeat timeout', () => {
-        const clientMgr = server.getComponent(ClientManager_1.ClientManager);
-        (0, globals_1.expect)(clientMgr.id2Client.size).toBe(1);
-        (0, globals_1.expect)(clientMgr.map.size).toBe(1);
-        (0, globals_1.expect)(clientMgr.idGenerator).toBe(1);
+    test('heartbeat timeout', () => {
+        const clientMgr = server.getComponent(ClientManager);
+        expect(clientMgr.id2Client.size).toBe(1);
+        expect(clientMgr.map.size).toBe(1);
+        expect(clientMgr.idGenerator).toBe(1);
         return new Promise((resolve) => {
             socket.onmessage = (e) => {
                 const buffer = Buffer.from(e.data);
@@ -210,15 +208,15 @@ let server;
             };
             socket.send(packUtil.encode(packUtil.PackType.HANDSHAKE, Buffer.from(JSON.stringify({ sys: { ver: '1.0.0' } }))));
         }).then(() => {
-            (0, globals_1.expect)(clientMgr.id2Client.size).toBe(0);
-            (0, globals_1.expect)(clientMgr.map.size).toBe(0);
-            (0, globals_1.expect)(clientMgr.idGenerator).toBe(0);
+            expect(clientMgr.id2Client.size).toBe(0);
+            expect(clientMgr.map.size).toBe(0);
+            expect(clientMgr.idGenerator).toBe(0);
         });
     });
 });
 function testHandshakeErr(handshakeMsg, errCode, socket) {
     return new Promise((resolve) => {
-        const mockOnMsg = globals_1.jest.fn((e) => {
+        const mockOnMsg = jest.fn((e) => {
             const buffer = Buffer.from(e.data);
             const pkgs = packUtil.decode(buffer);
             if (pkgs[0].type === packUtil.PackType.HANDSHAKE) {
@@ -227,8 +225,8 @@ function testHandshakeErr(handshakeMsg, errCode, socket) {
             else if (pkgs[0].type === packUtil.PackType.ERROR) {
                 if (pkgs[0].body) {
                     const obj = JSON.parse(pkgs[0].body.toString());
-                    (0, globals_1.expect)(obj.code).toBe(errCode);
-                    (0, globals_1.expect)(obj.msg).not.toBeUndefined();
+                    expect(obj.code).toBe(errCode);
+                    expect(obj.msg).not.toBeUndefined();
                     resolve();
                 }
             }
@@ -237,18 +235,18 @@ function testHandshakeErr(handshakeMsg, errCode, socket) {
         socket.send(packUtil.encode(packUtil.PackType.HANDSHAKE, Buffer.from(JSON.stringify(handshakeMsg))));
     });
 }
-(0, globals_1.describe)('sending messages', () => {
+describe('sending messages', () => {
     let socket;
-    (0, globals_1.beforeEach)(async () => {
+    beforeEach(async () => {
         const result = {};
-        const p = (0, testUtils_1.createConnection)(port, result);
+        const p = createConnection(port, result);
         socket = result.socket;
         await p;
     });
-    (0, globals_1.afterEach)(() => {
+    afterEach(() => {
         socket.close();
     });
-    (0, globals_1.test)('client send msg', () => {
+    test('client send msg', () => {
         const data = {
             a: 1,
             b: '223d',
@@ -266,15 +264,15 @@ function testHandshakeErr(handshakeMsg, errCode, socket) {
             const pkg = packUtil.encode(packUtil.PackType.DATA, encodedMsg);
             socket.send(pkg);
         }).then((msg) => {
-            (0, globals_1.expect)(msg.msg.id).toBe(reqId);
-            (0, globals_1.expect)(msg.msg.protoId).toBe(route);
+            expect(msg.msg.id).toBe(reqId);
+            expect(msg.msg.protoId).toBe(route);
             const body = JSON.parse(msg.msg.body.toString());
             for (const k in body) {
-                (0, globals_1.expect)(body[k]).toBe(data[k]);
+                expect(body[k]).toBe(data[k]);
             }
         });
     });
-    (0, globals_1.test)('server sending messages', () => {
+    test('server sending messages', () => {
         const reqId = 0xff;
         const route = 7899;
         const data = {
@@ -284,7 +282,7 @@ function testHandshakeErr(handshakeMsg, errCode, socket) {
             dsldksdjfk: '$$####asfdjal',
         };
         return new Promise((resolve) => {
-            const clientMgr = server.getComponent(ClientManager_1.ClientManager);
+            const clientMgr = server.getComponent(ClientManager);
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const uwsClient = clientMgr.getClientById(1);
             socket.onmessage = (e) => {
@@ -305,9 +303,9 @@ function testHandshakeErr(handshakeMsg, errCode, socket) {
             const buffer = Buffer.from(JSON.stringify(data));
             uwsClient.sendMsg(msgUtil.MsgType.PUSH, route, buffer, reqId);
         }).then((msg) => {
-            (0, globals_1.expect)(msg.route).toBe(route);
+            expect(msg.route).toBe(route);
             for (const k in msg.body) {
-                (0, globals_1.expect)(msg.body[k]).toBe(data[k]);
+                expect(msg.body[k]).toBe(data[k]);
             }
         });
     });
