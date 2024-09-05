@@ -25,7 +25,7 @@ describe('load handlers and rpc', () => {
         ).resolves.toEqual({
             message: 'Hello, world',
         });
-        await expect(rpcUtils.callRpc('Greeter.Speak', { name: 'world' })).rejects.toThrowError();
+        await expect(rpcUtils.callRpc('Greeter.Speak', buf)).rejects.toThrowError();
 
         await expect(
             routerUtils.handle(
