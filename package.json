@@ -6,7 +6,7 @@
     "main": "./dist/src/index.js",
     "scripts": {
         "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-        "test2": "jest --runInBand"
+        "test2": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand"
     },
     "author": "",
     "license": "ISC",

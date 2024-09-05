@@ -48,8 +48,12 @@ export function protocol(protoId: number) {
     };
 }
 
-export async function handle(context: Context, data: unknown, server: Server) {
-    const func = routeFunctions.get(context.protoId);
-    if (!func) throw new Error(`no handler for protocol:${context.protoId.toString()}`);
-    return await func.call(null, context, data, server);
+class RouterUtils {
+    async handle(context: Context, data: unknown, server: Server) {
+        const func = routeFunctions.get(context.protoId);
+        if (!func) throw new Error(`no handler for protocol:${context.protoId.toString()}`);
+        return await func.call(null, context, data, server);
+    }
 }
+
+export const routerUtils = new RouterUtils();

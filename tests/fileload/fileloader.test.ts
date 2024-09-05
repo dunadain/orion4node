@@ -1,11 +1,10 @@
 import { describe, expect, it } from '@jest/globals';
 import { Server } from '../../src/server/Server.mjs';
 import * as path from 'node:path';
-import { handle } from '../../src/router/RouterUtils.mjs';
 import { Proto } from '../utils/Proto.mjs';
 import { callRpc } from '../../src/rpc/RpcUtils.mjs';
 import { fileURLToPath } from 'node:url';
-import { loadHandlersAndRemotes } from '../../src/index.mjs';
+import { loadHandlersAndRemotes, routerUtils } from '../../src/index.mjs';
 
 describe('load handlers and rpc', () => {
     it('should not throw err', async () => {
@@ -21,7 +20,11 @@ describe('load handlers and rpc', () => {
         await expect(callRpc('Greeter.speak', { name: 'world' })).rejects.toThrowError();
 
         await expect(
-            handle({ clientId: 1, protoId: Proto.GameLogin, reqId: 1, sId: 1, uid: '2k3' }, undefined, {} as Server)
+            routerUtils.handle(
+                { clientId: 1, protoId: Proto.GameLogin, reqId: 1, sId: 1, uid: '2k3' },
+                undefined,
+                {} as Server
+            )
         ).resolves.toBe(1000);
     });
 

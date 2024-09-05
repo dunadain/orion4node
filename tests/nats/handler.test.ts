@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, jest, test } from '@jest/globals';
 import { Server } from '../../src/server/Server.mjs';
 import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport.mjs';
 import { ClientManager } from '../../src/component/ClientManager.mjs';
@@ -14,10 +14,9 @@ import { Proto } from '../utils/Proto.mjs';
 import { PushSender } from '../../src/router/PushSender.mjs';
 import { StatelessHandlerSubscriber } from '../../src/router/subscribers/StatelessHandlerSubscriber.mjs';
 import { StatefulHandlerSubscriber } from '../../src/router/subscribers/StatefulHandlerSubscriber.mjs';
-import { serverSelector } from '../../src/router/ServerSelector.mjs';
 import { fileURLToPath } from 'node:url';
 import * as path from 'node:path';
-import { loadHandlersAndRemotes } from '../../src/index.mjs';
+import { loadHandlersAndRemotes, routerUtils, serverSelector } from '../../src/index.mjs';
 
 const data = {
     a: 1,
@@ -75,21 +74,12 @@ describe('communication', () => {
     afterAll(() => {
         server3.shutdown();
     });
-    let socket: WebSocket;
-    beforeEach(async () => {
-        const result: any = {};
-        const p = createConnection(9002, result);
-        socket = result.socket;
-        await p;
-    });
-    afterEach(() => {
-        socket.close();
-        jest.clearAllMocks();
-    });
+
     test('req/resp', async () => {
+        const socket = await createConnection(9002);
         // the two StatelessRouteSubscribers have the same prototype
         const mockP = jest.spyOn(StatelessHandlerSubscriber.prototype as any, 'process');
-        // const mockHandler = jest.spyOn(routerUtils, 'handle');
+        const mockHandler = jest.spyOn(routerUtils, 'handle');
         const nc = server.getComponent(NatsComponent)?.nc;
         if (!nc) return;
         const mockRequest = jest.spyOn(nc, 'request');
@@ -98,11 +88,14 @@ describe('communication', () => {
         expect(result.id).toBe(reqId);
         expect(result.body.name).toBe('Hello Game');
         expect(mockP).toBeCalledTimes(1);
-        // expect(mockHandler).toBeCalledTimes(1);
+        expect(mockHandler).toBeCalledTimes(1);
         expect(mockRequest).toBeCalledTimes(1);
+        socket.close();
+        jest.clearAllMocks();
     });
 
     test('stateful req/resp', async () => {
+        const socket = await createConnection(9002);
         let rsb = server2.getComponent(StatefulHandlerSubscriber);
         if (!rsb) return;
         // the two StatelessRouteSubscribers have the same prototype
@@ -112,7 +105,7 @@ describe('communication', () => {
         if (!rsb) return;
         const mockPc3 = jest.fn(Object.getPrototypeOf(rsb).process);
         (rsb as any).process = mockPc3;
-        // const mockHandler = jest.spyOn(routerUtils, 'handle');
+        const mockHandler = jest.spyOn(routerUtils, 'handle');
         const nc = server.getComponent(NatsComponent)?.nc;
         if (!nc) return;
         const mockRequest = jest.spyOn(nc, 'request');
@@ -123,19 +116,22 @@ describe('communication', () => {
         const result = await testReq(socket, reqId);
         expect(result.id).toBe(reqId);
         expect(result.body.name).toBe('Hello Game');
-        // expect(mockHandler).toBeCalledTimes(1);
+        expect(mockHandler).toBeCalledTimes(1);
         expect(mockRequest).toBeCalledTimes(1);
         expect(mockPc3).not.toBeCalled();
         expect(mockPc2).toBeCalledTimes(1);
         ((serverSelector as any).routes as Map<any, any>).clear();
+        socket.close();
+        jest.clearAllMocks();
     });
 
-    test('client to server notification', () => {
+    test('client to server notification', async () => {
+        const socket = await createConnection(9002);
         const nc = server.getComponent(NatsComponent)?.nc;
         expect(nc).not.toBeUndefined();
         if (!nc) return;
         const mockPublish = jest.spyOn(nc, 'publish');
-        // const mockHandler = jest.spyOn(routerUtils, 'handle');
+        const mockHandler = jest.spyOn(routerUtils, 'handle');
         const rsb = server2.getComponent(StatelessHandlerSubscriber);
         if (!rsb) return;
         const mockP1 = jest.spyOn(Object.getPrototypeOf(rsb), 'process');
@@ -151,18 +147,21 @@ describe('communication', () => {
         return new Promise<void>((resolve) => {
             setTimeout(() => {
                 expect(mockPublish).toBeCalledTimes(1);
-                // expect(mockHandler).toBeCalledTimes(1);
-                // expect(mockHandler.mock.results[0].value).resolves.toBeUndefined();
-                // expect(mockHandler.mock.calls[0][0].protoId).toBe(Proto.GameUpdate);
-                // expect(mockHandler.mock.calls[0][0].clientId).toBe(1);
+                expect(mockHandler).toBeCalledTimes(1);
+                expect(mockHandler.mock.results[0].value).resolves.toBeUndefined();
+                expect(mockHandler.mock.calls[0][0].protoId).toBe(Proto.GameUpdate);
+                expect(mockHandler.mock.calls[0][0].clientId).toBe(1);
                 expect(mockP1).toBeCalledTimes(1);
                 expect((mockP1.mock.calls[0][0] as any).reply).toBe('');
+                socket.close();
+                jest.clearAllMocks();
                 resolve();
             }, 20);
         });
     });
 
-    test('stateful client to server notification', () => {
+    test('stateful client to server notification', async () => {
+        const socket = await createConnection(9002);
         serverSelector.addRoute('game', async () => {
             return id3;
         });
@@ -170,7 +169,7 @@ describe('communication', () => {
         expect(nc).not.toBeUndefined();
         if (!nc) return;
         const mockPublish = jest.spyOn(nc, 'publish');
-        // const mockHandler = jest.spyOn(routerUtils, 'handle');
+        const mockHandler = jest.spyOn(routerUtils, 'handle');
         let rsb = server2.getComponent(StatefulHandlerSubscriber);
         if (!rsb) return;
         const mockPc2 = jest.fn(Object.getPrototypeOf(rsb).process);
@@ -191,19 +190,22 @@ describe('communication', () => {
         return new Promise<void>((resolve) => {
             setTimeout(() => {
                 expect(mockPublish).toBeCalledTimes(1);
-                // expect(mockHandler).toBeCalledTimes(1);
-                // expect(mockHandler.mock.results[0].value).resolves.toBeUndefined();
-                // expect(mockHandler.mock.calls[0][0].protoId).toBe(Proto.GameUpdate);
-                // expect(mockHandler.mock.calls[0][0].clientId).toBe(1);
+                expect(mockHandler).toBeCalledTimes(1);
+                expect(mockHandler.mock.results[0].value).resolves.toBeUndefined();
+                expect(mockHandler.mock.calls[0][0].protoId).toBe(Proto.GameUpdate);
+                expect(mockHandler.mock.calls[0][0].clientId).toBe(1);
                 expect(mockPc3).toBeCalledTimes(1);
                 expect((mockPc3.mock.calls[0][0] as any).reply).toBe('');
                 expect(mockPc2).not.toBeCalled();
+                socket.close();
+                jest.clearAllMocks();
                 resolve();
             }, 20);
         });
     });
 
     test('server to client notification(push)', async () => {
+        const socket = await createConnection(9002);
         return new Promise<any>((resolve) => {
             socket.onmessage = (e: MessageEvent) => {
                 resolve(decodeClientData(Buffer.from(e.data as ArrayBuffer)));
@@ -223,6 +225,8 @@ describe('communication', () => {
             expect(result.id).toBe(0);
             expect(result.route).toBe(Proto.PushToClient);
             expect(result.body.name).toBe('Hello Game');
+            socket.close();
+            jest.clearAllMocks();
         });
     });
 });

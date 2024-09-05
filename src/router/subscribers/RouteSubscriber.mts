@@ -1,17 +1,18 @@
 import type { Msg } from 'nats';
 import { logErr } from '../../logger/Logger.mjs';
-import { decodeRouterPack, encodeRouterPack, handle } from '../RouterUtils.mjs';
+import { decodeRouterPack, encodeRouterPack, routerUtils } from '../RouterUtils.mjs';
 import { SubscriberBase } from './SubscriberBase.mjs';
 import { protoMgr } from '../ProtocolMgr.mjs';
 
 export abstract class RouteSubscriber extends SubscriberBase {
     protected process(msg: Msg) {
         const data = decodeRouterPack(Buffer.from(msg.data));
-        handle(
-            data.context,
-            data.body.length > 0 ? protoMgr.decodeMsgBody(data.body, data.context.protoId) : undefined,
-            this.server
-        )
+        routerUtils
+            .handle(
+                data.context,
+                data.body.length > 0 ? protoMgr.decodeMsgBody(data.body, data.context.protoId) : undefined,
+                this.server
+            )
             .then((result) => {
                 if (msg.reply) {
                     msg.respond(
