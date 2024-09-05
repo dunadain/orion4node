@@ -1,4 +1,4 @@
-import { register } from '../../src';
+import { register } from '../../src/index.mjs';
 
 export enum Proto {
     GameLogin,

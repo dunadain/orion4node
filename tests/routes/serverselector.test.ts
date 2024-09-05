@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { serverSelector } from '../../src/router/ServerSelector';
+import { serverSelector } from '../../src/router/ServerSelector.mjs';
 
 describe('server selector', () => {
     it('should throw an error when there is no route', () => {

@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { decodeRouterPack, encodeRouterPack } from '../../src/router/RouterUtils';
-import { Context } from '../../src';
+import { decodeRouterPack, encodeRouterPack } from '../../src/router/RouterUtils.mjs';
+import type { Context } from '../../src/index.mjs';
 
 describe('test router pack encode decode', () => {
     test('data should not change after encode and decode', () => {

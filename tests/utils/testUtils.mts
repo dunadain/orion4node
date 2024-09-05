@@ -1,8 +1,8 @@
-import { MessageEvent, WebSocket } from 'ws';
-import * as packUtil from '../../src/transport/protocol/PacketProcessor';
-import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
+import { type MessageEvent, WebSocket } from 'ws';
+import * as packUtil from '../../src/transport/protocol/PacketProcessor.mjs';
+import * as msgUtil from '../../src/transport/protocol/MsgProcessor.mjs';
 import * as net from 'net';
-import { copyArray } from '../../src/transport/protocol/utils';
+import { copyArray } from '../../src/transport/protocol/utils.mjs';
 
 export function createConnection(port: number, obj?: any) {
     return new Promise<WebSocket>((resolve) => {

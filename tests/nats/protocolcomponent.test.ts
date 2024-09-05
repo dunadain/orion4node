@@ -1,5 +1,5 @@
 import { describe, expect, it, test } from '@jest/globals';
-import { protoMgr, register } from '../../src/router/ProtocolMgr';
+import { protoMgr, register } from '../../src/router/ProtocolMgr.mjs';
 
 describe('subject creation', () => {
     test('subject should have the form handler.servertype', async () => {

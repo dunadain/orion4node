@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
-import { UWebSocketClient } from '../../src/transport/uws/UWebSocketClient';
-import { EventEmitter } from 'winston-daily-rotate-file';
-import { PackType, encode } from '../../src/transport/protocol/PacketProcessor';
+import { UWebSocketClient } from '../../src/transport/uws/UWebSocketClient.mjs';
+import { PackType, encode } from '../../src/transport/protocol/PacketProcessor.mjs';
+import type { EventEmitter } from 'winston-daily-rotate-file';
 
 describe('test uwsclient methods', () => {
     let client: UWebSocketClient;

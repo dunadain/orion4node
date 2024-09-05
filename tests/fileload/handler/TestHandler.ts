@@ -1,7 +1,7 @@
-import { Context } from '../../../src/router/RouterTypeDef';
-import { protocol } from '../../../src/router/RouterUtils';
-import { Server } from '../../../src/server/Server';
-import { Proto } from '../../utils/Proto';
+import type { Context } from '../../../src/router/RouterTypeDef.mjs';
+import { protocol } from '../../../src/router/RouterUtils.mjs';
+import { Server } from '../../../src/server/Server.mjs';
+import { Proto } from '../../utils/Proto.mjs';
 
 export class TestHandler {
     @protocol(Proto.GameLogin)

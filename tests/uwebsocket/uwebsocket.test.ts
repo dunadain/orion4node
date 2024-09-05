@@ -12,20 +12,20 @@ import {
 	jest,
 	test,
 } from '@jest/globals';
-import { Server } from '../../src/server/Server';
-import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport';
+import { Server } from '../../src/server/Server.mjs';
+import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport.mjs';
 import { type MessageEvent, WebSocket } from 'ws';
-import { ClientManager } from '../../src/component/ClientManager';
-import * as packUtil from '../../src/transport/protocol/PacketProcessor';
-import { ClientState } from '../../src/transport/SocketClient';
-import { ErrorCode } from '../../src/config/ErrorCode';
-import { HandShake } from '../../src/transport/handlers/HandShake';
-import { netConfig } from '../../src/config/NetConfig';
-import { createConnection } from '../utils/testUtils';
-import * as msgUtil from '../../src/transport/protocol/MsgProcessor';
-import { Router } from '../../src/router/Router';
-import { NatsComponent } from '../../src/nats/NatsComponent';
-import type { Message } from '../../src/transport/protocol/ProtocolTypeDefs';
+import { ClientManager } from '../../src/component/ClientManager.mjs';
+import * as packUtil from '../../src/transport/protocol/PacketProcessor.mjs';
+import { ClientState } from '../../src/transport/SocketClient.mjs';
+import { ErrorCode } from '../../src/config/ErrorCode.mjs';
+import { HandShake } from '../../src/transport/handlers/HandShake.mjs';
+import { netConfig } from '../../src/config/NetConfig.mjs';
+import { createConnection } from '../utils/testUtils.mjs';
+import * as msgUtil from '../../src/transport/protocol/MsgProcessor.mjs';
+import { Router } from '../../src/router/Router.mjs';
+import { NatsComponent } from '../../src/nats/NatsComponent.mjs';
+import type { Message } from '../../src/transport/protocol/ProtocolTypeDefs.mjs';
 
 const port = 9009;
 let server: Server;

@@ -7,12 +7,12 @@ import {
 	jest,
 	test,
 } from '@jest/globals';
-import { Server } from '../../src/server/Server';
-import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport';
-import { NatsComponent } from '../../src/nats/NatsComponent';
-import { Router } from '../../src/router/Router';
-import { S2CSubscriber } from '../../src/router/subscribers/S2CSubscriber';
-import { ClientManager } from '../../src/component/ClientManager';
+import { Server } from '../../src/server/Server.mjs';
+import { UWebSocketTransport } from '../../src/transport/uws/UWebSocketTransport.mjs';
+import { NatsComponent } from '../../src/nats/NatsComponent.mjs';
+import { Router } from '../../src/router/Router.mjs';
+import { S2CSubscriber } from '../../src/router/subscribers/S2CSubscriber.mjs';
+import { ClientManager } from '../../src/component/ClientManager.mjs';
 
 let server: Server;
 const id1 = 1;

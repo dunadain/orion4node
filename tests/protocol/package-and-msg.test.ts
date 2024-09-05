@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
-import * as pack from '../../src/transport/protocol/PacketProcessor';
-import * as message from '../../src/transport/protocol/MsgProcessor';
+import * as pack from '../../src/transport/protocol/PacketProcessor.mjs';
+import * as message from '../../src/transport/protocol/MsgProcessor.mjs';
 
 describe('Package Protocol', () => {
     it('should be the same before encode and after decode', () => {
