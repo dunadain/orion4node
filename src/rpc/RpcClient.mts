@@ -1,135 +1,58 @@
 import { Component } from '../component/Component.mjs';
+import type { Constructor } from '../index.mjs';
 import { NatsComponent } from '../nats/NatsComponent.mjs';
-import type { Constructor } from '../interfaces/defines.mjs';
-import type {
-	Message,
-	Method,
-	RPCImplCallback,
-	Service,
-	rpc,
-} from 'protobufjs';
 
-interface MetaData {
-	serverType: string;
-	serverId: number;
+class RpcRequest<T1, T2> {
+    serverId = 0;
+    serverType = '';
+    rpcProto = '';
+    reqType: Constructor<T1> | undefined;
+    resType: Constructor<T2> | undefined;
+    nats: NatsComponent | undefined;
+
+    /**
+     * 向哪个服务器发送
+     * @param svId 服务器id
+     * @returns
+     */
+    to(svId: number) {
+        this.serverId = svId;
+        return this;
+    }
+
+    async request(requestData: unknown) {
+        /* eslint-disable */
+        const reqType = this.reqType as any;
+        const err = reqType.verify(requestData);
+        if (err) throw new Error(err);
+        const bytes = reqType.encode(reqType.create(requestData)).finish();
+        const subject = `rpc.${this.serverId ? String(this.serverId) : this.serverType}.${this.rpcProto}`;
+        const res = await this.nats?.tryRequest(subject, bytes, { timeout: 1000 });
+        const resType = this.resType as any;
+        return resType.decode(res) as T2;
+    }
 }
 
 export class RpcClient extends Component {
-	private _nats: NatsComponent | undefined;
-	private map = new Map<string, unknown>();
+    private _nats: NatsComponent | undefined;
 
-	private empty = new Uint8Array(0);
+    private empty = new Uint8Array(0);
 
-	private rpcImpl(
-		metaData: MetaData,
-		method: Method | rpc.ServiceMethod<Message, Message>,
-		requestData: Uint8Array,
-		callback: RPCImplCallback,
-	) {
-		const method1 = method as Method;
-		if (!method1.parent?.name) {
-			callback(new Error('service not found'), null);
-			return;
-		}
-		// rpc.game/uuid.Greeter.SayHello.{HelloRequest}.{HelloReply}
-		// 类型可能为google.protobuf.Empty， 所以需要{}包裹
-		const subject =
-			'rpc.' +
-			(metaData.serverId ? String(metaData.serverId) : metaData.serverType) +
-			'.' +
-			method1.parent.name +
-			'.' +
-			method1.name +
-			'.{' +
-			method1.requestType +
-			'}.{' +
-			method1.responseType +
-			'}';
-		if (method1.responseType === 'google.protobuf.Empty') {
-			this.nats.publish(subject, requestData);
-			callback(null, this.empty);
-		} else
-			this.nats
-				.tryRequest(subject, requestData, { timeout: 1000 })
-				.then((res) => {
-					callback(null, res);
-				})
-				.catch((e: unknown) => {
-					callback(e as Error, null);
-				});
-	}
+    createRpcCall<T1, T2>(rpcProto: string, reqType: Constructor<T1>, resType: Constructor<T2>, serverType: string) {
+        const rpcRequest = new RpcRequest<T1, T2>();
+        rpcRequest.rpcProto = rpcProto;
+        rpcRequest.reqType = reqType;
+        rpcRequest.resType = resType;
+        rpcRequest.serverType = serverType;
+        rpcRequest.nats = this.nats;
+        return rpcRequest;
+    }
 
-	get nats() {
-		if (!this._nats) {
-			this._nats = this.server.getComponent(NatsComponent);
-			if (!this._nats) throw new Error('NatsComponent not found');
-		}
-		return this._nats;
-	}
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	addServices(packageRoot: any, serverType: string) {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		for (const k in packageRoot.nested) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-			const clazz = packageRoot.nested[k];
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-			const constructor = clazz.constructor as unknown as { className: string };
-			if (constructor.className !== 'Service') continue;
-			const serviceClazz = clazz as Service;
-			const extra = {
-				serverType: serverType,
-				serverId: 0,
-				publish: false,
-			};
-			const service = serviceClazz.create(
-				this.rpcImpl.bind(this, extra),
-				false,
-				false,
-			);
-			const proxy = new Proxy();
-			proxy.service = service;
-			for (const key in serviceClazz.methods) {
-				const methodName = key.charAt(0).toLowerCase() + key.slice(1);
-				Object.defineProperty(proxy, methodName, {
-					value: function (
-						request: unknown,
-						callback?: (err: Error | null, res?: unknown) => void,
-					) {
-						const self = this as Proxy;
-						extra.serverId = self.serverId;
-
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-						const result = (self.service as any)[methodName](
-							request,
-							callback,
-						) as unknown;
-						self.serverId = 0;
-						return result;
-					},
-				});
-			}
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-			this.map.set(clazz.name, proxy);
-		}
-	}
-
-	getService<T>(constructor: Constructor<T>): RemoteProxy<T> {
-		return this.map.get(constructor.name) as RemoteProxy<T>;
-	}
+    get nats() {
+        if (!this._nats) {
+            this._nats = this.server.getComponent(NatsComponent);
+            if (!this._nats) throw new Error('NatsComponent not found');
+        }
+        return this._nats;
+    }
 }
-
-class Proxy {
-	service!: rpc.Service;
-	serverId = 0;
-	to(svId: number) {
-		this.serverId = svId;
-		return this;
-	}
-}
-
-type RemoteProxy<F> = {
-	[P in keyof F]: F[P];
-} & {
-	to(svId: number): RemoteProxy<F>;
-};
