@@ -14,7 +14,8 @@
                 "${workspaceRoot}/node_modules/.bin/jest",
                 "--runInBand",
                 "--coverage",
-                "false"
+                "false",
+                "tests/fileload/fileloader.test.ts"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"

@@ -3,7 +3,6 @@
 import * as path from 'node:path';
 import * as fs from 'fs/promises';
 import { existsSync } from 'node:fs';
-import { addRpcCall } from '../rpc/RpcUtils.mjs';
 import { logErr } from '../logger/Logger.mjs';
 
 /**
@@ -40,7 +39,7 @@ export async function loadHandlersAndRemotes(entryPath: string) {
                 for (const fileName of list) {
                     if (!fileName.endsWith('.mjs') && !fileName.endsWith('.mts')) continue;
                     promises.push(
-                        import(path.join(remoteDir, fileName)).then((m) => {
+                        import(path.join(remoteDir, fileName)) /*.then((m) => {
                             for (const className in m) {
                                 const prototype = m[className].prototype;
                                 const propNames = Object.getOwnPropertyNames(prototype);
@@ -52,7 +51,7 @@ export async function loadHandlersAndRemotes(entryPath: string) {
                                     }
                                 }
                             }
-                        })
+                        })*/
                     );
                 }
                 return Promise.all(promises);

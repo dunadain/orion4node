@@ -9,7 +9,7 @@ import type { Root } from 'protobufjs';
 import { RpcServerBase } from '../../src/rpc/RpcServerBase.mjs';
 import { fileURLToPath } from 'node:url';
 import * as path from 'node:path';
-import { loadHandlersAndRemotes } from '../../src/index.mjs';
+import { loadHandlersAndRemotes, rpcUtils } from '../../src/index.mjs';
 
 let server: Server;
 let server2: Server;
@@ -96,14 +96,14 @@ describe('rpc tests', () => {
         if (!nats) return;
         const mockPub = jest.spyOn(nats, 'publish');
         const mockReq = jest.spyOn(nats, 'request');
-        // const mockCallRpc = jest.spyOn(rpc, 'callRpc');
+        const mockCallRpc = jest.spyOn(rpcUtils, 'callRpc');
         client.getService(root.Greeter).bar({});
         expect(mockPub).toBeCalledTimes(1);
         expect(mockReq).not.toBeCalled();
         return new Promise<void>((resolve) => {
             setTimeout(() => {
-                // expect(mockCallRpc).toBeCalledTimes(1);
-                // expect(mockCallRpc.mock.results[0].value).resolves.toEqual({});
+                expect(mockCallRpc).toBeCalledTimes(1);
+                expect(mockCallRpc.mock.results[0].value).resolves.toEqual({});
                 resolve();
             }, 100);
         });

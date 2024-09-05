@@ -2,9 +2,9 @@ import { describe, expect, it } from '@jest/globals';
 import { Server } from '../../src/server/Server.mjs';
 import * as path from 'node:path';
 import { Proto } from '../utils/Proto.mjs';
-import { callRpc } from '../../src/rpc/RpcUtils.mjs';
 import { fileURLToPath } from 'node:url';
-import { loadHandlersAndRemotes, routerUtils } from '../../src/index.mjs';
+import { loadHandlersAndRemotes, routerUtils, rpcUtils } from '../../src/index.mjs';
+import root from '../utils/protores/bundle.cjs';
 
 describe('load handlers and rpc', () => {
     it('should not throw err', async () => {
@@ -16,8 +16,16 @@ describe('load handlers and rpc', () => {
         const m = await import(path.join(__dirname, 'handler', 'TestHandler'));
         expect(m.TestHandler.prototype.handle).not.toBeUndefined();
 
-        await expect(callRpc('Greeter.sayHello', { name: 'world' })).resolves.toEqual({ message: 'Hello, world' });
-        await expect(callRpc('Greeter.speak', { name: 'world' })).rejects.toThrowError();
+        let msg = root.HelloRequest.create({ name: 'world' });
+        let buf = root.HelloRequest.encode(msg).finish();
+        await expect(
+            rpcUtils.callRpc('Greeter.SayHello', buf).then((data) => {
+                return root.HelloReply.decode(data);
+            })
+        ).resolves.toEqual({
+            message: 'Hello, world',
+        });
+        await expect(rpcUtils.callRpc('Greeter.Speak', { name: 'world' })).rejects.toThrowError();
 
         await expect(
             routerUtils.handle(
