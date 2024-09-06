@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package test;
 
-import "test/sam.proto";
+import "greeter.proto";
 
 message DefenseRequest {
-    HelloFrodo request = 1;
+    HelloRequest request = 1;
 }
