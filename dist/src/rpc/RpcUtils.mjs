@@ -26,7 +26,6 @@ export async function callRpc(protoStr, param) {
 const rpcProtoMap = new Map();
 export function serveRpc(rpcProto, reqType, resType) {
     return function (target, propertyKey, descriptor) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         // routeFunctions.set(protoId, descriptor.value);
         rpcProtoMap.set(rpcProto, {
             reqType: reqType,
