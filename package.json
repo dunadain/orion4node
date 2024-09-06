@@ -1,7 +1,6 @@
 {
     "name": "orion4node",
     "version": "1.0.3",
-    "type": "module",
     "description": "node game server framework",
     "main": "./dist/src/index.mjs",
     "scripts": {

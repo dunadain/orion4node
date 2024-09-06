@@ -29,10 +29,10 @@
   "exclude": [
     "./dist/**/*.*",
     "node_modules",
-    "jest.config.js",
+    "jest.config.mjs",
   ],
   "include": [
     "./src/**/*",
-    "./tests/**/*"
+    "./tests/**/*.mts"
   ]
 }

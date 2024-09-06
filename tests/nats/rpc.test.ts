@@ -4,7 +4,7 @@ import { NatsComponent } from '../../src/nats/NatsComponent.mjs';
 import { RpcClient } from '../../src/rpc/RpcClient.mjs';
 import { StatelessRpcServer } from '../../src/rpc/StatelessRpcServer.mjs';
 import { StatefulRpcServer } from '../../src/rpc/StatefulRpcServer.mjs';
-import root from '../utils/protores/bundle.cjs';
+import root from '../utils/protores/bundle.js';
 import { RpcServerBase } from '../../src/rpc/RpcServerBase.mjs';
 import { fileURLToPath } from 'node:url';
 import * as path from 'node:path';

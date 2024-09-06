@@ -4,7 +4,7 @@ import * as path from 'node:path';
 import { Proto } from '../utils/Proto.mjs';
 import { fileURLToPath } from 'node:url';
 import { loadHandlersAndRemotes, routerUtils, rpcUtils } from '../../src/index.mjs';
-import root from '../utils/protores/bundle.cjs';
+import root from '../utils/protores/bundle.js';
 
 describe('load handlers and rpc', () => {
     it('should not throw err', async () => {

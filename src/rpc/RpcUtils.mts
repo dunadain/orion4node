@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { Constructor } from '../index.mjs';
 
 class RpcUtils {
@@ -32,7 +33,6 @@ const rpcProtoMap = new Map<
 
 export function serveRpc<T1, T2>(rpcProto: string, reqType: Constructor<T1>, resType: Constructor<T2>) {
     return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         // routeFunctions.set(protoId, descriptor.value);
         rpcProtoMap.set(rpcProto, {
             reqType: reqType,
