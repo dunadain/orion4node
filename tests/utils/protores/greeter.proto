@@ -1,11 +1,6 @@
-// greeter.proto
-import "google/protobuf/empty.proto";
 syntax = "proto3";
 
-service Greeter {
-    rpc SayHello (HelloRequest) returns (HelloReply) {}
-    rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);
-}
+package test;
 
 message HelloRequest {
     string name = 1;
@@ -15,9 +10,7 @@ message HelloReply {
     string message = 1;
 }
 
-service Attacker {
-    rpc Attack (AttackRequest) returns (AttackReply) {}
-}
+
 
 message AttackRequest {
     string name = 1;

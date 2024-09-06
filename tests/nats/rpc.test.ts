@@ -4,11 +4,11 @@ import { NatsComponent } from '../../src/nats/NatsComponent.mjs';
 import { RpcClient } from '../../src/rpc/RpcClient.mjs';
 import { StatelessRpcServer } from '../../src/rpc/StatelessRpcServer.mjs';
 import { StatefulRpcServer } from '../../src/rpc/StatefulRpcServer.mjs';
-import root from '../utils/protores/bundle.cjs';
 import { RpcServerBase } from '../../src/rpc/RpcServerBase.mjs';
 import { fileURLToPath } from 'node:url';
 import * as path from 'node:path';
 import { loadHandlersAndRemotes } from '../../src/index.mjs';
+import { HelloReply, HelloRequest } from '../utils/protores/greeter.mjs';
 
 let server: Server;
 let server2: Server;
@@ -59,16 +59,12 @@ describe('rpc tests', () => {
         if (!client) return;
         const mockP = jest.spyOn(RpcServerBase.prototype as any, 'process');
         await expect(
-            client
-                .createRpcCall('Greeter.SayHello', root.HelloRequest, root.HelloReply, 'game')
-                .request({ name: 'world' })
+            client.createRpcCall('Greeter.SayHello', HelloRequest, HelloReply, 'game').request({ name: 'world' })
         ).resolves.toEqual({ message: 'Hello, world' });
 
         expect(mockP).toBeCalledTimes(1);
         await expect(
-            client
-                .createRpcCall('Greeter.SayHello', root.HelloRequest, root.HelloReply, 'game')
-                .request({ name: 'world' })
+            client.createRpcCall('Greeter.SayHello', HelloRequest, HelloReply, 'game').request({ name: 'world' })
         ).resolves.toEqual({ message: 'Hello, world' });
         expect(mockP).toBeCalledTimes(2);
     });
@@ -82,7 +78,7 @@ describe('rpc tests', () => {
         (server3.getComponent(StatefulRpcServer) as any).process = mockP2;
         await expect(
             client
-                .createRpcCall('Greeter.SayHello', root.HelloRequest, root.HelloReply, 'game')
+                .createRpcCall('Greeter.SayHello', HelloRequest, HelloReply, 'game')
                 .to(id2)
                 .request({ name: 'world' })
         ).resolves.toEqual({ message: 'Hello, world' });
@@ -118,7 +114,7 @@ describe('rpc tests', () => {
         jest.spyOn(nats, 'tryRequest').mockRejectedValue(new Error('timeout'));
         await expect(
             client
-                .createRpcCall('Greeter.SayHello', root.HelloRequest, root.HelloReply, 'game')
+                .createRpcCall('Greeter.SayHello', HelloRequest, HelloReply, 'game')
                 .to(id2)
                 .request({ name: 'world' })
         ).rejects.toThrow('timeout');

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Component } from '../component/Component.mjs';
 import type { Constructor } from '../index.mjs';
 import { NatsComponent } from '../nats/NatsComponent.mjs';
@@ -21,10 +22,7 @@ class RpcRequest<T1, T2> {
     }
 
     async request(requestData: unknown) {
-        /* eslint-disable */
         const reqType = this.reqType as any;
-        const err = reqType.verify(requestData);
-        if (err) throw new Error(err);
         const bytes = reqType.encode(reqType.create(requestData)).finish();
         const subject = `rpc.${this.serverId ? String(this.serverId) : this.serverType}.${this.rpcProto}`;
         const res = await this.nats?.tryRequest(subject, bytes, { timeout: 1000 });
@@ -38,7 +36,7 @@ export class RpcClient extends Component {
 
     private empty = new Uint8Array(0);
 
-    createRpcCall<T1, T2>(rpcProto: string, reqType: Constructor<T1>, resType: Constructor<T2>, serverType: string) {
+    createRpcCall<T1, T2>(rpcProto: string, reqType: any, resType: any, serverType: string) {
         const rpcRequest = new RpcRequest<T1, T2>();
         rpcRequest.rpcProto = rpcProto;
         rpcRequest.reqType = reqType;
