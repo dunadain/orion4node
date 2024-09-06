@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { MsgBodyDecoder, MsgBodyEncoder } from '../interfaces/defines.mjs';
 import { isUpperCase } from './RouterUtils.mjs';
@@ -50,7 +50,7 @@ export const protoMgr = new ProtocolMgr();
 export function register(clazz: any) {
     for (const k in clazz) {
         if (typeof clazz[k] === 'number') {
-            const id = clazz[k];
+            const id = clazz[k] as number;
             if (id2Server.has(id)) throw new Error(`protocol id:${String(id)} is duplicated!`);
             id2Server.set(id, getServer(k));
         }

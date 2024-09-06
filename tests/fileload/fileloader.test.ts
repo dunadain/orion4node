@@ -4,7 +4,7 @@ import * as path from 'node:path';
 import { Proto } from '../utils/Proto.mjs';
 import { fileURLToPath } from 'node:url';
 import { loadHandlersAndRemotes, routerUtils, rpcUtils } from '../../src/index.mjs';
-import { HelloReply, HelloRequest } from '../utils/protores/greeter.mjs';
+import root from '../utils/protores/bundle.cjs';
 
 describe('load handlers and rpc', () => {
     it('should not throw err', async () => {
@@ -16,11 +16,11 @@ describe('load handlers and rpc', () => {
         const m = await import(path.join(__dirname, 'handler', 'TestHandler'));
         expect(m.TestHandler.prototype.handle).not.toBeUndefined();
 
-        let msg = HelloRequest.create({ name: 'world' });
-        let buf = HelloRequest.encode(msg).finish();
+        let msg = root.HelloRequest.create({ name: 'world' });
+        let buf = root.HelloRequest.encode(msg).finish();
         await expect(
             rpcUtils.callRpc('Greeter.SayHello', buf).then((data) => {
-                return HelloReply.decode(data);
+                return root.HelloReply.decode(data);
             })
         ).resolves.toEqual({
             message: 'Hello, world',

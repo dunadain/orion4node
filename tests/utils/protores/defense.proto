@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package test;
-
-import "greeter.proto";
-
-message DefenseRequest {
-    HelloRequest request = 1;
-}
