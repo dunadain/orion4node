@@ -7,6 +7,7 @@ describe('test router pack encode decode', () => {
         const session: Context = {
             clientId: 2343,
             uid: '@#$kl4h23$#S',
+            roleid: '12j398123joierwer',
             sId: 33,
             reqId: 234,
             protoId: 23,
@@ -25,6 +26,7 @@ describe('test router pack encode decode', () => {
         const session: Context = {
             clientId: 2343,
             uid: '@#$kl4h23$#S',
+            roleid: '12j398123joierwer',
             sId: 33,
             reqId: 234,
             protoId: 23,

@@ -12,6 +12,7 @@ import { EventEmitter } from 'node:events';
 export class UWebSocketClient implements SocketClient<WebSocket<unknown>> {
     id = 0;
     uid = '';
+    roleid = '';
     socket!: WebSocket<unknown>;
     state = ClientState.Default;
 

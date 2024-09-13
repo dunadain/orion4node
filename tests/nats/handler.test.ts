@@ -217,6 +217,7 @@ describe('communication', () => {
                     protoId: Proto.PushToClient,
                     sId: id1,
                     uid: '',
+                    roleid: '',
                     reqId: 0,
                 },
                 { name: 'Hello Game' }

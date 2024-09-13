@@ -15,6 +15,10 @@ export interface Context {
      */
     uid: string;
     /**
+     * role id
+     */
+    roleid: string;
+    /**
      * server id
      */
     sId: number;

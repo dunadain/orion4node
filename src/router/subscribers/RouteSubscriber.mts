@@ -21,6 +21,7 @@ export abstract class RouteSubscriber extends SubscriberBase {
                                 clientId: data.context.clientId,
                                 protoId: data.context.protoId,
                                 uid: '',
+                                roleid: '',
                                 sId: this.server.uuid,
                                 reqId: data.context.reqId,
                             },
