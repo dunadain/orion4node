@@ -10,6 +10,7 @@ export class UWebSocketClient {
     serverEventEmitter;
     id = 0;
     uid = '';
+    roleid = '';
     socket;
     state = ClientState.Default;
     buffer = [];

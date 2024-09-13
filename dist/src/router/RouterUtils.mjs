@@ -2,7 +2,8 @@ import { Server } from '../server/Server.mjs';
 import { copyArray } from '../transport/protocol/utils.mjs';
 export function encodeRouterPack(contextInfo, body) {
     const uidBuf = Buffer.from(contextInfo.uid);
-    const buf = Buffer.alloc(12 + uidBuf.length + (body ? body.length : 0));
+    const roleidBuf = Buffer.from(contextInfo.roleid);
+    const buf = Buffer.alloc(13 + uidBuf.length + roleidBuf.length + (body ? body.length : 0));
     let offset = 0;
     buf.writeUInt32BE(contextInfo.clientId);
     offset += 4;
@@ -14,6 +15,10 @@ export function encodeRouterPack(contextInfo, body) {
     offset += 1;
     copyArray(buf, offset, uidBuf, 0, uidBuf.length);
     offset += uidBuf.length;
+    buf.writeUInt8(roleidBuf.length, offset);
+    offset += 1;
+    copyArray(buf, offset, roleidBuf, 0, roleidBuf.length);
+    offset += roleidBuf.length;
     buf.writeUInt32BE(contextInfo.sId, offset);
     offset += 4;
     if (body) {
@@ -27,9 +32,10 @@ export function decodeRouterPack(buffer) {
         protoId: buffer.readUInt16BE(4),
         reqId: buffer.readUInt8(6),
         uid: buffer.toString('utf8', 8, 8 + buffer.readUInt8(7)),
-        sId: buffer.readUInt32BE(8 + buffer.readUInt8(7)),
+        roleid: buffer.toString('utf8', 9 + buffer.readUInt8(7), 9 + buffer.readUInt8(7) + buffer.readUInt8(8 + buffer.readUInt8(7))),
+        sId: buffer.readUInt32BE(9 + buffer.readUInt8(7) + buffer.readUInt8(8 + buffer.readUInt8(7))),
     };
-    return { context, body: buffer.subarray(12 + buffer.readUInt8(7)) };
+    return { context, body: buffer.subarray(13 + buffer.readUInt8(7) + buffer.readUInt8(8 + buffer.readUInt8(7))) };
 }
 export function isUpperCase(char) {
     return char === char.toUpperCase();

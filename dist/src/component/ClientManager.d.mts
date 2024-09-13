@@ -10,7 +10,7 @@ export declare class ClientManager extends Component {
      * remove client by its session id or native socket
      * @param key session id(number) or native socket
      */
-    removeClient<T>(key: T): void;
+    removeClient(key: unknown): void;
     private clear;
     /**
      * get client by native socket
@@ -29,7 +29,7 @@ export declare class ClientManager extends Component {
      * @param id
      * @param uid
      */
-    bind(id: number, uid: string): void;
+    bind(id: number, uid: string, roleid: string): void;
     hasClientFor(uid: string): boolean;
     getSessionId(uid: string): number;
 }

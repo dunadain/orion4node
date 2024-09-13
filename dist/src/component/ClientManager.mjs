@@ -63,7 +63,7 @@ export class ClientManager extends Component {
      * @param id
      * @param uid
      */
-    bind(id, uid) {
+    bind(id, uid, roleid) {
         const client = this.id2Client.get(id);
         if (!client)
             return;
@@ -73,6 +73,7 @@ export class ClientManager extends Component {
         }
         if (uid) {
             client.uid = uid;
+            client.roleid = roleid;
             this.bindedClientMap.set(uid, id);
         }
     }

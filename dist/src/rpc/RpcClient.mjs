@@ -23,6 +23,8 @@ class RpcRequest {
         if (err)
             throw new Error(err);
         const bytes = reqType.encode(reqType.create(requestData)).finish();
+        // rpc.servertype/serverid.rpcProto
+        // example: rpc.gate.Greeter.SayHello
         const subject = `rpc.${this.serverId ? String(this.serverId) : this.serverType}.${this.rpcProto}`;
         const res = await this.nats?.tryRequest(subject, bytes, { timeout: 1000 });
         const resType = this.resType;

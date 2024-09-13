@@ -9,6 +9,7 @@ export declare class UWebSocketClient implements SocketClient<WebSocket<unknown>
     readonly serverEventEmitter: EventEmitter;
     id: number;
     uid: string;
+    roleid: string;
     socket: WebSocket<unknown>;
     state: ClientState;
     private buffer;

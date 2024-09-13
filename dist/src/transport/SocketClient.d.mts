@@ -4,6 +4,7 @@ import { MsgType } from './protocol/MsgProcessor.mjs';
 export interface SocketClient<T> {
     id: number;
     uid: string;
+    roleid: string;
     /**
      * native socket
      */

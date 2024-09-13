@@ -13,6 +13,7 @@ export class RouteSubscriber extends SubscriberBase {
                     clientId: data.context.clientId,
                     protoId: data.context.protoId,
                     uid: '',
+                    roleid: '',
                     sId: this.server.uuid,
                     reqId: data.context.reqId,
                 }, result ? protoMgr.encodeMsgBody(result, data.context.protoId) : undefined));
