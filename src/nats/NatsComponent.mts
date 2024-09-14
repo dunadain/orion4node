@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import {
-    type ConnectionOptions,
     DebugEvents,
     ErrorCode,
     Events,
@@ -14,9 +13,6 @@ import {
 } from 'nats';
 import { Component } from '../component/Component.mjs';
 import { logErr, logger } from '../logger/Logger.mjs';
-import * as fs from 'node:fs/promises';
-import { existsSync } from 'node:fs';
-import { configPaths } from '../config/ConfigPaths.mjs';
 
 export class NatsComponent extends Component {
     private _nc: NatsConnection | undefined;
@@ -56,8 +52,11 @@ export class NatsComponent extends Component {
     }
 
     async init() {
-        const connectionOption = await this.getConnectionOption();
-        this._nc = await connect(connectionOption);
+        const servers = process.env.NATS_URL ?? 'nats://localhost:4222';
+
+        this._nc = await connect({
+            servers: servers.split(','),
+        });
         logger.info(`${this.server.name} is connected to nats`);
         this.setupListeners().catch((reason: unknown) => {
             logErr(reason);
@@ -106,20 +105,8 @@ export class NatsComponent extends Component {
         }
     }
 
-    private async getConnectionOption() {
-        const natsConfigPath = configPaths.nats;
-        let exists = false;
-        if (natsConfigPath) exists = existsSync(natsConfigPath);
-        return exists ? (JSON.parse(await fs.readFile(natsConfigPath, 'utf8')) as ConnectionOptions) : undefined;
-    }
-
     async dispose() {
         if (!this._nc) return;
         await this._nc.drain();
     }
-}
-
-export function natsOptionGetter(target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    Object.defineProperty(NatsComponent.prototype, 'getConnectionOption', { value: descriptor.value });
 }
