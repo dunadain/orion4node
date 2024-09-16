@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { MsgBodyDecoder, MsgBodyEncoder } from '../interfaces/defines.mjs';
 import { isUpperCase } from './RouterUtils.mjs';
@@ -17,6 +17,10 @@ class ProtocolMgr {
             return JSON.parse(buf.toString()) as unknown;
         },
     };
+
+    /**
+     * @deprecated
+     */
     async getHandlerSubject(protocolId: number, uid: string) {
         if (!id2Server.has(protocolId)) return '';
         const serverType = id2Server.get(protocolId);
@@ -47,9 +51,13 @@ class ProtocolMgr {
 
 export const protoMgr = new ProtocolMgr();
 
+/**
+ * @deprecated
+ */
 export function register(clazz: any) {
     for (const k in clazz) {
         if (typeof clazz[k] === 'number') {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
             const id = clazz[k] as number;
             if (id2Server.has(id)) throw new Error(`protocol id:${String(id)} is duplicated!`);
             id2Server.set(id, getServer(k));
