@@ -41,10 +41,17 @@ export function isUpperCase(char) {
     return char === char.toUpperCase();
 }
 const routeFunctions = new Map();
+const httpHandlers = new Map();
 export function protocol(protoId) {
     return function (target, propertyKey, descriptor) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         routeFunctions.set(protoId, descriptor.value);
+    };
+}
+export function httpProto(protoId) {
+    return function (target, propertyKey, descriptor) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        httpHandlers.set(protoId, descriptor.value);
     };
 }
 class RouterUtils {
@@ -53,6 +60,12 @@ class RouterUtils {
         if (!func)
             throw new Error(`no handler for protocol:${context.protoId.toString()}`);
         return await func.call(null, context, data, server);
+    }
+    async handleHttp(protoId, data) {
+        const func = httpHandlers.get(protoId);
+        if (!func)
+            throw new Error(`no handler for protocol:${protoId.toString()}`);
+        return await func.call(null, data);
     }
 }
 export const routerUtils = new RouterUtils();

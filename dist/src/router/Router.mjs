@@ -18,6 +18,7 @@ export class Router extends Component {
             const msg = data.msg;
             const client = data.client;
             (async () => {
+                // eslint-disable-next-line @typescript-eslint/no-deprecated
                 const subject = await protoMgr.getHandlerSubject(msg.protoId, client.uid);
                 if (!subject)
                     return;

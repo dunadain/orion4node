@@ -13,7 +13,5 @@ export declare class NatsComponent extends Component {
     publish(subject: string, payload?: Payload, options?: PublishOptions): void;
     init(): Promise<void>;
     private setupListeners;
-    private getConnectionOption;
     dispose(): Promise<void>;
 }
-export declare function natsOptionGetter(target: unknown, propertyKey: string, descriptor: PropertyDescriptor): void;

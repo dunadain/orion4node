@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { isUpperCase } from './RouterUtils.mjs';
 import { serverSelector } from './ServerSelector.mjs';
 const id2Server = new Map();
@@ -12,6 +13,9 @@ class ProtocolMgr {
             return JSON.parse(buf.toString());
         },
     };
+    /**
+     * @deprecated
+     */
     async getHandlerSubject(protocolId, uid) {
         if (!id2Server.has(protocolId))
             return '';
@@ -38,9 +42,13 @@ class ProtocolMgr {
     }
 }
 export const protoMgr = new ProtocolMgr();
+/**
+ * @deprecated
+ */
 export function register(clazz) {
     for (const k in clazz) {
         if (typeof clazz[k] === 'number') {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
             const id = clazz[k];
             if (id2Server.has(id))
                 throw new Error(`protocol id:${String(id)} is duplicated!`);
