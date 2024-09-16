@@ -51,10 +51,19 @@ export function isUpperCase(char: string) {
 
 const routeFunctions = new Map<number, (context: Context, data: unknown, server: Server) => Promise<unknown>>();
 
+const httpHandlers = new Map<number, (data: unknown) => Promise<unknown>>();
+
 export function protocol(protoId: number) {
     return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         routeFunctions.set(protoId, descriptor.value);
+    };
+}
+
+export function httpProto(protoId: number) {
+    return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        httpHandlers.set(protoId, descriptor.value);
     };
 }
 
@@ -63,6 +72,12 @@ class RouterUtils {
         const func = routeFunctions.get(context.protoId);
         if (!func) throw new Error(`no handler for protocol:${context.protoId.toString()}`);
         return await func.call(null, context, data, server);
+    }
+
+    async handleHttp(protoId: number, data: unknown) {
+        const func = httpHandlers.get(protoId);
+        if (!func) throw new Error(`no handler for protocol:${protoId.toString()}`);
+        return await func.call(null, data);
     }
 }
 

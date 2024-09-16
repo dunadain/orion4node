@@ -1,4 +1,4 @@
-import { App } from 'uWebSockets.js';
+import { App, type TemplatedApp } from 'uWebSockets.js';
 import { Component } from '../../component/Component.mjs';
 import { logger } from '../../index.mjs';
 
@@ -8,6 +8,8 @@ export class HttpServer extends Component {
     public sslCertPath = '';
     public sslKeyPath = '';
 
+    private app: TemplatedApp | undefined;
+
     async init() {
         const host = this.addr ? this.addr : 'localhost';
         const app = App({
@@ -16,6 +18,7 @@ export class HttpServer extends Component {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             cert_file_name: this.sslCertPath,
         });
+        this.app = app;
 
         app.post('/*', (res) => {
             const buffer: Buffer[] = [];
@@ -24,8 +27,7 @@ export class HttpServer extends Component {
                 buffer.push(Buffer.from(chunk));
                 if (isLast) {
                     const data = Buffer.concat(buffer);
-                    logger.debug(`Received data: ${data.toString()}`);
-                    res.end('Binary data received');
+                    this.server.eventEmitter.emit('httpmessage', { res, data });
                 }
             });
 
@@ -41,5 +43,9 @@ export class HttpServer extends Component {
                 logger.error(`Failed to listen to ${this.addr + ':' + this.port.toString()}`);
             }
         });
+    }
+
+    async dispose() {
+        this.app?.close();
     }
 }
