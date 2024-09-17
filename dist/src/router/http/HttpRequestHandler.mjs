@@ -10,10 +10,11 @@ export class HttpRequestHandler extends Component {
             routerUtils
                 .handleHttp(protoId, decodedData)
                 .then((responseData) => {
-                msg.res.writeHeader('Content-Type', 'application/octet-stream');
+                const res = msg.res;
+                res.writeHeader('Content-Type', 'application/octet-stream');
                 const response = protoMgr.encodeMsgBody(responseData, protoId);
-                msg.res.write(response);
-                msg.res.end();
+                res.write(response);
+                res.end();
             })
                 .catch((e) => {
                 logErr(e);
