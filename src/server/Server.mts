@@ -6,6 +6,11 @@ import { initLogger, logErr, logger } from '../logger/Logger.mjs';
 export class Server {
     readonly eventEmitter = new EventEmitter();
     private components = new Map<new () => Component, Component>();
+    /**
+     *
+     * @param serverType
+     * @param uuid 必须外面传进来不能自己生成，因为当你选服时候的uuid只能外面生成
+     */
     constructor(public readonly serverType: string, public readonly uuid: number) {
         initLogger(this.name);
     }
