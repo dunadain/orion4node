@@ -51,7 +51,7 @@ export function isUpperCase(char: string) {
 
 const routeFunctions = new Map<number, (context: Context, data: unknown, server: Server) => Promise<unknown>>();
 
-const httpHandlers = new Map<number, (data: unknown) => Promise<unknown>>();
+const httpHandlers = new Map<number, (data: unknown, server: Server) => Promise<unknown>>();
 
 export function protocol(protoId: number) {
     return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
@@ -74,10 +74,10 @@ class RouterUtils {
         return await func.call(null, context, data, server);
     }
 
-    async handleHttp(protoId: number, data: unknown) {
+    async handleHttp(protoId: number, data: unknown, server: Server) {
         const func = httpHandlers.get(protoId);
         if (!func) throw new Error(`no handler for protocol:${protoId.toString()}`);
-        return await func.call(null, data);
+        return await func.call(null, data, server);
     }
 }
 
