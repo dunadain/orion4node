@@ -61,11 +61,11 @@ class RouterUtils {
             throw new Error(`no handler for protocol:${context.protoId.toString()}`);
         return await func.call(null, context, data, server);
     }
-    async handleHttp(protoId, data) {
+    async handleHttp(protoId, data, server) {
         const func = httpHandlers.get(protoId);
         if (!func)
             throw new Error(`no handler for protocol:${protoId.toString()}`);
-        return await func.call(null, data);
+        return await func.call(null, data, server);
     }
 }
 export const routerUtils = new RouterUtils();

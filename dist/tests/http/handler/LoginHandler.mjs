@@ -10,13 +10,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { httpProto } from '../../../src/index.mjs';
 import { HttpProto } from '../http-proto.mjs';
 export class LoginHandler {
-    async login(data) {
+    async login(data, server) {
         return { name: 'Hello Login ' + data.name };
     }
 }
 __decorate([
     httpProto(HttpProto.Login),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], LoginHandler.prototype, "login", null);

@@ -1,5 +1,5 @@
 export declare class LoginHandler {
-    login(data: any): Promise<{
+    login(data: any, server: any): Promise<{
         name: string;
     }>;
 }

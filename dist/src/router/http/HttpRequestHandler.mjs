@@ -8,7 +8,7 @@ export class HttpRequestHandler extends Component {
             const protoId = msg.data.readUint16BE();
             const decodedData = protoMgr.decodeMsgBody(msg.data.subarray(2), protoId);
             routerUtils
-                .handleHttp(protoId, decodedData)
+                .handleHttp(protoId, decodedData, this.server)
                 .then((responseData) => {
                 const res = msg.res;
                 res.writeHeader('Content-Type', 'application/octet-stream');
