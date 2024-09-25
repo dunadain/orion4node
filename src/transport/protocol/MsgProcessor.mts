@@ -35,9 +35,7 @@ export function encode(id: number, type: MsgType, route: number, msg?: Buffer) {
     const idBytes = msgHasId(type) ? 1 : 0;
     let msgLen = MSG_FLAG_BYTES + idBytes;
 
-    if (msgHasRoute(type)) {
-        msgLen += MSG_ROUTE_CODE_BYTES;
-    }
+    msgLen += MSG_ROUTE_CODE_BYTES;
 
     if (msg) {
         msgLen += msg.length;
@@ -57,10 +55,8 @@ export function encode(id: number, type: MsgType, route: number, msg?: Buffer) {
     }
 
     // add route
-    if (msgHasRoute(type)) {
-        buffer.writeUInt16BE(route, offset);
-        offset += MSG_ROUTE_CODE_BYTES;
-    }
+    buffer.writeUInt16BE(route, offset);
+    offset += MSG_ROUTE_CODE_BYTES;
 
     // add body
     if (msg) {
@@ -87,11 +83,8 @@ export function decode(buffer: Buffer) {
         offset += 1;
     }
 
-    let route = 0;
-    if (msgHasRoute(msgType)) {
-        route = buffer.readUint16BE(offset);
-        offset += MSG_ROUTE_CODE_BYTES;
-    }
+    const route = buffer.readUint16BE(offset);
+    offset += MSG_ROUTE_CODE_BYTES;
 
     const bodyLen = bytesLen - offset;
     const body = Buffer.alloc(bodyLen);
@@ -109,9 +102,9 @@ function msgHasId(type: MsgType) {
     return type === MsgType.REQUEST || type === MsgType.RESPONSE;
 }
 
-function msgHasRoute(type: MsgType) {
-    return type === MsgType.REQUEST || type === MsgType.NOTIFY || type === MsgType.PUSH;
-}
+// function msgHasRoute(type: MsgType) {
+//     return type === MsgType.REQUEST || type === MsgType.NOTIFY || type === MsgType.PUSH;
+// }
 
 // function caculateMsgIdBytes(id: number) {
 //     let len = 0;
