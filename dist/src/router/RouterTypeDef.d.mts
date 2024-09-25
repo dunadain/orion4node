@@ -19,9 +19,9 @@ export interface Context {
      */
     roleid: string;
     /**
-     * server id
+     * server uuid
      */
-    sId: number;
+    sUuid: string;
     /**
      * request id
      */

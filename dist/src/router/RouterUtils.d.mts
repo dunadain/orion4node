@@ -3,7 +3,14 @@ import { Server } from '../server/Server.mjs';
 import type { Context } from './RouterTypeDef.mjs';
 export declare function encodeRouterPack(contextInfo: Context, body?: Buffer): Buffer;
 export declare function decodeRouterPack(buffer: Buffer): {
-    context: Context;
+    context: {
+        clientId: number;
+        protoId: number;
+        uid: string;
+        roleid: string;
+        sUuid: string;
+        reqId: number;
+    };
     body: Buffer;
 };
 export declare function isUpperCase(char: string): boolean;

@@ -15,7 +15,7 @@ export class PushSender extends Component {
      */
     send(context, msg) {
         const buf = encodeRouterPack(context, msg ? protoMgr.encodeMsgBody(msg, context.protoId) : undefined);
-        this.nc.publish(`${context.sId.toString()}.push`, buf);
+        this.nc.publish(`${context.sUuid.toString()}.push`, buf);
     }
     get nc() {
         if (!this._nc) {

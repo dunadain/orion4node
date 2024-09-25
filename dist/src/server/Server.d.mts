@@ -4,7 +4,7 @@ import type { ComponentConstructor } from '../interfaces/defines.mjs';
 import type { Component } from '../component/Component.mjs';
 export declare class Server {
     readonly serverType: string;
-    readonly uuid: number;
+    readonly uuid: string;
     readonly eventEmitter: EventEmitter<[never]>;
     private components;
     /**
@@ -12,7 +12,7 @@ export declare class Server {
      * @param serverType
      * @param uuid 必须外面传进来不能自己生成，因为当你选服时候的uuid只能外面生成
      */
-    constructor(serverType: string, uuid: number);
+    constructor(serverType: string, uuid: string);
     get name(): string;
     /**
      * get component

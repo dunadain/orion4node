@@ -27,7 +27,7 @@ export class Router extends Component {
                     protoId: msg.protoId,
                     uid: client.uid,
                     roleid: client.roleid,
-                    sId: this.server.uuid,
+                    sUuid: this.server.uuid,
                     reqId: msg.id,
                 }, msg.body);
                 switch (msg.type) {

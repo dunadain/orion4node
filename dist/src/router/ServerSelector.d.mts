@@ -6,13 +6,13 @@ declare class ServerSelector {
      * @param serverType
      * @param route
      */
-    addRoute(serverType: string, route: (uid: string) => Promise<number>): void;
+    addRoute(serverType: string, route: (uid: string) => Promise<string>): void;
     /**
      * return selected serverId
      * @param uid user id
      * @param serverType
      */
-    selectServer(uid: string, serverType: string): Promise<number>;
+    selectServer(uid: string, serverType: string): Promise<string>;
 }
 export declare const serverSelector: ServerSelector;
 export {};
