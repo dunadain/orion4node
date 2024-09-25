@@ -28,9 +28,9 @@ const data = {
 let server: Server;
 let server2: Server;
 let server3: Server;
-const id1 = 1;
-const id2 = 2;
-const id3 = 3;
+const id1 = '1';
+const id2 = '2';
+const id3 = '3';
 beforeAll(async () => {
     server = new Server('connector', id1);
     server.addComponent(UWebSocketTransport);
@@ -215,7 +215,7 @@ describe('communication', () => {
                 {
                     clientId: 1,
                     protoId: Proto.PushToClient,
-                    sId: id1,
+                    sUuid: id1,
                     uid: '',
                     roleid: '',
                     reqId: 0,

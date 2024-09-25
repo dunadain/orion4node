@@ -11,7 +11,7 @@ export class Server {
      * @param serverType
      * @param uuid 必须外面传进来不能自己生成，因为当你选服时候的uuid只能外面生成
      */
-    constructor(public readonly serverType: string, public readonly uuid: number) {
+    constructor(public readonly serverType: string, public readonly uuid: string) {
         initLogger(this.name);
     }
 

@@ -5,7 +5,8 @@ import type { Context } from './RouterTypeDef.mjs';
 export function encodeRouterPack(contextInfo: Context, body?: Buffer) {
     const uidBuf = Buffer.from(contextInfo.uid);
     const roleidBuf = Buffer.from(contextInfo.roleid);
-    const buf = Buffer.alloc(13 + uidBuf.length + roleidBuf.length + (body ? body.length : 0));
+    const uuidBuf = Buffer.from(contextInfo.sUuid);
+    const buf = Buffer.alloc(10 + uidBuf.length + roleidBuf.length + uuidBuf.length + (body ? body.length : 0));
     let offset = 0;
     buf.writeUInt32BE(contextInfo.clientId);
     offset += 4;
@@ -21,8 +22,10 @@ export function encodeRouterPack(contextInfo: Context, body?: Buffer) {
     offset += 1;
     copyArray(buf, offset, roleidBuf, 0, roleidBuf.length);
     offset += roleidBuf.length;
-    buf.writeUInt32BE(contextInfo.sId, offset);
-    offset += 4;
+    buf.writeUInt8(uuidBuf.length, offset);
+    offset += 1;
+    copyArray(buf, offset, uuidBuf, 0, uuidBuf.length);
+    offset += uuidBuf.length;
     if (body) {
         copyArray(buf, offset, body, 0, body.length);
     }
@@ -30,19 +33,37 @@ export function encodeRouterPack(contextInfo: Context, body?: Buffer) {
 }
 
 export function decodeRouterPack(buffer: Buffer) {
-    const context: Context = {
-        clientId: buffer.readUInt32BE(),
-        protoId: buffer.readUInt16BE(4),
-        reqId: buffer.readUInt8(6),
-        uid: buffer.toString('utf8', 8, 8 + buffer.readUInt8(7)),
-        roleid: buffer.toString(
-            'utf8',
-            9 + buffer.readUInt8(7),
-            9 + buffer.readUInt8(7) + buffer.readUInt8(8 + buffer.readUInt8(7))
-        ),
-        sId: buffer.readUInt32BE(9 + buffer.readUInt8(7) + buffer.readUInt8(8 + buffer.readUInt8(7))),
+    let offset = 0;
+    const clientId = buffer.readUInt32BE(offset);
+    offset += 4;
+    const protoId = buffer.readUInt16BE(offset);
+    offset += 2;
+    const reqId = buffer.readUInt8(offset);
+    offset += 1;
+    const uidLen = buffer.readUInt8(offset);
+    offset += 1;
+    const uid = buffer.toString('utf8', offset, offset + uidLen);
+    offset += uidLen;
+    const roleidLen = buffer.readUInt8(offset);
+    offset += 1;
+    const roleid = buffer.toString('utf8', offset, offset + roleidLen);
+    offset += roleidLen;
+    const uuidLen = buffer.readUInt8(offset);
+    offset += 1;
+    const sUuid = buffer.toString('utf8', offset, offset + uuidLen);
+    offset += uuidLen;
+    const body = buffer.subarray(offset);
+    return {
+        context: {
+            clientId,
+            protoId,
+            uid,
+            roleid,
+            sUuid,
+            reqId,
+        },
+        body,
     };
-    return { context, body: buffer.subarray(13 + buffer.readUInt8(7) + buffer.readUInt8(8 + buffer.readUInt8(7))) };
 }
 
 export function isUpperCase(char: string) {

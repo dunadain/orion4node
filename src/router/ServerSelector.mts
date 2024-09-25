@@ -1,5 +1,5 @@
 class ServerSelector {
-    private routes = new Map<string, (uid: string) => Promise<number>>();
+    private routes = new Map<string, (uid: string) => Promise<string>>();
     hasRoute(serverType: string) {
         return this.routes.has(serverType);
     }
@@ -9,7 +9,7 @@ class ServerSelector {
      * @param serverType
      * @param route
      */
-    addRoute(serverType: string, route: (uid: string) => Promise<number>) {
+    addRoute(serverType: string, route: (uid: string) => Promise<string>) {
         this.routes.set(serverType, route);
     }
     /**
