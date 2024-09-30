@@ -31,10 +31,10 @@ export class HttpServer extends Component {
         });
         app.listen(host, this.port, (token) => {
             if (token) {
-                logger.info(`Listening to ${host + ':' + this.port.toString()}`);
+                logger.info(`Http listening to ${host + ':' + this.port.toString()}`);
             }
             else {
-                logger.error(`Failed to listen to ${host + ':' + this.port.toString()}`);
+                logger.error(`Http failed to listen to ${host + ':' + this.port.toString()}`);
             }
         });
     }
