@@ -6,9 +6,12 @@ export function encodeRouterPack(contextInfo: Context, body?: Buffer) {
     const uidBuf = Buffer.from(contextInfo.uid);
     const roleidBuf = Buffer.from(contextInfo.roleid);
     const uuidBuf = Buffer.from(contextInfo.sUuid);
-    const buf = Buffer.alloc(10 + uidBuf.length + roleidBuf.length + uuidBuf.length + (body ? body.length : 0));
+    const len = 10 + uidBuf.length + roleidBuf.length + uuidBuf.length + (body ? body.length : 0);
+    const buf = Buffer.alloc(len + 4);
     let offset = 0;
-    buf.writeUInt32BE(contextInfo.clientId);
+    buf.writeUInt32BE(len, offset);
+    offset += 4;
+    buf.writeUInt32BE(contextInfo.clientId, offset);
     offset += 4;
     buf.writeUInt16BE(contextInfo.protoId, offset);
     offset += 2;
@@ -34,6 +37,9 @@ export function encodeRouterPack(contextInfo: Context, body?: Buffer) {
 
 export function decodeRouterPack(buffer: Buffer) {
     let offset = 0;
+    const len = buffer.readUInt32BE(offset);
+    offset += 4;
+    if (len !== buffer.length - 4) throw new Error('invalid buffer length');
     const clientId = buffer.readUInt32BE(offset);
     offset += 4;
     const protoId = buffer.readUInt16BE(offset);
