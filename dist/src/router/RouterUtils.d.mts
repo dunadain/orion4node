@@ -1,7 +1,7 @@
 /// <reference types="node" resolution-mode="require"/>
 import { Server } from '../server/Server.mjs';
 import type { Context } from './RouterTypeDef.mjs';
-export declare function encodeRouterPack(contextInfo: Context, body?: Buffer): Buffer;
+export declare function encodeRouterPack(contextInfo: Context, body?: Buffer): Uint8Array;
 export declare function decodeRouterPack(buffer: Buffer): {
     context: {
         clientId: number;

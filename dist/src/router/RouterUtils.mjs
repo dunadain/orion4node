@@ -30,7 +30,7 @@ export function encodeRouterPack(contextInfo, body) {
     if (body) {
         copyArray(buf, offset, body, 0, body.length);
     }
-    return buf;
+    return new Uint8Array(buf);
 }
 export function decodeRouterPack(buffer) {
     let offset = 0;
