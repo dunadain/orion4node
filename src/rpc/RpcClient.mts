@@ -3,7 +3,7 @@ import type { Constructor } from '../index.mjs';
 import { NatsComponent } from '../nats/NatsComponent.mjs';
 
 class RpcRequest<T1, T2> {
-    serverId = 0;
+    serverId = '';
     serverType = '';
     rpcProto = '';
     reqType: Constructor<T1> | undefined;
@@ -12,11 +12,11 @@ class RpcRequest<T1, T2> {
 
     /**
      * 向哪个服务器发送
-     * @param svId 服务器id
+     * @param svUuid 服务器uuid
      * @returns
      */
-    to(svId: number) {
-        this.serverId = svId;
+    to(svUuid: string) {
+        this.serverId = svUuid;
         return this;
     }
 
@@ -28,6 +28,9 @@ class RpcRequest<T1, T2> {
         const bytes = reqType.encode(reqType.create(requestData)).finish();
         // rpc.servertype/serverid.rpcProto
         // example: rpc.gate.Greeter.SayHello
+        if (!this.rpcProto) throw new Error('rpcProto is required');
+        if (this.serverType && this.serverId) throw new Error('serverType and serverId cannot be set at the same time');
+        if (!this.serverType && !this.serverId) throw new Error('serverType or serverId must be set');
         const subject = `rpc.${this.serverId ? String(this.serverId) : this.serverType}.${this.rpcProto}`;
         const res = await this.nats?.tryRequest(subject, bytes, { timeout: 1000 });
         const resType = this.resType as any;
