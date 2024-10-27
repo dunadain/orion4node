@@ -2,21 +2,29 @@ import { EventEmitter } from 'node:events';
 import type { ComponentConstructor } from '../interfaces/defines.mjs';
 import type { Component } from '../component/Component.mjs';
 import { initLogger, logErr, logger } from '../logger/Logger.mjs';
+import { v4 as uuidv4 } from 'uuid';
 
 export class Server {
     readonly eventEmitter = new EventEmitter();
     private components = new Map<new () => Component, Component>();
+
+    private _uuid: string;
     /**
      *
      * @param serverType
      * @param uuid 必须外面传进来不能自己生成，因为当你选服时候的uuid只能外面生成
      */
-    constructor(public readonly serverType: string, public readonly uuid: string) {
+    constructor(public readonly serverType: string, uuid?: string) {
+        this._uuid = uuid ?? uuidv4();
         initLogger(this.name);
     }
 
+    get uuid() {
+        return this._uuid;
+    }
+
     get name() {
-        return `${this.serverType}-${String(this.uuid)}`;
+        return `${this.serverType}_${String(this.uuid)}`;
     }
     /**
      * get component
