@@ -22,7 +22,6 @@ class RpcRequest<T1, T2> {
 
     async request(requestData: unknown) {
         if (!this.rpcProto) throw new Error('rpcProto is required');
-        if (this.serverType && this.serverId) throw new Error('serverType and serverId cannot be set at the same time');
         if (!this.serverType && !this.serverId) throw new Error('serverType or serverId must be set');
         /* eslint-disable */
         const reqType = this.reqType as any;

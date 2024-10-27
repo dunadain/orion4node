@@ -13,9 +13,9 @@ import { loadHandlersAndRemotes } from '../../src/index.mjs';
 let server: Server;
 let server2: Server;
 let server3: Server;
-const id1 = 1;
-const id2 = 2;
-const id3 = 3;
+const id1 = '1';
+const id2 = '2';
+const id3 = '3';
 beforeAll(async () => {
     server = new Server('chat', id1);
     server.addComponent(NatsComponent);
