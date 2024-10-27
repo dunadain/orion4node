@@ -1,10 +1,11 @@
 import { EventEmitter } from 'node:events';
 import { initLogger, logErr, logger } from '../logger/Logger.mjs';
+import { v4 as uuidv4 } from 'uuid';
 export class Server {
     serverType;
-    uuid;
     eventEmitter = new EventEmitter();
     components = new Map();
+    _uuid;
     /**
      *
      * @param serverType
@@ -12,11 +13,14 @@ export class Server {
      */
     constructor(serverType, uuid) {
         this.serverType = serverType;
-        this.uuid = uuid;
+        this._uuid = uuid ?? uuidv4();
         initLogger(this.name);
     }
+    get uuid() {
+        return this._uuid;
+    }
     get name() {
-        return `${this.serverType}-${String(this.uuid)}`;
+        return `${this.serverType}_${String(this.uuid)}`;
     }
     /**
      * get component
