@@ -11,10 +11,6 @@ export declare abstract class Component {
      * will be called after init
      */
     start?(): Promise<void>;
-    /**
-     * will be called after start
-     */
-    afterStart?(): Promise<void>;
     dispose?(): Promise<void>;
     getComponent<T extends Component>(classConstructor: ComponentConstructor<T>): T | undefined;
 }
