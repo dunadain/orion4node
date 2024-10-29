@@ -54,6 +54,15 @@ export class Server {
                 logErr(e);
             }
         }
+        for (const pair of this.components) {
+            const comp = pair[1];
+            try {
+                await comp.afterStart?.call(comp);
+            }
+            catch (e) {
+                logErr(e);
+            }
+        }
         process.on('SIGTERM', this.exit);
         process.on('SIGINT', this.exit);
     }
