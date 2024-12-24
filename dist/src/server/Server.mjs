@@ -74,19 +74,17 @@ export class Server {
     async shutdown() {
         process.off('SIGTERM', this.exit);
         process.off('SIGINT', this.exit);
-        const promises = [];
         for (const pair of this.components) {
             const comp = pair[1];
             if (typeof comp.dispose !== 'function')
                 continue;
-            promises.push(comp.dispose.call(comp).catch((e) => {
+            try {
+                await comp.dispose.call(comp);
+            }
+            catch (e) {
                 logErr(e);
-                return Promise.resolve(e);
-            }));
-        }
-        const results = await Promise.all(promises);
-        if (results.some((r) => r instanceof Error)) {
-            throw new Error('some components failed to dispose');
+                logger.error(`component ${comp.constructor.name} failed to dispose`);
+            }
         }
     }
 }
