@@ -27,5 +27,8 @@ export declare class Server {
      * have to be tested under k8s
      */
     private exit;
+    /**
+     * components will be disposed in the order they are added
+     */
     shutdown(): Promise<void>;
 }

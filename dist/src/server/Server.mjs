@@ -71,11 +71,13 @@ export class Server {
             process.exit(1);
         });
     };
+    /**
+     * components will be disposed in the order they are added
+     */
     async shutdown() {
         process.off('SIGTERM', this.exit);
         process.off('SIGINT', this.exit);
-        for (const pair of this.components) {
-            const comp = pair[1];
+        for (const [constructor, comp] of this.components) {
             if (typeof comp.dispose !== 'function')
                 continue;
             try {
@@ -83,7 +85,7 @@ export class Server {
             }
             catch (e) {
                 logErr(e);
-                logger.error(`component ${comp.constructor.name} failed to dispose`);
+                logger.error(`component ${constructor.name} failed to dispose`);
             }
         }
     }
