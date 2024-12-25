@@ -77,6 +77,7 @@ export class Server {
     async shutdown() {
         process.off('SIGTERM', this.exit);
         process.off('SIGINT', this.exit);
+        let hasError = false;
         for (const [constructor, comp] of this.components) {
             if (typeof comp.dispose !== 'function')
                 continue;
@@ -84,9 +85,13 @@ export class Server {
                 await comp.dispose.call(comp);
             }
             catch (e) {
+                hasError = true;
                 logErr(e);
                 logger.error(`component ${constructor.name} failed to dispose`);
             }
+        }
+        if (hasError) {
+            throw new Error('some components failed to dispose');
         }
     }
 }
