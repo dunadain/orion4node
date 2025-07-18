@@ -1,4 +1,3 @@
-/// <reference types="node" resolution-mode="require"/>
 import { EventEmitter } from 'node:events';
 import type { ComponentConstructor } from '../interfaces/defines.mjs';
 import type { Component } from '../component/Component.mjs';

@@ -37,18 +37,18 @@ beforeAll(async () => {
     const transport = server.getComponent(UWebSocketTransport);
     if (transport) transport.port = 9002;
     server.addComponent(ClientManager);
-    server.addComponent(NatsComponent);
     server.addComponent(Router);
     server.addComponent(S2CSubscriber);
+    server.addComponent(NatsComponent);
 
     server2 = new Server('game', id2);
-    server2.addComponent(NatsComponent);
     server2.addComponent(StatelessHandlerSubscriber);
     server2.addComponent(StatefulHandlerSubscriber);
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     loadHandlersAndRemotes(__dirname);
     server2.addComponent(PushSender);
+    server2.addComponent(NatsComponent);
     try {
         await server.start();
         await server2.start();
@@ -65,9 +65,9 @@ afterAll(() => {
 describe('communication', () => {
     beforeAll(async () => {
         server3 = new Server('game', id3);
-        server3.addComponent(NatsComponent);
         server3.addComponent(StatelessHandlerSubscriber);
         server3.addComponent(StatefulHandlerSubscriber);
+        server3.addComponent(NatsComponent);
         await server3.start();
     });
 
@@ -87,9 +87,9 @@ describe('communication', () => {
         const result = await testReq(socket, reqId);
         expect(result.id).toBe(reqId);
         expect(result.body.name).toBe('Hello Game');
-        expect(mockP).toBeCalledTimes(1);
-        expect(mockHandler).toBeCalledTimes(1);
-        expect(mockRequest).toBeCalledTimes(1);
+        expect(mockP).toHaveBeenCalledTimes(1);
+        expect(mockHandler).toHaveBeenCalledTimes(1);
+        expect(mockRequest).toHaveBeenCalledTimes(1);
         socket.close();
         jest.clearAllMocks();
     });
@@ -116,10 +116,10 @@ describe('communication', () => {
         const result = await testReq(socket, reqId);
         expect(result.id).toBe(reqId);
         expect(result.body.name).toBe('Hello Game');
-        expect(mockHandler).toBeCalledTimes(1);
-        expect(mockRequest).toBeCalledTimes(1);
-        expect(mockPc3).not.toBeCalled();
-        expect(mockPc2).toBeCalledTimes(1);
+        expect(mockHandler).toHaveBeenCalledTimes(1);
+        expect(mockRequest).toHaveBeenCalledTimes(1);
+        expect(mockPc3).not.toHaveBeenCalled();
+        expect(mockPc2).toHaveBeenCalledTimes(1);
         ((serverSelector as any).routes as Map<any, any>).clear();
         socket.close();
         jest.clearAllMocks();
@@ -146,12 +146,12 @@ describe('communication', () => {
         socket.send(pkg);
         return new Promise<void>((resolve) => {
             setTimeout(() => {
-                expect(mockPublish).toBeCalledTimes(1);
-                expect(mockHandler).toBeCalledTimes(1);
+                expect(mockPublish).toHaveBeenCalledTimes(1);
+                expect(mockHandler).toHaveBeenCalledTimes(1);
                 expect(mockHandler.mock.results[0].value).resolves.toBeUndefined();
                 expect(mockHandler.mock.calls[0][0].protoId).toBe(Proto.GameUpdate);
                 expect(mockHandler.mock.calls[0][0].clientId).toBe(1);
-                expect(mockP1).toBeCalledTimes(1);
+                expect(mockP1).toHaveBeenCalledTimes(1);
                 expect((mockP1.mock.calls[0][0] as any).reply).toBe('');
                 socket.close();
                 jest.clearAllMocks();
@@ -189,14 +189,14 @@ describe('communication', () => {
         socket.send(pkg);
         return new Promise<void>((resolve) => {
             setTimeout(() => {
-                expect(mockPublish).toBeCalledTimes(1);
-                expect(mockHandler).toBeCalledTimes(1);
+                expect(mockPublish).toHaveBeenCalledTimes(1);
+                expect(mockHandler).toHaveBeenCalledTimes(1);
                 expect(mockHandler.mock.results[0].value).resolves.toBeUndefined();
                 expect(mockHandler.mock.calls[0][0].protoId).toBe(Proto.GameUpdate);
                 expect(mockHandler.mock.calls[0][0].clientId).toBe(1);
-                expect(mockPc3).toBeCalledTimes(1);
+                expect(mockPc3).toHaveBeenCalledTimes(1);
                 expect((mockPc3.mock.calls[0][0] as any).reply).toBe('');
-                expect(mockPc2).not.toBeCalled();
+                expect(mockPc2).not.toHaveBeenCalled();
                 socket.close();
                 jest.clearAllMocks();
                 resolve();

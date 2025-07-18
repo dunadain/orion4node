@@ -1,6 +1,6 @@
 import type { Constructor } from '../index.mjs';
 declare class RpcUtils {
-    callRpc(protoStr: string, param: Uint8Array): Promise<Uint8Array>;
+    callRpc(protoStr: string, param: Uint8Array): Promise<Uint8Array<ArrayBufferLike>>;
 }
 export declare const rpcUtils: RpcUtils;
 export declare function callRpc(protoStr: string, param: unknown): Promise<any>;

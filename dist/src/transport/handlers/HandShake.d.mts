@@ -1,4 +1,3 @@
-/// <reference types="node" resolution-mode="require"/>
 import { type SocketClient } from '../SocketClient.mjs';
 import type { PkgHandler } from './PacketHandler.mjs';
 declare module './HandShake.mjs' {

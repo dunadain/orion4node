@@ -1,5 +1,3 @@
-/// <reference types="node" resolution-mode="require"/>
-/// <reference types="node" resolution-mode="require"/>
 import type { WebSocket } from 'uWebSockets.js';
 import { ClientState, type SocketClient } from '../SocketClient.mjs';
 import * as msgUtils from '../protocol/MsgProcessor.mjs';

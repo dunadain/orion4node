@@ -15,9 +15,9 @@ beforeEach(async () => {
     const transport = server.getComponent(UWebSocketTransport);
     if (transport) transport.port = 9008;
     server.addComponent(ClientManager);
-    server.addComponent(NatsComponent);
     server.addComponent(Router);
     server.addComponent(S2CSubscriber);
+    server.addComponent(NatsComponent);
     try {
         await server.start();
     } catch (reason) {
@@ -37,7 +37,7 @@ describe('server shut down', () => {
         const natsComponent = server.getComponent(NatsComponent);
         if (!natsComponent) return;
         jest.spyOn(natsComponent, 'dispose').mockRejectedValue(new Error('nats error'));
-        await expect(server.shutdown()).rejects.toThrowError('some components failed to dispose');
+        await expect(server.shutdown()).rejects.toThrow('some components failed to dispose');
         await natsComponent.nc?.drain();
     });
 
@@ -47,7 +47,7 @@ describe('server shut down', () => {
             const mockShutdown = jest.spyOn(server, 'shutdown');
             process.emit('SIGTERM');
             await expect(mockShutdown.mock.results[0].value).resolves.toBeUndefined();
-            expect(mockExit).toBeCalledWith(0);
+            expect(mockExit).toHaveBeenCalledWith(0);
         });
 
         it('should call process.exit(1) when there are errors in dispose', async () => {
@@ -56,8 +56,8 @@ describe('server shut down', () => {
                 .spyOn(server, 'shutdown')
                 .mockRejectedValue(new Error('some components failed to dispose'));
             process.emit('SIGTERM');
-            await expect(mockShutdown.mock.results[0].value).rejects.toThrowError('some components failed to dispose');
-            expect(mockExit).toBeCalledWith(1);
+            await expect(mockShutdown.mock.results[0].value).rejects.toThrow('some components failed to dispose');
+            expect(mockExit).toHaveBeenCalledWith(1);
             mockShutdown.mockRestore();
             server.shutdown();
         });

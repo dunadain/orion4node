@@ -1,4 +1,3 @@
-/// <reference types="node" resolution-mode="require"/>
 import { ErrorCode } from '../config/ErrorCode.mjs';
 import { MsgType } from './protocol/MsgProcessor.mjs';
 export interface SocketClient<T> {

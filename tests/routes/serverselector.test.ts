@@ -6,7 +6,7 @@ describe('server selector', () => {
         serverSelector.addRoute('game', async () => {
             return 33;
         });
-        expect(serverSelector.selectServer('1', 'connector')).rejects.toThrowError(
+        expect(serverSelector.selectServer('1', 'connector')).rejects.toThrow(
             'route not found for serverType:connector'
         );
         expect(serverSelector.hasRoute('game')).toBe(true);

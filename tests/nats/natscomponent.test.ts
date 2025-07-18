@@ -6,6 +6,6 @@ describe('nats component', () => {
     it('should be able to connect to nats', async () => {
         const nats = new NatsComponent({} as Server);
         process.env.NATS_URL = 'nats://localhost:4000';
-        await expect(nats.init()).rejects.toThrowError('CONNECTION_REFUSED');
+        await expect(nats.init()).rejects.toThrow('CONNECTION_REFUSED');
     });
 });

@@ -18,18 +18,18 @@ const id2 = '2';
 const id3 = '3';
 beforeAll(async () => {
     server = new Server('chat', id1);
-    server.addComponent(NatsComponent);
     server.addComponent(RpcClient);
+    server.addComponent(NatsComponent);
 
     server2 = new Server('game', id2);
-    server2.addComponent(NatsComponent);
     let rpcSub = server2.addComponent(StatelessRpcServer);
     rpcSub = server2.addComponent(StatefulRpcServer);
+    server2.addComponent(NatsComponent);
 
     server3 = new Server('game', id3);
-    server3.addComponent(NatsComponent);
     rpcSub = server3.addComponent(StatelessRpcServer);
     rpcSub = server3.addComponent(StatefulRpcServer);
+    server3.addComponent(NatsComponent);
 
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
@@ -64,13 +64,13 @@ describe('rpc tests', () => {
                 .request({ name: 'world' })
         ).resolves.toEqual({ message: 'Hello, world' });
 
-        expect(mockP).toBeCalledTimes(1);
+        expect(mockP).toHaveBeenCalledTimes(1);
         await expect(
             client
                 .createRpcCall('Greeter.SayHello', root.HelloRequest, root.HelloReply, 'game')
                 .request({ name: 'world' })
         ).resolves.toEqual({ message: 'Hello, world' });
-        expect(mockP).toBeCalledTimes(2);
+        expect(mockP).toHaveBeenCalledTimes(2);
     });
 
     test('stateful rpc call', async () => {
@@ -86,8 +86,8 @@ describe('rpc tests', () => {
                 .to(id2)
                 .request({ name: 'world' })
         ).resolves.toEqual({ message: 'Hello, world' });
-        expect(mockP1).toBeCalledTimes(1);
-        expect(mockP2).not.toBeCalled();
+        expect(mockP1).toHaveBeenCalledTimes(1);
+        expect(mockP2).not.toHaveBeenCalled();
     });
 
     // test('rpc publish', () => {
@@ -99,11 +99,11 @@ describe('rpc tests', () => {
     //     const mockReq = jest.spyOn(nats, 'request');
     //     const mockCallRpc = jest.spyOn(rpcUtils, 'callRpc');
     //     client.getService(root.Greeter).bar({});
-    //     expect(mockPub).toBeCalledTimes(1);
-    //     expect(mockReq).not.toBeCalled();
+    //     expect(mockPub).toHaveBeenCalledTimes(1);
+    //     expect(mockReq).not.toHaveBeenCalled();
     //     return new Promise<void>((resolve) => {
     //         setTimeout(() => {
-    //             expect(mockCallRpc).toBeCalledTimes(1);
+    //             expect(mockCallRpc).toHaveBeenCalledTimes(1);
     //             expect(mockCallRpc.mock.results[0].value).resolves.toEqual({});
     //             resolve();
     //         }, 100);

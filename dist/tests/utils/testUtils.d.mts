@@ -1,5 +1,3 @@
-/// <reference types="node" resolution-mode="require"/>
-/// <reference types="node" resolution-mode="require"/>
 import { WebSocket } from 'ws';
 import * as net from 'net';
 export declare function createConnection(port: number, obj?: any): Promise<WebSocket>;

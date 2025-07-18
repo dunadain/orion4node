@@ -19,7 +19,7 @@ export class HttpServer extends Component {
         app.post('/*', (res) => {
             const buffer = [];
             res.onData((chunk, isLast) => {
-                buffer.push(Buffer.from(chunk));
+                buffer.push(new Uint8Array(chunk));
                 if (isLast) {
                     const data = Buffer.concat(buffer);
                     this.server.eventEmitter.emit('httpmessage', { res, data });

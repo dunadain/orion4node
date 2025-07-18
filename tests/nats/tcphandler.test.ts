@@ -48,8 +48,8 @@ test('should pass', () => {
 //         const result = await testReq(client, reqId);
 //         expect(result.id).toBe(reqId);
 //         expect(result.body.name).toBe('Hello Game');
-//         expect(mockP).toBeCalledTimes(1);
-//         // expect(mockHandler).toBeCalledTimes(1);
+//         expect(mockP).toHaveBeenCalledTimes(1);
+//         // expect(mockHandler).toHaveBeenCalledTimes(1);
 //     });
 // });
 

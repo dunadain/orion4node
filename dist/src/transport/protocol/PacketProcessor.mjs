@@ -67,7 +67,7 @@ export function encode(type, body) {
  */
 export function decode(buffer, out) {
     let offset = 0;
-    const bytes = Buffer.from(buffer);
+    const bytes = buffer;
     let length = 0;
     if (!out)
         out = [];

@@ -10,7 +10,7 @@ let fakeClient: SocketClient<any>;
 let fakeNativeSocket2: unknown;
 let fakeClient2: SocketClient<any>;
 beforeAll(() => {
-    server = new Server('connector', 111);
+    server = new Server('connector', '111');
     mgr = server.addComponent(ClientManager);
     fakeNativeSocket = {};
     fakeClient = {

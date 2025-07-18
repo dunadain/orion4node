@@ -15,6 +15,6 @@ describe('subject creation', () => {
         expect(() => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             register({ GameLogin2: 0 });
-        }).toThrowError('protocol id:0 is duplicated!');
+        }).toThrow('protocol id:0 is duplicated!');
     });
 });

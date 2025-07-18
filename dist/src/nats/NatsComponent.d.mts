@@ -9,7 +9,7 @@ export declare class NatsComponent extends Component {
      * @param payload
      * @returns
      */
-    tryRequest(subject: string, payload?: Payload, opts?: RequestOptions): Promise<Uint8Array>;
+    tryRequest(subject: string, payload?: Payload, opts?: RequestOptions): Promise<Uint8Array<ArrayBufferLike>>;
     publish(subject: string, payload?: Payload, options?: PublishOptions): void;
     init(): Promise<void>;
     private setupListeners;

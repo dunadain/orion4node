@@ -1,4 +1,3 @@
-/// <reference types="node" resolution-mode="require"/>
 import type { MsgBodyDecoder, MsgBodyEncoder } from '../interfaces/defines.mjs';
 declare class ProtocolMgr {
     private encoder;

@@ -89,7 +89,7 @@ export class UWebSocketClient {
         let i = 0;
         for (; i < len; ++i) {
             const msg = this.buffer[i];
-            const state = this.socket.send(msg, true);
+            const state = this.socket.send(new Uint8Array(msg), true);
             if (state === 2) {
                 break;
             }

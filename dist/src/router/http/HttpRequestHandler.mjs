@@ -13,7 +13,7 @@ export class HttpRequestHandler extends Component {
                 const res = msg.res;
                 res.writeHeader('Content-Type', 'application/octet-stream');
                 const response = protoMgr.encodeMsgBody(responseData, protoId);
-                res.write(response);
+                res.write(new Uint8Array(response));
                 res.end();
             })
                 .catch((e) => {

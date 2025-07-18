@@ -10,7 +10,7 @@ import * as http from 'node:http';
 import { copyArray } from '../../src/transport/protocol/utils.mts';
 
 let server: Server;
-const id1 = 1;
+const id1 = '1';
 beforeAll(async () => {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);

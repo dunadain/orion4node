@@ -1,4 +1,3 @@
-/// <reference types="node" resolution-mode="require"/>
 export declare enum MsgType {
     REQUEST = 0,
     RESPONSE = 1,

@@ -1,4 +1,3 @@
-/// <reference types="node" resolution-mode="require"/>
 export declare enum PackType {
     HANDSHAKE = 0,
     HANDSHAKE_ACK = 1,
