@@ -71,7 +71,7 @@ export function encode(type: PackType, body?: Buffer) {
  */
 export function decode(buffer: Buffer, out?: { type: PackType; body: Buffer | undefined }[]) {
     let offset = 0;
-    const bytes = Buffer.from(buffer);
+    const bytes = buffer;
     let length = 0;
     if (!out) out = [];
     while (offset < bytes.length) {

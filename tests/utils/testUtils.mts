@@ -54,13 +54,13 @@ export function createTcpConnection(port: number, host: string, clientVersion = 
             offset += uidBuf.length;
             buf.writeUint32BE(clientVersion, offset++); // client version
             const handshakePact = packUtil.encode(packUtil.PackType.HANDSHAKE, buf);
-            client.write(handshakePact);
+            client.write(new Uint8Array(handshakePact));
         });
         client.on('data', (buffer) => {
             const pkgs = packUtil.decode(buffer);
             const pkg = pkgs[0];
             if (pkg.type === packUtil.PackType.HANDSHAKE) {
-                client.write(packUtil.encode(packUtil.PackType.HANDSHAKE_ACK));
+                client.write(new Uint8Array(packUtil.encode(packUtil.PackType.HANDSHAKE_ACK)));
                 setTimeout(() => {
                     resolve(client);
                 }, 10);
