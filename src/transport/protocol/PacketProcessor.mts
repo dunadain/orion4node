@@ -73,7 +73,7 @@ export function decode(buffer: Buffer, out?: { type: PackType; body: Buffer | un
     let offset = 0;
     const bytes = buffer;
     let length = 0;
-    if (!out) out = [];
+    out ??= [];
     while (offset < bytes.length) {
         const type = bytes[offset++];
         length = ((bytes[offset++] << 16) | (bytes[offset++] << 8) | bytes[offset++]) >>> 0;

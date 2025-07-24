@@ -21,7 +21,7 @@ export class HandShake implements PkgHandler {
         let data: HandShakeInfo;
         try {
             data = JSON.parse(msg.toString()) as HandShakeInfo;
-        } catch (e) {
+        } catch {
             this.processError(ErrorCode.InvaildHandShakeInfo, 'What went wrong:handshake info json parse');
             logger.error(`handshake info json parse error. received msg was ${msg.toString()}`);
             return;
