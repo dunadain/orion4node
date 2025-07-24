@@ -78,28 +78,28 @@ export class NatsComponent extends Component {
         for await (const s of this._nc.status()) {
             switch (s.type) {
                 case Events.Disconnect:
-                    logger.info(`${this.server.name} disconnected - ${s.data}`);
+                    logger.info(`nats:${this.server.name} disconnected - ${s.data}`);
                     break;
                 case Events.LDM:
-                    logger.info(`${this.server.name} has been requested to reconnect`);
+                    logger.info(`nats:${this.server.name} has been requested to reconnect`);
                     break;
                 case Events.Update:
-                    logger.info(`${this.server.name} received a cluster update - ${s.data}`);
+                    logger.info(`nats:${this.server.name} received a cluster update - ${s.data}`);
                     break;
                 case Events.Reconnect:
-                    logger.info(`${this.server.name} reconnected - ${s.data}`);
+                    logger.info(`nats:${this.server.name} reconnected - ${s.data}`);
                     break;
                 case Events.Error:
-                    logger.info(`${this.server.name} got a permissions error`);
+                    logger.info(`nats:${this.server.name} got a permissions error`);
                     break;
                 case DebugEvents.Reconnecting:
-                    logger.info(`${this.server.name} is attempting to reconnect`);
+                    logger.info(`nats:${this.server.name} is attempting to reconnect`);
                     break;
                 case DebugEvents.StaleConnection:
-                    logger.info(`${this.server.name} has a stale connection`);
+                    logger.info(`nats:${this.server.name} has a stale connection`);
                     break;
                 default:
-                    logger.info(`${this.server.name} got an unknown status ${s.type}`);
+                    logger.info(`nats:${this.server.name} got an unknown status ${s.type}`);
                     break;
             }
         }
